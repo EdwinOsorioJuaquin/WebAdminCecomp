@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                template="/plantilla/plantilla.xhtml">
+
+    <ui:define name="content">
+
+        <div align="center" class="card-titulo mb-1">
+            Carga Masiva de Notas
+        </div>
+
+        <h:form id="frmCarga" enctype="multipart/form-data">
+
+            <div class="card-contenido">
+
+                <!-- ========================= -->
+                <!-- SUBIR ARCHIVO -->
+                <!-- ========================= -->
+                <an:seccion cabLabel="Cargar archivo CSV" cabLen="col-sm-6" cmdLen="col-sm-6">
+
+                    <p:fileUpload mode="advanced"
+                                  auto="true"
+                                  dragDropSupport="true"
+                                  allowTypes="/(\.|\/)(csv)$/"
+                                  label="Seleccionar CSV"/>
+
+                </an:seccion>
+
+                <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                <!-- ========================= -->
+                <!-- TABLA -->
+                <!-- ========================= -->
+                <an:table id="tblNotas"
+                          cabValue="#{cargaNotasController.lstNotas}"
+                          cabPaginator="true"
+                          cabClass="tablaGeneral">
+
+                    <p:column headerText="N°">
+                        <an:celda comType="indice" optValue="#{row + 1}"/>
+                    </p:column>
+
+                    <p:column headerText="Código">
+                        <an:celda optValue="#{registro.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Estudiante">
+                        <an:celda optValue="#{registro.estudiante}"/>
+                    </p:column>
+
+                    <p:column headerText="Curso">
+                        <an:celda optValue="#{registro.curso}"/>
+                    </p:column>
+
+                    <p:column headerText="Nota">
+                        <an:celda optValue="#{registro.nota}"/>
+                    </p:column>
+
+                    <p:column headerText="Estado">
+                        <an:celda optValue="#{registro.nota >= 11 ? 'APROBADO' : 'DESAPROBADO'}"/>
+                    </p:column>
+
+                </an:table>
+
+                <br/>
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

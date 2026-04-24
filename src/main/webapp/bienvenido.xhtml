@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core">
+    <ui:define name="content">
+        <div style="width:100%;border-top:2px solid white; padding-top: 0px; "/>
+        <div align="center" class="card-titulo mb-1">
+            BIENVENIDO AL MÓDULO DE #{generalController.modulo.nombre}
+        </div>
+        <div class="card-contenido">
+            <div class="row mt-2">
+                <div class="col-md-4">
+                    <img class="img-fluid" src="../resources/images/cecomp.png" alt="Logo UNS" width="100%"/>
+                </div>
+                <div class="col-md-8 hidden-sm hidden-xs" style="text-align: justify">
+                    <h:form>
+                        <h5 style=" font-weight: bold">Presentación</h5>
+                        <hr/>
+                        <blockquote class="blockquote">
+                            <h:outputText escape="false" style=" font-weight: normal !important" value="#{generalController.modulo.presentacion}"></h:outputText>
+                            <div align="right" style=" height: 20px">
+                                <p:commandButton id="btnReglamento"
+                                                 rendered="#{generalController.modulo.blnDescarga}"
+                                                 ajax="false"
+                                                 class="bntIconsMedio" 
+                                                 style="background: #{generalController.modulo.colorOscuro} !important;"
+                                                 icon="fa fa-download"
+                                                 value="Reglamento"
+                                                 update="@form "
+                                                 actionListener="#{reglamentoController.doDescargarReglamento}">
+                                    <p:fileDownload value="#{generalController.archivo.streamedFile}" contentDisposition="inline"/>
+                                </p:commandButton>
+                            </div>
+                            <footer class="blockquote-footer">CECOMP</footer>
+                        </blockquote>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

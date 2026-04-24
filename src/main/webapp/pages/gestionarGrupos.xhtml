@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{grupoController.doIniciarPagina()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">Gestionar grupos</div>
+        <h:form id="frmPrincipal" class="form-horizontal h-100">
+            <div id="divPrincipal" class="card-contenido">
+
+                <!-- ==============================
+                     LISTA DE GRUPOS
+                =============================== -->
+                <h:panelGroup id="pngLista" rendered="#{grupoController.strValor eq 'LISTA'}">
+                    <an:seccion cabLabel="Lista de grupos">
+                        <an:button cmdValue="Volver"
+                                   cmdAction="#{grupoController.doVolver()}"
+                                   cmdTooltip="Volver"
+                                   cmdUpdate="@form"
+                                   cmdIcon="fa fa-arrow-left"/>
+                        <an:button cmdValue="Buscar"
+                                   cmdAction="#{grupoController.doBuscar()}"
+                                   cmdTooltip="Buscar"
+                                   cmdIcon="fa fa-search"/>
+                        <an:button cmdValue="Agregar"
+                                   cmdAction="#{grupoController.doNuevo()}"
+                                   cmdTooltip="Agregar nuevo grupo"
+                                   cmdIcon="fa fa-plus"/>
+                    </an:seccion>
+                    <an:input cabValue="Buscar (grupo/docente/curso)"
+                              conValue="#{grupoController.strBusqueda}"
+                              conLen="col-lg-4"
+                              conRequired="false"
+                              opClass="d-flex "
+                              conClass="textoButton"
+                              conOnkeypress="if (event.keyCode === 13) {execbtBuscar();return false;} return true;"
+                              conTooltip="Ingrese nombre y presione ENTER">
+                        <f:facet name="extras">
+                            <an:button cmdType="exec"
+                                       cmdID="btBuscar"
+                                       cmdIcon="fa fa-search"
+                                       cmdAction="#{grupoController.doBuscar()}"/>
+                        </f:facet>
+                    </an:input>
+                    <an:table id="cdtGrupo"
+                              cabId="dtGrupo"
+                              cabValue="#{grupoController.lstGruposView}"
+                              cabPaginator="true">
+                        <p:column  width="80" headerText="" class="text-center" >
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-edit text-info"
+                                       cmdTooltip="Editar grupo"
+                                       cmdAction="#{grupoController.doEditar(registro)}"
+                                       cmdUpdate="@form"/>
+
+                            <an:button cmdType="link"
+                                    rendered="#{registro.activo}"
+                                    cmdIcon="fa fa-ban text-danger ms-2"
+                                    cmdTooltip="Dar de baja el grupo"
+                                    conMensaje="¿Está seguro de cambiar el estado del curso?"
+                                    cmdAction="#{grupoController.doCambiarEstado(registro)}"
+                                    cmdUpdate="@form"/>
+
+                            <an:button cmdType="link"
+                                    rendered="#{!registro.activo}"
+                                    cmdIcon="fa fa-check-circle text-success ms-2"
+                                    cmdTooltip="Activar el grupo"
+                                    conMensaje="¿Está seguro de cambiar el estado del curso?"
+                                    cmdAction="#{grupoController.doCambiarEstado(registro)}"
+                                    cmdUpdate="@form"/>
+
+                            
+                        </p:column>
+                        <p:column  width="50" headerText="Nro" ><an:celda comType="indice" optValue="#{row+1}" comAlign="text-center"/> </p:column>
+                        <p:column  width="120" headerText="GRUPO" sortBy="#{registro.codigo}"><an:celda optValue="#{registro.codigo}" /> </p:column>
+                        <p:column  width="300"  headerText="DOCENTE"><an:celda optValue="#{registro.docente}"/></p:column>
+                        <p:column  width="300"  headerText="CURSO"><an:celda optValue="#{registro.curso}"/></p:column>
+                        <p:column width="140" headerText="MODALIDAD" styleClass="text-center"><an:celda optValue="#{registro.modalidad}" comAlign="text-center"/></p:column>
+                        <p:column  width="150"  headerText="FECHA DE INICIO"><an:celda optValue="#{registro.fechaInicioTexto}"/></p:column>
+                        <p:column  width="150"  headerText="FECHA DE FIN"><an:celda optValue="#{registro.fechaFinTexto}"/></p:column>
+                        <p:column  width="180"  headerText="HORARIO"><an:celda optValue="#{registro.horario}"/></p:column>
+                        <p:column  width="150"  headerText="DÍAS"><an:celda optValue="#{registro.diasTexto}"/></p:column>
+                        <p:column  width="120"  headerText="ESTADO"><an:celda comType="estado" optValue="#{registro.estado}" txtActivo="#{registro.estado eq 'ACTIVO' ? 'TRUE' : 'FALSE'}" comAlign="text-center"/></p:column>
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"  optValue="Total de grupos: #{grupoController.lstGruposView != null ? grupoController.lstGruposView.size() : 0}"/>
+                        </f:facet>
+                    </an:table>
+                </h:panelGroup>
+
+
+                <!-- ==============================
+                     NUEVO GRUPO / EDITAR
+                =============================== -->
+                <h:panelGroup id="pngNuevo" rendered="#{grupoController.strValor eq 'NUEVO'}">
+                    <an:seccion cabLabel="Agregar grupo">
+                        <an:button cmdValue="Volver"
+                                   cmdAction="#{grupoController.doVolver()}"
+                                   cmdTooltip="Volver atras"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdImmediate="true"
+                                   cmdUpdate="@form"/>
+                                   
+                        <an:button cmdValue="Guardar"
+                                   cmdAction="#{grupoController.doGuardar()}"
+                                   cmdTooltip="Guardar grupo"
+                                   conMensaje="Seguro que desea aplicar los cambios?"
+                                   cmdIcon="fa fa-save"
+                                   cmdUpdate="@form"/>
+                    </an:seccion>
+                    
+                    <an:input cabValue="Nombre del Grupo"
+                              conLen="col-lg-2"
+                              conValue="#{grupoController.nuevoGrupo.codigo}"/>
+                    
+                    <an:input cabValue="Curso"
+                              comType="select"
+                              conFilter="true"
+                              conTooltip="Seleccione una opción"
+                              conValue="#{grupoController.nuevoGrupo.curso}">
+                        <f:selectItems value="#{grupoController.lstCursos}" var="menu" itemValue="#{menu}" itemLabel="#{menu}"/>
+                    </an:input>
+                    
+                    <an:input cabValue="Modalidad"
+                              comType="select"
+                              conFilter="true"
+                              conTooltip="Seleccione una opción"
+                              conValue="#{grupoController.nuevoGrupo.modalidad}">
+                        <f:selectItems value="#{grupoController.lstModalidades}" var="menu" itemValue="#{menu}" itemLabel="#{menu}"/>
+                    </an:input>
+                    
+                    <an:input cabValue="Docente"
+                              comType="select"
+                              conFilter="true"
+                              conTooltip="Seleccione una opción"
+                              conValue="#{grupoController.nuevoGrupo.docente}">
+                        <f:selectItems value="#{grupoController.lstDocentes}" var="menu" itemValue="#{menu}" itemLabel="#{menu}"/>
+                    </an:input>
+
+                    <an:input comType="fecha"
+                              cabValue="Fecha Inicio"
+                              conLen="col-lg-2"
+                              conValue="#{grupoController.nuevoGrupo.fechaInicio}"
+                              conTooltip="Ingrese una fecha"/>
+                    
+                    <an:input comType="fecha"
+                              cabValue="Fecha Fin"
+                              conLen="col-lg-2"
+                              conValue="#{grupoController.nuevoGrupo.fechaFin}"
+                              conTooltip="Ingrese una fecha"/>
+                    
+                    <an:input comType="hora"
+                              cabValue="Hora Inicio"
+                              conLen="col-lg-2"
+                              conValue="#{grupoController.nuevoGrupo.horaInicio}"
+                              conTooltip="Ingrese una hora"/>
+                    
+                    <an:input comType="hora"
+                              cabValue="Hora Fin"
+                              conLen="col-lg-2"
+                              conValue="#{grupoController.nuevoGrupo.horaFin}"
+                              conTooltip="Ingrese una hora"/>
+                    
+                    <an:input cabValue="Dias"
+                              comType="many"
+                              conFilter="true"
+                              conTooltip="Seleccione una opción"
+                              conValue="#{grupoController.nuevoGrupo.dias}">
+                        <f:selectItems value="#{grupoController.lstDias}" var="menu" itemValue="#{menu}" itemLabel="#{menu}"/>
+                    </an:input>
+                </h:panelGroup>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

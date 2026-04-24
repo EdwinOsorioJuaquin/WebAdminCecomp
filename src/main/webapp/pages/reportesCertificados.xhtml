@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{certificadoController.doIniciarReportesCertificados()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">Reporte de Certificados</div>
+
+        <h:form id="frmRepCert" class="form-horizontal h-100">
+            <div id="divPrincipal" class="card-contenido">
+
+                <!-- SECCION -->
+                <an:seccion cabLabel="Reporte de Certificados" cabLen="col-sm-6" cmdLen="col-sm-6">
+                    <an:button cmdValue="Actualizar"
+                               cmdIcon="fa fa-fw fa-refresh"
+                               cmdClass="bntIconsMedio me-1"
+                               cmdTooltip="Actualizar reporte"
+                               cmdUpdate="@form messages"
+                               cmdAction="#{certificadoController.doIniciarReportesCertificados()}"/>
+                </an:seccion>
+
+                <!-- BUSCADOR TOKEN -->
+                <an:input cabValue="Ingresar Token"
+                          cabLen="col-lg-2"
+                          conLen="col-lg-6"
+                          opClass="d-flex"
+                          conValue="#{certificadoController.strTokenBusqueda}"
+                          conRequired="false"
+                          conTooltip="Ingrese token (ej: TK-1234ABCD) o parte del token">
+                    <f:facet name="extras">
+                        <an:button cmdType="simple"
+                                   cmdValue="Buscar"
+                                   cmdIcon="fa fa-fw fa-search"
+                                   cmdClass="bntIconsMedio ms-2"
+                                   cmdUpdate="@form messages"
+                                   cmdAction="#{certificadoController.doBuscarReportesCertificados()}"/>
+                    </f:facet>
+                </an:input>
+
+                <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                <!-- TABLA -->
+                <an:table id="tblRepCert"
+                          cabId="dtRepCert"
+                          cabValue="#{certificadoController.lstReporteCertView}"
+                          cabPaginator="true"
+                          cabClass="tablaGeneral">
+
+                    <!-- ACCIONES -->
+                    <p:column width="110" headerText="" styleClass="text-center">
+
+                        <!-- Previsualizar PDF -->
+                        <an:button cmdType="link"
+                                   cmdIcon="fa fa-fw fa-eye text-success"
+                                   cmdTooltip="Previsualizar certificado (PDF)"
+                                   cmdUpdate="@form messages"
+                                   cmdAction="#{certificadoController.doPrevisualizarCertificado(registro)}"/>
+
+                        <!-- Descargar PDF -->
+                        <an:button cmdType="link"
+                                   cmdIcon="fa fa-fw fa-download text-primary ms-2"
+                                   cmdTooltip="Descargar certificado (PDF)"
+                                   cmdUpdate="@form messages"
+                                   cmdAction="#{certificadoController.doDescargarCertificado(registro)}"/>
+
+                    </p:column>
+
+                    <p:column width="60" headerText="NRO" styleClass="text-center">
+                        <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="150" headerText="NÚMERO DE CERTIFICADO" styleClass="text-center" sortBy="#{registro.numeroCertificado}">
+                        <an:celda optValue="#{registro.numeroCertificado}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="120" headerText="REG. DEC." styleClass="text-center" sortBy="#{registro.regDecanatura}">
+                        <an:celda optValue="#{registro.regDecanatura}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="140" headerText="FECHA EMISIÓN" styleClass="text-center" sortBy="#{registro.fechaEmisionTxt}">
+                        <an:celda optValue="#{registro.fechaEmisionTxt}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="320" headerText="ESTUDIANTE" sortBy="#{registro.estudiante}">
+                        <an:celda optValue="#{registro.estudiante}"/>
+                    </p:column>
+
+                    <p:column width="320" headerText="CURSO" sortBy="#{registro.curso}">
+                        <an:celda optValue="#{registro.curso}"/>
+                    </p:column>
+
+                    <p:column width="140" headerText="NIVEL" styleClass="text-center" sortBy="#{registro.nivel}">
+                        <an:celda optValue="#{registro.nivel}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="140" headerText="MODALIDAD" styleClass="text-center" sortBy="#{registro.modalidad}">
+                        <an:celda optValue="#{registro.modalidad}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="140" headerText="CATEGORÍA" styleClass="text-center" sortBy="#{registro.categoria}">
+                        <an:celda optValue="#{registro.categoria}" comAlign="text-center"/>
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <an:celda txtClass="fw-bold bg-transparent"
+                                  optValue="Total: #{certificadoController.lstReporteCertView != null ? certificadoController.lstReporteCertView.size() : 0}"/>
+                    </f:facet>
+
+                </an:table>
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

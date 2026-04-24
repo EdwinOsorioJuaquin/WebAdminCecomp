@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+    <h:form>
+        <div id="sideNav" class="side-nav" style="display: none;">
+            <div class="accordion sidebar-wrapper md-accordion mb-5 pb-2" style="height: 100%;" id="accordionMenu">
+                <p class="h5 menu-color font-weight-bolder text-center mt-0 mb-1 d-xl-none"> #{generalController.modulo.nombre}</p>
+                <!--Avatar-->
+                <div class="avatar mx-auto text-center d-none d-xl-block">
+                    <p:graphicImage id="imgAvatar2" value="/resources/images/avatar_bot.jpg" height="100" class="rounded-circle" style="margin-left: -4px;"/>
+                    <p class="mt-1 mb-0 pb-1 text-white font-weight-bold menuUsuario">#{generalController.usuario.strNombreCompleto}</p>
+                </div>
+                <hr class="my-0"/>
+                <!--Menu Principal-->
+                <div class="divTituloMenu">
+                    <div align="left" class="panel-heading">
+                        <h:commandLink id="cmdMenuGral"
+                                       class="tituloMenu" 
+                                       style="color: #{generalController.modulo.colorClaro}"
+                                       onclick="PF('dlgProcesando').show();"
+                                       action="#{generalController.doPresentacion()}" >
+                            MENÚ GENERAL
+                            <f:setPropertyActionListener target="#{generalController.rutaNavegacion}" value="PRESENTACIÓN" />
+                        </h:commandLink>
+                        <p:tooltip  for="cmdMenuGral" value="Ver página de presentación" showEffect="clip" hideEffect="clip" />
+                    </div>
+                </div>
+                <div  class="sidebar-content">
+                    <div class="sidebar-menu list-group">
+                        <ul class="ulMenu" >
+                            <ui:repeat value="#{generalController.lstMenu}" var="menu" >
+                                <li class="sidebar-dropdown #{menu.visible} "   >
+                                    <a href="#" id="divMenu#{menu.idMenu}" class="list-group-item d-flex align-items-center" >
+                                        <i class="#{menu.icono} fa-fw" style="display: block;"></i>
+                                        <span>#{menu.nombre}</span>
+                                    </a>
+                                    <div class="sidebar-submenu submenuUdemsi" id="SubdivMenu#{menu.idMenu}" >
+                                        <ul class="ulMenu">
+                                            <ui:repeat value="#{menu.lstSubMenu}" var="subMenu">
+                                                <li class="list-group-subitem waves-effect">
+                                                    <h:commandLink class="cmdSubMenu" 
+                                                                   rendered="#{subMenu.visible}"
+                                                                   onclick=" cerrarMenu(); PF('dlgProcesando').show();"
+                                                                   action="#{generalController.doNavegacion(menu.idMenu,subMenu.idSubMenu)}" >
+                                                        #{subMenu.nombre}
+                                                        <f:setPropertyActionListener target="#{generalController.rutaNavegacion}" value="#{subMenu.ruta}" />
+                                                    </h:commandLink>
+                                                </li>                                        
+                                            </ui:repeat>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ui:repeat>  
+                        </ul>
+                    </div>
+                </div>
+                <div class="datos-app text-center" style="background: #{generalController.modulo.colorOscuro}">
+                    <p class="perfil-text text-white ">© 2024 Copyright: UDEMSI</p>
+                    <p class="perfil-text text-white ">V#{generalController.modulo.version} @#{generalController.strServidor[generalController.modulo.intServidor]}</p>
+                </div>
+            </div>
+        </div>
+
+    </h:form>
+</ui:composition>

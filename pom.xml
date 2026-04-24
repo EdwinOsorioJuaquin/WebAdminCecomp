@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.uns</groupId>
+    <artifactId>WebAdminCecomp</artifactId>
+    <version>1.0</version>
+    <packaging>war</packaging>
+    <name>WebAdminCecomp-1.0</name>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jakartaee>11.0.0-M1</jakartaee>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.uns</groupId>
+            <artifactId>libreriaUdemsi</artifactId>
+            <version>2.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.uns</groupId>
+            <artifactId>dependenciasUdemsi</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <!--        ejb requeridos-->
+        <dependency>
+            <groupId>com.uns</groupId>
+            <artifactId>ejbCecomp</artifactId>
+            <version>1.0</version>
+            <type>ejb</type>
+            <scope>provided</scope>
+        </dependency>
+
+<!--        <dependency>
+            <groupId>com.uns</groupId>
+            <artifactId>ejbPasaporte</artifactId>
+            <version>1.0</version>
+            <type>ejb</type>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.uns</groupId>
+            <artifactId>ejbDirectorio</artifactId>
+            <version>1.0</version>
+            <type>ejb</type>
+            <scope>provided</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>${jakartaee}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <version>2.0.1.MR</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>zxingorg</artifactId>
+            <version>3.5.2</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.5.3</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.5.3</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.12.1</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>

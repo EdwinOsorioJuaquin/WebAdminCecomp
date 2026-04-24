@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+ name="CertificadoUNS"
+ pageWidth="842" pageHeight="595"
+ orientation="Landscape"
+ leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+
+    <!-- PARAMS -->
+    <parameter name="P_IMG_PAG1" class="java.io.InputStream"/>
+    <parameter name="P_IMG_PAG2" class="java.io.InputStream"/>
+
+    <parameter name="P_CODIGO" class="java.lang.String"/>
+    <parameter name="P_RESOLUCION" class="java.lang.String"/>
+    <parameter name="P_NOMBRE_COMPLETO" class="java.lang.String"/>
+    <parameter name="P_CURSO" class="java.lang.String"/>
+    <parameter name="P_HORAS" class="java.lang.String"/>
+    <parameter name="P_FECHA_INICIO" class="java.lang.String"/>
+    <parameter name="P_FECHA_FIN" class="java.lang.String"/>
+    <parameter name="P_LUGAR_FECHA" class="java.lang.String"/>
+    <parameter name="P_QR_TEXTO" class="java.lang.String"/>
+
+    <parameter name="P_ESTUDIANTE" class="java.lang.String"/>
+    <parameter name="P_CURSO_2" class="java.lang.String"/>
+    <parameter name="P_FECHA_EXPEDICION" class="java.lang.String"/>
+    <parameter name="P_PROMEDIO_FINAL" class="java.lang.String"/>
+
+    <!-- Para la tabla -->
+    <parameter name="P_DS_NOTAS" class="net.sf.jasperreports.engine.JRDataSource"/>
+
+    <!-- VARIABLES -->
+    <variable name="PAGE_NUMBER" class="java.lang.Integer" calculation="System">
+        <variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+    </variable>
+
+    <detail>
+        <band height="595">
+
+            <!-- Fondo página 1 -->
+            <image>
+                <reportElement x="0" y="0" width="842" height="595">
+                    <printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1]]></printWhenExpression>
+                </reportElement>
+                <imageExpression><![CDATA[$P{P_IMG_PAG1}]]></imageExpression>
+            </image>
+
+            <!-- Fondo página 2 -->
+            <image>
+                <reportElement x="0" y="0" width="842" height="595">
+                    <printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 2]]></printWhenExpression>
+                </reportElement>
+                <imageExpression><![CDATA[$P{P_IMG_PAG2}]]></imageExpression>
+            </image>
+
+            <!-- ====== HOJA 1 (ajusta x,y) ====== -->
+            <textField>
+                <reportElement x="75" y="210" width="700" height="40">
+                    <printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1]]></printWhenExpression>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_NOMBRE_COMPLETO}]]></textFieldExpression>
+            </textField>
+
+            <!-- Código debajo del QR -->
+            <textField>
+                <reportElement x="40" y="180" width="180" height="18">
+                    <printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1]]></printWhenExpression>
+                </reportElement>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$P{P_CODIGO}]]></textFieldExpression>
+            </textField>
+
+            <!-- Texto del curso -->
+            <textField isStretchWithOverflow="true">
+                <reportElement x="120" y="265" width="620" height="80">
+                    <printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1]]></printWhenExpression>
+                </reportElement>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[
+"Por haber aprobado el curso de \"" + $P{P_CURSO} + "\" con una duración de " + $P{P_HORAS} +
+" horas teórico-prácticas, desarrollado del " + $P{P_FECHA_INICIO} + " al " + $P{P_FECHA_FIN} + "."
+                ]]></textFieldExpression>
+            </textField>
+
+            <!-- Lugar y fecha -->
+            <textField>
+                <reportElement x="520" y="400" width="300" height="18">
+                    <printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1]]></printWhenExpression>
+                </reportElement>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$P{P_LUGAR_FECHA}]]></textFieldExpression>
+            </textField>
+
+            <!-- QR (Barcode4J) -->
+            <componentElement>
+                <reportElement x="50" y="60" width="120" height="120">
+                    <printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1]]></printWhenExpression>
+                </reportElement>
+                <jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                           xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+                    <jr:codeExpression><![CDATA[$P{P_QR_TEXTO}]]></jr:codeExpression>
+                </jr:QRCode>
+            </componentElement>
+
+            <!-- ====== PAGE BREAK a hoja 2 ====== -->
+            <break>
+                <reportElement x="0" y="594" width="1" height="1"/>
+            </break>
+
+            <!-- ====== HOJA 2 (ajusta x,y) ====== -->
+            <textField>
+                <reportElement x="260" y="80" width="420" height="20">
+                    <printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 2]]></printWhenExpression>
+                </reportElement>
+                <textFieldExpression><![CDATA[$P{P_ESTUDIANTE}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="260" y="110" width="420" height="20">
+                    <printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 2]]></printWhenExpression>
+                </reportElement>
+                <textFieldExpression><![CDATA[$P{P_CURSO_2}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="260" y="140" width="420" height="20">
+                    <printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 2]]></printWhenExpression>
+                </reportElement>
+                <textFieldExpression><![CDATA[$P{P_FECHA_EXPEDICION}]]></textFieldExpression>
+            </textField>
+
+            <!-- Aquí luego pones un Table component con dataset P_DS_NOTAS -->
+            <!-- Y el promedio final como parámetro -->
+        </band>
+    </detail>
+</jasperReport>

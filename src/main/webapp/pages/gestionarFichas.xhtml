@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{fichaController.doIniciarPagina()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">gestionar fichas</div>
+        <h:form id="frmPrincipal" class="form-horizontal h-100">
+            <div id="divPrincipal" class="card-contenido">
+                <h:panelGroup id="pngBusqueda"  rendered="true">
+                    <an:seccion cabLabel="Lista de Fichas" cabLen="col-sm-6" cmdLen="col-sm-6">
+                    <an:button cmdValue="Volver"
+                               cmdIcon="fa fa-fw fa-arrow-left"
+                               cmdClass="bntIconsMedio me-1"
+                               cmdTooltip="Volver al menú principal"
+                               cmdUpdate="@form"
+                               cmdAction="#{fichaController.doVolver()}"/>
+                    <an:button cmdValue="Buscar"
+                               cmdIcon="fa fa-fw fa-search-plus"
+                               cmdClass="bntIconsMedio"
+                               cmdTooltip="Buscar fichas"
+                               cmdUpdate="@form messages"
+                               cmdAction="#{fichaController.doBuscar()}"/>
+                    </an:seccion>
+                    
+                    <an:input cabValue="Búsqueda por Nombre"
+                              conValue="#{fichaController.strBusqueda}"
+                              conLen="col-lg-4"
+                              opClass="d-flex "
+                              conClass="textoButton"
+                              conRequired="false"
+                              conTooltip="Ingrese nombre para buscar y presione ENTER">
+                        <f:facet name="extras">
+                            <an:button cmdType="exec"
+                                       cmdID="btBuscar"
+                                       cmdIcon="fa fa-search"
+                                       cmdAction="#{fichaController.doBuscar()}"/>
+                        </f:facet>
+                    </an:input><an:extra comType="separadorSimple" comClass="my-2"/>
+                    
+                </h:panelGroup>
+                <h:panelGroup id="pngTabla"  rendered="true">
+                    <an:seccion comType="2" cabLabel="Listado de Fichas"
+                            cabLen="col-sm-6"
+                            cmdLen="col-sm-6">
+                </an:seccion>
+                <an:table cabId="tblFichas"
+                          cabValue="#{fichaController.lstFichasView}"
+                          cabPaginator="true"
+                          cabClass="tablaGeneral">
+                    <p:column width="150" headerText="" styleClass="text-center">
+                        <!-- DAR DE BAJA / ACTIVAR -->
+                        <an:button cmdType="link"
+                                   rendered="#{registro.activo}"
+                                   cmdIcon="fa fa-ban text-danger"
+                                   cmdTooltip="Dar de baja la ficha"
+                                   cmdAction="#{fichaController.doCambiarEstado(registro)}"
+                                   cmdUpdate="@form"/>
+
+                        <an:button cmdType="link"
+                                   rendered="#{!registro.activo}"
+                                   cmdIcon="fa fa-check-circle text-success"
+                                   cmdTooltip="Activar la ficha"
+                                   cmdAction="#{fichaController.doCambiarEstado(registro)}"
+                                   cmdUpdate="@form"/>
+
+                        <an:button cmdType="link"
+                                   cmdIcon="fa fa-edit text-info ms-2"
+                                   cmdTooltip="Editar ficha"
+                                   cmdAction="#{fichaController.doEditar(registro)}"
+                                   cmdUpdate="@form"/>
+                        <an:button cmdType="link"
+                                   cmdIcon="fa fa-eye text-success ms-2"
+                                   cmdTooltip="Ver detalle"
+                                   cmdAction="#{fichaController.doVerDetalle(registro)}"
+                                   cmdUpdate="@form"/>
+                    </p:column>
+                    <p:column width="80" headerText="N°" styleClass="text-center">
+                        <an:celda comType="indice"
+                                  optValue="#{row + 1}"
+                                  comAlign="text-center"/>
+                    </p:column>
+                    <p:column width="120" headerText="Ficha" styleClass="text-center">
+                        <an:celda optValue="#{registro.codigo}"
+                                  comAlign="text-center"/>
+                    </p:column>
+                    <p:column width="300" headerText="Estudiante">
+                        <an:celda optValue="#{registro.estudiante}"/>
+                    </p:column>
+                    <p:column width="120" headerText="Grupo" styleClass="text-center">
+                        <an:celda optValue="#{registro.grupo}"
+                                  comAlign="text-center"/>
+                    </p:column>
+                    <p:column width="120" headerText="Curso" styleClass="text-center"><an:celda optValue="#{registro.curso}" comAlign="text-center"/></p:column>
+                    <p:column width="180" headerText="Condición" styleClass="text-center"><an:celda optValue="#{registro.condicion}" comAlign="text-center"/></p:column>
+                     <p:column width="150" headerText="Estado" styleClass="text-center"><an:celda comType="estado" optValue="#{registro.estado}" txtActivo="#{registro.estado eq 'ACTIVO' ? 'TRUE' : 'FALSE'}" comAlign="text-center"/></p:column>
+                    <f:facet name="footer">
+                        <an:celda txtClass="fw-bold bg-transparent" optValue="Total fichas: #{fichaController.lstFichasView != null ? fichaController.lstFichasView.size() : 0}"/>
+                    </f:facet>
+
+                </an:table>
+                </h:panelGroup>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

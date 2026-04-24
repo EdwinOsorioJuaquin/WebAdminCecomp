@@ -1,0 +1,40 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:composite="http://java.sun.com/jsf/composite"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:h="http://xmlns.jcp.org/jsf/html"
+              xmlns:f="http://xmlns.jcp.org/jsf/core"
+              xmlns:c="jakarta.tags.core"
+              xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <composite:interface>
+        <composite:attribute required="false" name="opVisible"  type="java.lang.Boolean"  default="true" />
+        <composite:attribute required="false" name="comType" default="texto" shortDescription="Tipo de componente: 'texto', 'moneda' " />
+        <composite:attribute required="true" name="cabValue" />
+        <composite:attribute required="false" name="cabLen" default="col-lg-2" />
+        <composite:attribute required="false" name="conLen" default="col-lg-6"/>
+        <composite:attribute required="false" name="conId" default="comLabel" />
+        <composite:attribute required="false" name="conValue" />
+        <composite:attribute required="false" name="conClass" />
+        <composite:attribute required="false" name="conTooltip" />
+    </composite:interface>
+    <composite:implementation>
+        <div class="form-group row d-flex px-2">
+            <h:outputText value="#{cc.attrs.cabValue}:" class="control-label #{cc.attrs.cabLen} d-none d-lg-block"/> 
+            <p:outputPanel class="panel-float-label #{cc.attrs.conLen} px-0" >
+                <c:if test="#{cc.attrs.opVisible}" >
+                    <p:outputLabel id="#{cc.attrs.conId}"
+                                   class="label-float-text w-100 #{cc.attrs.conClass}"
+                                   value="#{cc.attrs.conValue}" >
+                        <c:if test="#{cc.attrs.comType eq 'moneda'}" >
+                            <f:convertNumber type="currency" currencySymbol="S/" locale="es_PE"  />
+                        </c:if>                        <!--Insercion de hijos-->
+						<f:convertDateTime   pattern="dd/MM/yyyy" rendered="#{cc.attrs.comType eq 'fecha'}" />
+                        <composite:insertChildren/>
+                    </p:outputLabel>
+                    <p:tooltip  for="#{cc.attrs.conId}" value="#{cc.attrs.conTooltip}" showEffect="clip" hideEffect="clip" />
+                    <p:outputLabel  for="#{cc.attrs.conId}" value="#{cc.attrs.cabValue}:" class="label-float-combo-detalle w-100" ></p:outputLabel>
+                </c:if>
+                <composite:insertChildren/>
+            </p:outputPanel>                
+        </div>
+    </composite:implementation>
+</ui:component>

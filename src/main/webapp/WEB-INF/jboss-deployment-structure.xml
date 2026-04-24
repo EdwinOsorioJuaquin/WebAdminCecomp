@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
+    <deployment>
+        <dependencies>
+            <!-- Dependecias JAKARTAEE -->
+            <module name="jakarta.servlet.api" />
+            <module name="jakarta.faces.api" />
+            <module name="jakarta.inject.api" />
+            <!-- Dependecias necesarias para reportes -->
+            <module name="net.sf.jasperreports" />
+            <!--Dependecias necesarias para subir/descargar archivos e integracion con ActiveDirectory--> 
+            <module name="com.hierynomus.smbj" />
+            <!--Dependencias para token jwt-->
+            <module name="io.jsonwebtoken"/>
+            <!-- Aquí se declara el módulo de tu JAR -->
+            
+            <module name="deployment.ejbCecomp-1.0.jar"/>
+           
+<!--           <module name="deployment.ejbPasaporte-1.0.jar" />
+            <module name="deployment.ejbDirectorio-1.0.jar" />-->
+
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>

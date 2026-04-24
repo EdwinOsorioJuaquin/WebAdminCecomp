@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core">
+    <h:form>
+        <div id="sideNav2" class="side-nav3 d-none d-xl-block pt-1">
+            <!--Avatar-->
+            <div class="avatar mt-5 mx-auto text-center d-none d-xl-block">
+                <p:graphicImage id="imgAvatar" value="/resources/images/avatar_bot.jpg" height="60" class="rounded-circle" style="margin-left: -4px;"/>
+                <p:tooltip  for="imgAvatar" value="#{generalController.usuario.strNombreCompleto}" showEffect="clip" hideEffect="clip" />
+            </div>
+            <hr class="mb-0 mt-2" />
+            <div class="divTituloMenu">
+                <div align="left" class="panel-heading">
+                    <h:commandLink id="cmdMenu2"
+                                   class="tituloMenu"  
+                                   onclick="PF('dlgProcesando').show();"
+                                   style="color: #{generalController.modulo.colorClaro}"
+                                   action="#{generalController.doPresentacion()}" >
+                        MENÚ
+                        <f:setPropertyActionListener target="#{generalController.rutaNavegacion}" value="PRESENTACIÓN" />
+                    </h:commandLink>
+                    <p:tooltip  for="cmdMenu2" value="Ver página de presentación" showEffect="clip" hideEffect="clip" />
+                </div>
+            </div>
+            <ul class="list-group">
+                <ui:repeat value="#{generalController.lstMenu}" var="menu">
+                    <li class=" dropdown text-center #{menu.visible}"   >
+                        <a class="nav-link list-group-item py-2"  >
+                            <i class="#{menu.icono} fa-2x"></i>
+                            <p class="nom-menucito mt-1">#{menu.nombre}</p>
+                        </a>
+                        <div class="dropdown-menu dm-2 example z-depth-1 " >
+                            <ul class="ulMenu">
+                                <ui:repeat value="#{menu.lstSubMenu}" var="subMenu">
+                                    <li class="dropdown-menu-subitem" >
+                                        <h:commandLink class="cmdSubMenu" 
+                                                       rendered="#{subMenu.visible}"
+                                                       onclick="PF('dlgProcesando').show();"
+                                                       action="#{generalController.doNavegacion(menu.idMenu, subMenu.idSubMenu)}" >
+                                            #{subMenu.nombre}
+                                            <f:setPropertyActionListener target="#{generalController.rutaNavegacion}" value="#{subMenu.ruta}" />
+                                        </h:commandLink>      
+                                    </li>
+                                </ui:repeat>
+                            </ul>
+                        </div>
+                    </li>
+                </ui:repeat>
+            </ul>
+        </div>
+    </h:form>
+</ui:composition>

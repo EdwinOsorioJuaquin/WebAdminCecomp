@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="jakarta.faces.facelets">
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+        <title> <ui:insert name="titulo">#{generalController.modulo.titulo}</ui:insert> </title>
+        <link rel="icon" type="image/x-icon" href="../resources/images/favicon.png"/>
+
+        <!-- Font Awesome -->
+        <h:outputStylesheet library="webjars" name="font-awesome/6.5.1/css/fontawesome.css" />
+        <!-- Bootstrap core CSS -->
+        <h:outputStylesheet library="webjars" name="bootstrap/5.3.2/css/bootstrap.css"/>
+        <!-- Material Design Bootstrap CSS -->
+        <h:outputStylesheet library="webjars" name="mdbootstrap/4.20.0/css/mdb.css"/>
+        <!-- Labl Flotante CSS -->
+        <h:outputStylesheet library="css" name="label-flotante.css"/>
+        <!-- Udemsi CSS -->
+        <h:outputStylesheet library="css" name="udemsi.css"/>
+    </h:head>
+    <h:body >
+        <h:form class="form-horizontal ">
+            <div class="container-fluid" >
+                <div class="col-lg-12" style="background-color:  #d82f4b; height: 28px" >
+                    <div class="col-lg-12 hidden-xs">
+                        <p:outputLabel class="ps-2" style="color: white; font-size: 15px; font-weight: bold; " value="UNIDAD DE DESARROLLO, EVALUACION Y MANTENIMIENTO DE SISTEMAS DE INFORMACION - UDEMSI" />
+                    </div>
+                    <div align="center" class="col-xs-12 hidden-lg">
+                        <p:outputLabel class="ps-1" style="color: white; font-size: 15px; font-weight: bold; " value="UDEMSI" />
+                    </div>                    
+                </div>
+                <div class="col-lg-12" style=" height: 10px" />
+                <div align="center" class="col-lg-12 "  >
+                    <div class="col-lg-12" >
+                        <p:graphicImage   name="images/logoUNS.png" 
+                                          class="img-responsive "
+                                          />
+                    </div>
+                </div>
+                <div class="col-lg-12" style=" height: 10px" />
+                <div align="center" class="col-lg-12"  >
+                    <div align="center" class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2" style="padding: 15px; background-color:  #269abc; ">
+                        <div align="center" class="col-xs-12" style="color: white; font-size: 50px" >
+                            <span class="fa fa-exclamation-triangle" style="text-align: center"></span>
+                        </div>
+                        <div class="col-xs-12" >
+                            <p:outputLabel style="color: white; font-weight: bold; font-size: 20px" 
+                                           value="El módulo ya esta operativo, por seguridad la página del módulo solo se puede cargar en una ventana..!" />
+                        </div>
+                        <div class="col-xs-12" style="display: none" >
+                            <p:commandButton id="cmdCerrar"  
+                                             value="CERRAR PAGINA ACTUAL" 
+                                             onclick="cerrarVentana();" 
+                                             styleClass="commandBtnGral2"
+                                             style=" margin: 10px 0px !important; ">
+                            </p:commandButton>
+                            <p:tooltip  for="cmdCerrar" value="Cerrar la página actual" position="bottom" showEffect="clip" hideEffect="clip" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12" style=" height: 5px" />             
+            </div>
+        </h:form>
+        <!-- ///////////////JAVASCRIPTS//////////-->
+        <!--fontawesome-->
+        <h:outputScript name="webjars/font-awesome/6.5.1/js/fontawesome.js"/>
+        <h:outputScript name="webjars/font-awesome/6.5.1/js/solid.js"/>
+        <!--bootstrap-->
+        <h:outputScript name="webjars/bootstrap/5.3.2/js/bootstrap.bundle.js"/>
+        <!--Udemsi functions--> 
+        <h:outputScript name="js/udemsi.js"/>
+    </h:body>
+</html>
+

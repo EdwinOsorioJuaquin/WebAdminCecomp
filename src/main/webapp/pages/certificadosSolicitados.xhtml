@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{certificadoQRController.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+
+        <div align="center" class="card-titulo mb-2">
+            Certificados Solicitados
+        </div>
+
+        <h:form id="frmPendientes" class="form-horizontal h-100">
+            <div class="card-contenido">
+
+                <!-- ===========================
+                     CABECERA
+                ============================ -->
+                <an:seccion cabLabel="Gestión de Certificados" cabLen="col-sm-6" cmdLen="col-sm-6">
+
+                    <an:button cmdValue="Actualizar"
+                               cmdIcon="fa fa-refresh"
+                               cmdClass="bntIconsMedio me-1"
+                               cmdUpdate="@form"
+                               cmdAction="#{certificadoQRController.init()}"/>
+
+                </an:seccion>
+
+                <!-- ===========================
+                     FILTRO
+                ============================ -->
+                <an:input cabValue="Buscar estudiante"
+                          cabLen="col-lg-2"
+                          conLen="col-lg-3"
+                          conRequired="false"
+                          conValue="#{certificadoQRController.strBusqueda}">
+
+                    <f:facet name="extras">
+                        <an:button cmdType="simple"
+                                   cmdValue="Filtrar"
+                                   cmdIcon="fa fa-search"
+                                   cmdClass="bntIconsMedio ms-2"
+                                   cmdUpdate="@form"
+                                   
+                                   cmdAction="#{certificadoQRController.doBuscarPendientes()}"/>
+                    </f:facet>
+                </an:input>
+
+                <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                <!-- ===========================
+                     TABLA
+                ============================ -->
+                <an:table id="tblPendientes"
+                          cabId="dtPendientes"
+                          cabValue="#{certificadoQRController.lstSolicitadosView}"
+                          cabPaginator="true"
+                          cabClass="tablaGeneral">
+
+                    <!-- QR -->
+                    <p:column headerText="QR" width="200" styleClass="text-center">
+
+                        <!-- GENERAR -->
+                        <an:button cmdType="link"
+                                   cmdIcon="fa fa-qrcode text-primary"
+                                   cmdTooltip="Generar QR"
+                                   rendered="#{empty registro.qrBytes}"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{certificadoQRController.generarQR(registro)}"/>
+
+                        <!-- VER -->
+                        <p:commandButton icon="fa fa-eye"
+                                         styleClass="ui-button-rounded ui-button-info ui-button-sm mx-1"
+                                         title="Ver QR"
+                                         rendered="#{not empty registro.qrBytes}"
+                                         update=":frmPendientes:dlgQR"
+                                         action="#{certificadoQRController.seleccionarCertificado(registro)}"
+                                         oncomplete="PF('dlgQR').show()" />
+
+                        <!-- DESCARGAR -->
+                        <p:commandButton icon="fa fa-download"
+                                         styleClass="ui-button-rounded ui-button-success ui-button-sm"
+                                         title="Descargar QR"
+                                         ajax="false"
+                                         rendered="#{not empty registro.qrBytes}"
+                                         action="#{certificadoQRController.seleccionarCertificado(registro)}">
+
+                            <p:fileDownload value="#{certificadoQRController.qrDownload}" />
+                        </p:commandButton>
+
+                    </p:column>
+
+                    <!-- INDEX -->
+                    <p:column width="50" headerText="#" styleClass="text-center">
+                        <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                    </p:column>
+
+                    <!-- DATOS -->
+                    <p:column headerText="Código" width="120">
+                        <an:celda optValue="#{registro.id}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column headerText="Estudiante">
+                        <an:celda optValue="#{registro.estudiante}"/>
+                    </p:column>
+
+                    <p:column headerText="Grupo" width="120">
+                        <an:celda optValue="#{registro.grupo}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column headerText="Curso">
+                        <an:celda optValue="#{registro.curso}"/>
+                    </p:column>
+
+                    <p:column headerText="Reg. Decanatura" width="150">
+                        <an:celda optValue="#{registro.regDecanatura}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column headerText="Modalidad" width="120">
+                        <an:celda optValue="#{registro.modalidad}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column headerText="Procedencia" width="150">
+                        <an:celda optValue="#{registro.procedencia}" comAlign="text-center"/>
+                    </p:column>
+
+                    <!-- FOOTER -->
+                    <f:facet name="footer">
+                        <an:celda txtClass="fw-bold"
+                                  optValue="Total: #{certificadoQRController.lstSolicitadosView.size()}"/>
+                    </f:facet>
+
+                </an:table>
+
+            </div>
+
+            <!-- ===========================
+                 DIALOG QR
+            ============================ -->
+            <p:dialog header="Código QR"
+                      widgetVar="dlgQR"
+                      modal="true"
+                      width="320"
+                      resizable="false">
+
+                <h:panelGroup rendered="#{not empty certificadoQRController.certificadoSeleccionado}">
+
+                    <div style="text-align:center">
+
+                        <p:graphicImage value="#{certificadoQRController.qrPreview}" />
+
+                        <br/><br/>
+
+                        <p:commandButton value="Descargar QR"
+                                         icon="fa fa-download"
+                                         ajax="false">
+                            <p:fileDownload value="#{certificadoQRController.qrDownload}" />
+                        </p:commandButton>
+
+                    </div>
+
+                </h:panelGroup>
+
+            </p:dialog>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

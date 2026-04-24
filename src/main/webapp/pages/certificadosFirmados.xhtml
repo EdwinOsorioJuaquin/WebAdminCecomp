@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                template="/plantilla/plantilla.xhtml">
+
+    <f:metadata>
+        <f:viewAction action="#{certificadoController.doIniciarFirmados()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">Certificados firmados</div>
+
+        <h:form id="frmFirmados" class="form-horizontal h-100">
+            <div id="divPrincipal" class="card-contenido">
+
+                <!-- ===========================
+                     CABECERA / ACCIONES
+                ============================ -->
+                <an:seccion cabLabel="Lista de certificados firmados" cabLen="col-sm-6" cmdLen="col-sm-6">
+                    <an:button cmdValue="Descargar PDF"
+                               cmdIcon="fa fa-fw fa-file-pdf"
+                               cmdClass="bntIconsMedio me-1"
+                               cmdTooltip="Descargar lista en PDF"
+                               cmdUpdate="@form messages"
+                               cmdAction="#{certificadoController.doDescargarFirmados(1)}"/>
+
+                    <an:button cmdValue="Exportar XLS"
+                               cmdIcon="fa fa-fw fa-file-excel"
+                               cmdClass="bntIconsMedio"
+                               cmdTooltip="Exportar lista en Excel"
+                               cmdUpdate="@form messages"
+                               cmdAction="#{certificadoController.doDescargarFirmados(2)}"/>
+                </an:seccion>
+
+                <!-- ===========================
+                     FILTRO
+                ============================ -->
+                <an:input cabValue="Buscar (estudiante/curso)"
+                          cabLen="col-lg-2"
+                          conLen="col-lg-4"
+                          opClass="d-flex"
+                          conValue="#{certificadoController.strBusqueda}"
+                          conRequired="false"
+                          conTooltip="Ingrese un texto para filtrar">
+                    <f:facet name="extras">
+                        <an:button cmdType="simple"
+                                   cmdValue="Filtrar"
+                                   cmdIcon="fa fa-fw fa-search"
+                                   cmdClass="bntIconsMedio ms-2"
+                                   cmdUpdate="@form messages"
+                                   cmdAction="#{certificadoController.doBuscarFirmados()}"/>
+                    </f:facet>
+                </an:input>
+
+                <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                <!-- ===========================
+                     TABLA
+                ============================ -->
+                <an:table id="tblFirmados"
+                          cabId="dtFirmados"
+                          cabValue="#{certificadoController.lstFirmados}"
+                          cabPaginator="true"
+                          cabClass="tablaGeneral">
+
+                    <p:column width="60" headerText="N°" styleClass="text-center">
+                        <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="140" headerText="CÓDIGO" styleClass="text-center" sortBy="#{registro.id}">
+                        <an:celda optValue="#{registro.id}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="320" headerText="ESTUDIANTE" sortBy="#{registro.estudiante}">
+                        <an:celda optValue="#{registro.estudiante}"/>
+                    </p:column>
+
+                    <p:column width="260" headerText="CURSO" sortBy="#{registro.curso}">
+                        <an:celda optValue="#{registro.curso}"/>
+                    </p:column>
+
+                    <p:column width="160" headerText="REG. DECANATURA" styleClass="text-center" sortBy="#{registro.regDecanatura}">
+                        <an:celda optValue="#{registro.regDecanatura}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="140" headerText="MODALIDAD" styleClass="text-center">
+                        <an:celda optValue="#{registro.modalidad}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="170" headerText="PROCEDENCIA" styleClass="text-center">
+                        <an:celda optValue="#{registro.procedencia}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="140" headerText="FIRMA DECANO" styleClass="text-center">
+                        <an:celda optValue="#{registro.firmaDecano}" comAlign="text-center"/>
+                    </p:column>
+
+                    <p:column width="160" headerText="FIRMA DIRECTOR" styleClass="text-center">
+                        <an:celda optValue="#{registro.firmaDirector}" comAlign="text-center"/>
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <an:celda txtClass="fw-bold bg-transparent"
+                                  optValue="Total firmados: #{certificadoController.lstFirmados != null ? certificadoController.lstFirmados.size() : 0}"/>
+                    </f:facet>
+                </an:table>
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,326 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="jakarta.faces.facelets">
+    <f:metadata>
+        <f:viewAction action="#{generalController.doIniciarAplicacion()}"/>
+    </f:metadata>
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+        <title>#{generalController.modulo.titulo}</title>
+        <link rel="icon" type="image/x-icon" href="${facesContext.externalContext.requestContextPath}/resources/images/cecomp.png"/>
+        <!-- Font Awesome -->
+        <h:outputStylesheet library="webjars" name="font-awesome/6.5.1/css/fontawesome.css" />
+        <!-- Bootstrap core CSS -->
+        <h:outputStylesheet library="webjars" name="bootstrap/5.3.2/css/bootstrap.css"/>
+        <!-- Bootstrap icons CSS -->
+        <h:outputStylesheet library="webjars" name="bootstrap-icons/1.11.3/font/bootstrap-icons.css"/>
+        <!-- Material Design Bootstrap CSS -->
+        <h:outputStylesheet library="webjars" name="mdbootstrap/4.20.0/css/mdb.css"/>
+        <!-- Labl Flotante CSS -->
+        <h:outputStylesheet library="css" name="label-flotante.css"/>
+        <!-- Plantilla udemsi CSS -->
+        <h:outputStylesheet library="css" name="plantilla-udemsi.css"/>
+        <!-- Udemsi CSS -->
+        <h:outputStylesheet library="css" name="udemsi.css"/>
+        <style>
+            :root {
+                --colorModuloClaro: #{generalController.modulo.colorClaro};
+                --colorModuloOscuro: #{generalController.modulo.colorOscuro};
+            }
+        </style>
+    </h:head>
+    <h:body class="divBodyLogin" >
+        <p:growl id="messages" skipDetailIfEqualsSummary="true" sticky="false" life="4000"  />
+        <div class="container" >
+            <div class="row d-flex" style="margin-top: auto">
+                <div class="main-login main-center" style="position: relative;">
+                    <h:form id="frmLogueo" class="form-horizontal "  >
+                        <!--panel principal -->
+                        <h:panelGroup id="pgPrincipal" style=""  >
+                            <div>
+                                <div align="center" class="mx-4">
+                                    <div style=" vertical-align: bottom; display: table-cell">
+                                        <p:graphicImage   name="images/cecomp.png" 
+                                                          class="img-responsive "
+                                                          style="width: 100%"  />
+                                    </div>
+                                </div>
+                                <div class="divLinea my-1"/>
+                                <div class="divLogueoModulo my-n1" >
+                                    <div style="vertical-align: middle; display: table-cell; color: #{generalController.modulo.colorOscuro} !important" >
+                                        <h:outputText value="#{generalController.modulo.nombre}" />
+                                    </div>
+                                </div>  
+                                <div class="divLogueoTitulo my-1" style="background-color: #{generalController.modulo.colorOscuro} !important; position: relative;" >
+                                    <div style="vertical-align: middle; display: table-cell; " >
+                                        <h:outputText value="LOGUEO" rendered="#{generalController.modulo.intPanel==0}" />
+                                        <div style=" position: absolute; width: 40px; top: 0px; right: 1px; " >
+                                            <p:commandButton id="cmdInstruccion"  
+                                                             value=""
+                                                             icon="fa fa-commenting fa-2x"
+                                                             styleClass=" bntIconsMensaje"
+                                                             action="#"
+                                                             immediate="true"
+                                                             update="frmInstrucciones"
+                                                             rendered="false"
+                                                             >
+                                            </p:commandButton>
+                                            <p:tooltip id="toolTipInstruccion" for="cmdInstruccion" value="Instrucciones para el usuario" showEffect="clip" hideEffect="clip" position="bottom"/>                                    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Panel logueo de usuario -->
+                            <h:panelGroup id="pgLogueo" >
+                                <div class="form-group row divLoginRow">
+                                    <p:graphicImage id="giUsuario" name="images/usuario.png" class="divLoginImagenRow p-0" />
+                                    <p:outputPanel class="form-label-group divLoginInput p-0" rendered="#{generalController.modulo.intTipo==1}">
+                                        <p:inputText id="itUsuario1" 
+                                                     value="#{generalController.usuario.strUsuario}" 
+                                                     placeholder="INGRESE CODIGO"
+                                                     required="true"
+                                                     maxlength="10" 
+                                                     onkeypress="return solonum(event);"
+                                                     class="form-control input-md w-100 input-float-login text-mayuscula"
+                                                     requiredMessage="Debe ingresar el Código de estudiante"  >
+                                        </p:inputText>
+                                        <p:tooltip id="toolTipUsuario1" for="itUsuario1" value="Ingrese Nombre de Usuario" showEffect="clip" hideEffect="clip" position="bottom"/>
+                                        <p:outputLabel value="INGRESE CÓDIGO" for="itUsuario1" class="output-float-login" style="color: #{generalController.modulo.colorOscuro} ;" ></p:outputLabel>
+                                    </p:outputPanel>  
+                                    <p:outputPanel class="form-label-group divLoginInput p-0" rendered="#{generalController.modulo.intTipo==2}">
+                                        <p:inputText id="itUsuario2" 
+                                                     value="#{generalController.usuario.strUsuario}" 
+                                                     required="true"
+                                                     placeholder="Ingrese Usuario" 
+                                                     maxlength="20" 
+                                                     class="form-control input-md w-100 input-float-login text-mayuscula"
+                                                     requiredMessage="Debe ingresar el nombre de Usuario"  >
+                                        </p:inputText>
+                                        <p:tooltip id="toolTipUsuario2" for="itUsuario2" value="Ingrese Nombre de Usuario" showEffect="clip" hideEffect="clip" position="bottom"/>
+                                        <p:outputLabel value="INGRESE USUARIO" for="itUsuario2"  class="output-float-login" style="color: #{generalController.modulo.colorOscuro} ;" ></p:outputLabel>
+                                    </p:outputPanel>  
+                                </div>
+                                <div class="form-group row divLoginRow">
+                                    <p:graphicImage id="giIdCard" name="images/idcard2.png"  class="divLoginImagenRow p-0"/>
+                                    <p:outputPanel class="form-label-group divLoginInput p-0" rendered="#{generalController.modulo.intTipo==1}">
+                                        <p:inputText id="itSeguridad1" 
+                                                     value="#{generalController.usuario.strSeguridad}" 
+                                                     required="true"
+                                                     placeholder="Ingrese DNI" 
+                                                     maxlength="10" 
+                                                     onkeypress="return solonum(event);"
+                                                     class="form-control input-md w-100 input-float-login text-mayuscula"
+                                                     requiredMessage="Debe ingresar número de DNI">
+                                        </p:inputText>
+                                        <p:tooltip id="toolTipSeguridad1" for="itSeguridad1" value="Ingrese Número de DNI" showEffect="clip" hideEffect="clip" position="bottom"/>
+                                        <p:outputLabel value="INGRESE DNI" for="itSeguridad1"  class="output-float-login" style="color: #{generalController.modulo.colorOscuro} ;" ></p:outputLabel>
+                                    </p:outputPanel>  
+                                    <p:outputPanel class="form-label-group divLoginInput p-0" rendered="#{generalController.modulo.intTipo==2}">
+                                        <p:inputText id="itSeguridad2" 
+                                                     value="#{generalController.usuario.strSeguridad}" 
+                                                     required="true"
+                                                     placeholder="Ingrese IdCard" 
+                                                     maxlength="12" 
+                                                     onkeypress="return solonum(event);"
+                                                     class="form-control input-md w-100 input-float-login"
+                                                     requiredMessage="Debe ingresar número de Tarjeta">
+                                        </p:inputText>
+                                        <p:tooltip id="toolTipSeguridad2" for="itSeguridad2" value="Ingrese Número de Tarjeta (IdCard)" showEffect="clip" hideEffect="clip" position="bottom"/>
+                                        <p:outputLabel value="INGRESE IDCARD" for="itSeguridad2"  class="output-float-login" style="color: #{generalController.modulo.colorOscuro} ;" ></p:outputLabel>
+                                    </p:outputPanel>  
+                                </div>
+                                <div class="form-group row divLoginRow" style="position: relative;">
+                                    <p:graphicImage id="giContraseña" name="images/password.png"  class="divLoginImagenRow p-0" />
+                                    <div class="form-label-group divLoginInput p-0">
+                                        <p:keyboard password="#{!generalController.modulo.blnVerClave}"
+                                                    id="kbClave" 
+                                                    value="#{generalController.usuario.strClave}"
+                                                    placeholder="INGRESE CONTRASEÑA"
+                                                    maxlength="30"
+                                                    required="true" 
+                                                    requiredMessage="Debe ingresar su contraseña personal"
+                                                    closeLabel="Ocultar" 
+                                                    clearLabel="Borrar Todo" 
+                                                    title="TECLADO VIRTUAL" 
+                                                    backspaceLabel="Borrar"  
+                                                    layout="custom" 
+                                                    class="form-control teclado input-float-login"
+                                                    style=" text-transform: none !important;"
+                                                    onkeypress="if (event.keyCode === 13) {
+                                                                rcAcceso();
+                                                                return false;
+                                                            }" 
+                                                    layoutTemplate="1234567890-close,qwertyuiop-shift,asdfghjkl-back,space-zxcvbnm-clear">
+                                        </p:keyboard>
+                                        <p:outputLabel value="INGRESE CONTRASEÑA" for="kbClave" class="output-float-login" style="color: #{generalController.modulo.colorOscuro} ;" ></p:outputLabel>
+                                        <p:tooltip id="toolTipClave" for="kbClave" value="Ingrese Contraseña de Usuario, puede usar el teclado virtual" showEffect="clip" hideEffect="clip" position="bottom"/>
+                                        <p:remoteCommand name="rcAcceso" 
+                                                         update="@form messages" 
+                                                         onstart="PF('dlgProcesando').show();" 
+                                                         oncomplete="PF('dlgProcesando').hide();"
+                                                         action="#{generalController.doLogueo()}" />
+                                        <div style=" position: absolute; width: 40px; top: 2px; right: 6px; margin-right: -4px;" >
+                                            <p:commandButton id="cmdVerClave"  
+                                                             value=""
+                                                             icon="fa-solid fa-eye fa-2x"
+                                                             style="height: 34px !important;"
+                                                             styleClass=" bntIconsMensaje"
+                                                             actionListener="#{generalController.doMostrarClave(generalController.modulo)}"
+                                                             immediate="true"
+                                                             rendered="#{!generalController.modulo.blnVerClave}"
+                                                             update="@form"
+                                                             >
+                                            </p:commandButton>
+                                            <p:tooltip id="ttVerClave" for="cmdVerClave" value="Mostrar Constraseña" showEffect="clip" hideEffect="clip" position="bottom"/>   
+
+                                            <p:commandButton id="cmdOcultarClave"  
+                                                             value=""
+                                                             icon="fa fa-eye-slash fa-2x"
+                                                             styleClass=" bntIconsMensaje"
+                                                             actionListener="#{generalController.doMostrarClave(generalController.modulo)}"
+                                                             immediate="true"
+                                                             rendered="#{generalController.modulo.blnVerClave}"
+                                                             update="@form"
+                                                             >
+                                            </p:commandButton>
+                                            <p:tooltip id="ttOcultarClave" for="cmdOcultarClave" value="Ocultar Constraseña" showEffect="clip" hideEffect="clip" position="bottom"/>   
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p:commandButton id="cmdValidar"  
+                                                     value="VALIDAR ACCESO" 
+                                                     action ="#{generalController.doLogueo()}" 
+                                                     styleClass="bntIconsMedio"  
+                                                     update=":frmInstrucciones messages" 
+                                                     style="height: 60px !important; width: 100%; background: #16578f !important;"
+                                                     onstart="PF('dlgProcesando').show();" 
+                                                     oncomplete="PF('dlgProcesando').hide();">
+                                    </p:commandButton>
+                                    <p:tooltip id="toolTipValidar" for="cmdValidar" value="Click para validar datos" showEffect="clip" hideEffect="clip" position="bottom"/>
+                                </div>
+                            </h:panelGroup>
+                            <!--Pie del logueo -->
+                            <div class="divLogueoPie" >
+                                <div style="vertical-align: middle; display: table-cell; " >
+                                    <h:outputText id="labelPie" value="#{generalController.strServidor[generalController.modulo.intServidor]}@UDEMSI Vr. #{generalController.modulo.version}" />
+                                    <p:tooltip id="toolTipPie" for="labelPie"  value="Unidad de Desarrollo, Evaluación y Mantenimiento de Sistemas de Información" showEffect="clip" hideEffect="clip" position="bottom"/>
+                                </div>
+                            </div>  
+                        </h:panelGroup>
+                    </h:form>
+                    <!--formulario de instrucciones -->
+                    <h:form id="frmInstrucciones" >
+                        <h:panelGroup id="pgInstruccion" style=" height: 100%; " rendered="#{generalController.modulo.blnInstruccion}">
+                            <div style=" position: absolute; max-width: 300px; min-width: 300px; top: 0px; right: 1px; background: black; height: 100%; opacity: 90% " >
+                                <div class="divLogueoTitulo my-1" style="background-color: #{generalController.modulo.colorOscuro} !important; position: relative;" >
+                                    <div style="vertical-align: middle; display: table-cell; font-weight: bold; font-size: 14px;" >
+                                        <h:outputText value="INSTRUCCIONES"  />
+                                    </div>
+                                    <div style=" position: absolute; width: 40px; top: 0px; right: 1px; " >
+                                        <p:commandButton id="cmdInstruccionCerrar"  
+                                                         value=""
+                                                         icon="fa fa-times fa-2x" 
+                                                         styleClass=" bntIconsMensaje"
+                                                         action="#"
+                                                         update="@form" >
+                                        </p:commandButton>
+                                        <p:tooltip id="toolTipInstruccionCerrar" for="cmdInstruccionCerrar" value="Cerrar instrucciones" showEffect="clip" hideEffect="clip" hideEvent="mouseleave click" position="bottom"/>                                    
+                                    </div>
+                                </div>
+                                <h:panelGroup id="pgInstruccionDetalle00" rendered="#{generalController.modulo.intPanel==0}">
+                                    <div class="my-1 mx-2 textoJustificado" style="color: white" >
+                                        <h:outputLabel value="Acceder como estudiante" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Es el acceso para alumnos o ex alumnos, para ello, dar click en el boton INGRESAR COMO ALUMNO, desde donde el sistema te pedirá tu codigo de mátricula, número de DNI y contraseña." />
+
+                                        <h:outputLabel value="Acceder como Trabajador" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Es el acceso para trabajadores de la institución, sean administrativos o docentes, para ello, dar click en el boton INGRESAR COMO TRABAJADOR, desde donde el sistema te pedirá nombre de usuario, número de tarjeta (IdCard) y contraseña." />
+
+                                        <h:outputLabel value="Manual de usuario" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Antes de usar el módulo se recomienda descargar el manual de usuario para aprender su funcionalidad, esto se hace con el botón DESCARGAR MANUAL DE USUARIO." />
+
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup id="pgInstruccionDetalle111" rendered="#{generalController.modulo.intPanel==1 and generalController.modulo.intTipo==1}">
+                                    <div class="my-1 mx-2 textoJustificado text-white" >
+                                        <h:outputLabel value="Acceder al módulo" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Ingresar código de mátricula, número de DNI y contraseña y dar click en el botón VALIDAR ACCESO." />
+                                        <h:outputLabel value="Ejemplo de código: 0201815030"/>
+
+                                        <h:outputLabel value="Volver a seleccionar tipo" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Puede volver a la ventana desde donde se selecciona el tipo de usuario, para ello dar click en el botón VOLVER TIPO." />
+
+                                        <h:outputLabel value="Solicitar nueva contraseña" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Si haz olvidado la contraseña de tu cuenta de usuario, puede solicitar una nueva contraseña al sistema, para ello dar click en el botón NUEVA CONTRASEÑA." />
+
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup id="pgInstruccionDetalle112" rendered="#{generalController.modulo.intPanel==1 and generalController.modulo.intTipo==2}">
+                                    <div class="my-1 mx-2 textoJustificado text-white" >
+                                        <h:outputLabel value="Acceder al módulo" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Ingresar nombre de usuario, número de tarjeta (idCard) y contraseña y dar click en el botón VALIDAR ACCESO." />
+                                        <h:outputLabel value="Ejemplo de usuario: RSOLANOS"/>
+
+                                        <h:outputLabel value="Volver a seleccionar tipo" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Puede volver a la ventana desde donde se selecciona el tipo de usuario, para ello dar click en el botón VOLVER TIPO." />
+
+                                        <h:outputLabel value="Solicitar nueva contraseña" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Si haz olvidado la contraseña de tu cuenta de usuario, puede solicitar una nueva contraseña al sistema, para ello dar click en el botón NUEVA CONTRASEÑA." />
+
+                                        <h:outputLabel value="Solicitar cuenta de usuario" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Si usted no tiene una cuenta de usuario, podrá solicitar una escribiendo a otic@uns.edu.pe, adjuntando imagen legible de su DNI y la copia de la resolución de contrato" />
+
+                                    </div>
+                                </h:panelGroup>
+
+                                <h:panelGroup id="pgInstruccionDetalle120" rendered="#{generalController.modulo.intPanel==2}">
+                                    <div class="my-1 mx-2 textoJustificado text-white" >
+                                        <h:outputLabel value="Código de verificación" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Ingrese su dato de identificacion (Código para alumnos o DNI para trabajadores) y elija el tipo de correo para el envio del mensaje." />
+                                        <h:outputLabel value="Al dar clic en el botón SOLICITAR CODIGO VALIDADOR, el sistema envia un código a su correo elegido (un número de 5 dígitos)." />
+                                        <h:outputLabel value="Si todo esta correcto, le aparecerá una nueva sección en la que deberá colocar su código de verificación." />
+
+                                        <h:outputLabel value="Solicitar Contraseña" style="color: red; font-weight: bold; text-decoration: underline" />
+                                        <h:outputLabel value="Debe ingresar del código de verificación y dar clic en el bóton SOLICITAR NUEVA CONTRASEÑA, el sistema le enviará su nueva contraseña y sus datos de acceso al SIIGAA al correo seleccionado." />
+
+                                    </div>
+                                </h:panelGroup>
+                            </div>
+                        </h:panelGroup>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+        <p:dialog widgetVar="dlgProcesando" 
+                  modal="true" 
+                  draggable="false" 
+                  closable="false" 
+                  class="dialogSinCabecera"
+                  appendTo="@(body)"
+                  resizable="false">
+            <div style="text-align: center; color: White; font-family: tahoma">
+                Procesando...
+                <br></br>
+                <p:graphicImage name="images/procesando.svg" width="30%" height="30%" />
+                <br></br>
+                Espere un momento por favor
+            </div>
+        </p:dialog> 
+        <!-- ///////////////JAVASCRIPTS//////////-->
+        <!--fontawesome-->
+        <h:outputScript name="webjars/font-awesome/6.5.1/js/fontawesome.js"/>
+        <h:outputScript name="webjars/font-awesome/6.5.1/js/solid.js"/>
+        <!--bootstrap-->
+        <h:outputScript name="webjars/bootstrap/5.3.2/js/bootstrap.bundle.js"/>
+        <!--Plantilla udemsi functions--> 
+        <h:outputScript name="js/plantilla-udemsi.js"/>
+        <!--Udemsi functions--> 
+        <h:outputScript name="js/udemsi.js"/>
+    </h:body>
+</html>

@@ -1,0 +1,53 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:composite="http://java.sun.com/jsf/composite"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:h="http://xmlns.jcp.org/jsf/html"
+              xmlns:f="http://xmlns.jcp.org/jsf/core"
+              xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+              xmlns:c="jakarta.tags.core">
+    <composite:interface>
+        <composite:attribute required="false" name="comAlign" default="text-start" />
+        <composite:attribute required="true" name="optValue" targets="jakarta.el.ValueExpression" />
+        <composite:attribute required="false" name="comType" default="texto" shortDescription="tipo de datos:  'indice', 'texto', 'fecha', 'nota', 'promedio', 'moneda', 'estado', 'check', 'select'" /> 
+        <composite:attribute required="false" name="txtActivo" />
+        <composite:attribute required="false" name="txtClass" default="text-start text-uppercase" />
+        <composite:attribute required="false" name="cmdListener" method-signature="void action(jakarta.faces.event.ActionEvent)" />
+        <composite:attribute required="false" name="cmdUpdate"  type="java.lang.String" />
+    </composite:interface>
+    <composite:implementation>
+        <div class="#{cc.attrs.comAlign}">
+            <h:outputText value="#{cc.attrs.optValue}" rendered="#{cc.attrs.comType eq 'indice'}" class="#{cc.attrs.txtClass}" >
+                <f:convertNumber type="number" groupingUsed="true" minFractionDigits="0" pattern="#00"/>
+            </h:outputText>
+            <h:outputText value="#{cc.attrs.optValue}" rendered="#{cc.attrs.comType eq 'texto'}"  class="#{cc.attrs.txtClass}"/>
+            <h:outputText value="#{cc.attrs.optValue}" rendered="#{cc.attrs.comType eq 'fecha'}"  class="#{cc.attrs.txtClass}">
+                <f:convertDateTime pattern = "dd/MM/yyyy" />
+            </h:outputText> 
+            <h:outputText value="#{cc.attrs.optValue}" rendered="#{cc.attrs.comType eq 'nota'}"  class="#{cc.attrs.txtClass}">
+                <f:convertNumber type="number" groupingUsed="true" minFractionDigits="1" pattern="#00.0"/>
+            </h:outputText>            
+            <h:outputText value="#{cc.attrs.optValue}" rendered="#{cc.attrs.comType eq 'promedio'}"  class="#{cc.attrs.txtClass}">
+                <f:convertNumber type="number" groupingUsed="true" minFractionDigits="3" pattern="#00.000"/>
+            </h:outputText>     
+            <h:outputText value="#{cc.attrs.optValue}" rendered="#{cc.attrs.comType eq 'moneda'}"  class="#{cc.attrs.txtClass}">
+                <f:convertNumber currencySymbol="S/ " type="currency"/>
+            </h:outputText>             
+            <h:outputText value="#{cc.attrs.optValue}" 
+                          class="#{cc.attrs.txtClass} badge rounded-pill #{cc.attrs.txtActivo eq 'TRUE' ? 'bg-success' : 'bg-danger'}" 
+                          style="padding-top: 6px;" 
+                          rendered="#{cc.attrs.comType eq 'estado'}" />
+            <p:outputPanel rendered="#{ cc.attrs.comType eq 'check'}" class="px-0" >
+                <p:selectBooleanCheckbox value="#{cc.attrs.optValue}" class="sbcTablaItem #{cc.attrs.txtClass}"  >
+                    <p:ajax listener="#{cc.attrs.cmdListener}" update="#{cc.attrs.cmdUpdate}" rendered="#{not empty cc.attrs.cmdListener}" />
+                </p:selectBooleanCheckbox>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{ cc.attrs.comType eq 'select'}" class="px-0" >
+                <p:selectOneMenu value="#{cc.attrs.optValue}" 
+                                 class="SelectCursos">
+                    <p:ajax listener="#{cc.attrs.cmdListener}" update="#{cc.attrs.cmdUpdate}" rendered="#{not empty cc.attrs.cmdListener}" />
+                    <composite:insertChildren/>
+                </p:selectOneMenu>
+            </p:outputPanel>
+        </div>
+    </composite:implementation>
+</ui:component>

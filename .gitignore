@@ -1,0 +1,17 @@
+# Java
+*.class
+*.log
+*.war
+*.ear
+target/
+build/
+
+# IDEs
+*.iml
+.idea/
+.vscode/
+nbproject/private/
+
+# OS
+.DS_Store
+Thumbs.db

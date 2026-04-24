@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+    <f:metadata>
+        <f:viewAction action="#{asignacionController.doIniciarPagina()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">gestionar asignaciones</div>
+        <h:form id="frmPrincipal" class="form-horizontal h-100">
+            <div id="divPrincipal" class="card-contenido">
+                <!-- ========================================
+                     VISTA 1: LISTA DE ASIGNACIONES DE GRUPOS
+                ========================================= -->
+                <h:panelGroup id="pngLista" rendered="#{asignacionController.strValor eq 'LISTA'}">
+                    <an:seccion cabLabel="Lista de Asignaciones" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-fw fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdTooltip="Volver al menú principal"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{asignacionController.doVolver()}"/>
+
+                        <an:button cmdValue="Buscar"
+                                   cmdIcon="fa fa-fw fa-search-plus"
+                                   cmdClass="bntIconsMedio"
+                                   cmdTooltip="Buscar asignaciones"
+                                   cmdUpdate="@form messages"
+                                   cmdAction="#{asignacionController.doBuscar()}"/>
+                    </an:seccion>
+                    <an:input cabValue="Búsqueda por Nombre"
+                              cabLen="col-lg-2"
+                              opClass="d-flex "
+                              conValue="#{asignacionController.strBusquedaLista}"
+                              conTooltip="Ingrese nombre del docente o grupo"
+                              conRequired="false">
+                        <f:facet name="extras">
+                            <an:button cmdType="simple"
+                                       cmdValue="Filtrar"
+                                       cmdIcon="fa fa-search"
+                                       cmdClass="bntIconsMedio ms-2"
+                                       cmdUpdate="@form messages"
+                                       cmdOnStart="PF('dlgProcesando').show();"
+                                       cmdOnComplete="PF('dlgProcesando').hide();"
+                                       cmdAction="#{asignacionController.doBuscar()}"/>
+                        </f:facet>
+                    </an:input>
+                    <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                    <!-- TABLA DE ASIGNACIONES -->
+                    <an:table cabId="tblAsignaciones"
+                              cabValue="#{asignacionController.lstAsignacionesView}"
+                              cabPaginator="true"
+                              cabClass="tablaGeneral">
+                        <p:column width="180" headerText="LISTA DE ALUMNOS" styleClass="text-center">
+                            <an:button cmdType="link"
+                                    cmdIcon="fa fa-users text-primary"
+                                    cmdValue="Alumnos"
+                                    cmdTooltip="Ver alumnos del grupo"
+                                    cmdUpdate="@form"
+                                    cmdAction="#{asignacionController.doVerDetalle(registro)}"/>
+
+                         </p:column>
+                        <p:column width="60" headerText="NRO" styleClass="text-center">
+                            <an:celda comType="indice"
+                                      optValue="#{row + 1}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <p:column width="120" headerText="GRUPO" styleClass="text-center">
+                            <an:celda optValue="#{registro.grupo}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <p:column width="300" headerText="DOCENTE">
+                            <an:celda optValue="#{registro.docente}"/>
+                        </p:column>
+                        <p:column width="150" headerText="FECHA DE INICIO" styleClass="text-center">
+                            <an:celda optValue="#{registro.fechaInicio}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <p:column width="150" headerText="FECHA DE FIN" styleClass="text-center">
+                            <an:celda optValue="#{registro.fechaFin}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <p:column width="150" headerText="HORARIO" styleClass="text-center">
+                            <an:celda optValue="#{registro.horario}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <p:column width="150" headerText="DÍAS" styleClass="text-center">
+                            <an:celda optValue="#{registro.dias}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"
+                                      optValue="Total de asignaciones: #{asignacionController.lstAsignacionesView != null ? asignacionController.lstAsignacionesView.size() : 0}"/>
+                        </f:facet>
+                    </an:table>
+                </h:panelGroup>
+
+                <!-- ==========================================
+                     VISTA 2: LISTA DE ALUMNOS POR GRUPO
+                =========================================== -->
+                <h:panelGroup id="pngDetalle" rendered="#{asignacionController.strValor eq 'DETALLE'}">
+                    <an:seccion cabLabel="Lista de alumnos del grupo #{asignacionController.grupoSeleccionado.grupo}"
+                                cabLen="col-sm-6"
+                                cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-fw fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdTooltip="Volver a la lista de asignaciones"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{asignacionController.doVolver()}"/>
+                        <an:button cmdValue="Buscar"
+                                   cmdIcon="fa fa-fw fa-search-plus"
+                                   cmdClass="bntIconsMedio"
+                                   cmdTooltip="Buscar alumno"
+                                   cmdUpdate="@form messages"
+                                   cmdAction="#{asignacionController.doBuscar()}"/>
+                    </an:seccion>
+                    <an:input cabValue="Búsqueda"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{asignacionController.strBusquedaDetalle}"
+                              conTooltip="Buscar por nombre de alumno"
+                              conRequired="false"/>
+                    <an:extra comType="separadorSimple" comClass="my-2"/>
+                    <an:table cabId="tblAlumnos"
+                              cabValue="#{asignacionController.lstAlumnosView}"
+                              cabPaginator="false"
+                              cabClass="tablaGeneral">
+                        <p:column width="60" headerText="NRO" styleClass="text-center">
+                            <an:celda comType="indice"
+                                      optValue="#{row + 1}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <p:column width="300" headerText="ESTUDIANTE">
+                            <an:celda optValue="#{registro.nombre}"/>
+                        </p:column>
+                        <p:column width="150" headerText="DNI" styleClass="text-center">
+                            <an:celda optValue="#{registro.dni}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <p:column width="150" headerText="TELÉFONO" styleClass="text-center">
+                            <an:celda optValue="#{registro.telefono}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <p:column width="300" headerText="CORREO ELECTRÓNICO">
+                            <an:celda optValue="#{registro.correo}"/>
+                        </p:column>
+                        <p:column width="120" headerText="NOTA FINAL" styleClass="text-center">
+                            <an:celda optValue="#{registro.notaFinal}"
+                                      comType="nota"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <p:column width="150" headerText="ESTADO" styleClass="text-center">
+                            <an:celda optValue="#{registro.estado}"
+                                      comType="estado"
+                                      txtActivo="#{registro.estado eq 'APROBADO' ? 'TRUE' : 'FALSE'}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"
+                                      optValue="Total de alumnos: #{asignacionController.lstAlumnosView != null ? asignacionController.lstAlumnosView.size() : 0}"/>
+                        </f:facet>
+
+                    </an:table>
+                </h:panelGroup>
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

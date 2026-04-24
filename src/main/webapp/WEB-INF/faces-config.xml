@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="4.1"
+              xmlns="https://jakarta.ee/xml/ns/jakartaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_1.xsd">
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>acceso.ok</from-outcome>
+            <to-view-id>/bienvenido.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>acceso.error</from-outcome>
+            <to-view-id>/login.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>certificado.validar</from-outcome>
+            <to-view-id>/validarCertificado.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>usuarios.alumnos</from-outcome>
+            <to-view-id>/pages/gestionarAlumnos.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>gestionar.cursos</from-outcome>
+            <to-view-id>/pages/gestionarCursos.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>gestionar.fichas</from-outcome>
+            <to-view-id>/pages/gestionarFichas.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>gestionar.pagos</from-outcome>
+            <to-view-id>/pages/gestionarPagos.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>gestionar.asignaciones</from-outcome>
+            <to-view-id>/pages/gestionarAsignaciones.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>gestionar.grupos</from-outcome>
+            <to-view-id>/pages/gestionarGrupos.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>gestionar.tiposdepago</from-outcome>
+            <to-view-id>/pages/gestionarTipoPago.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>gestionar.notas</from-outcome>
+            <to-view-id>/pages/gestionarNotas.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        
+        
+        <!-- ==========================
+            CERTIFICADOS - SOLICITADOS Y PENDIENTES
+        =========================== -->
+        <navigation-case>
+            <from-outcome>certificados.solicitados</from-outcome>
+            <to-view-id>/pages/certificadosSolicitados.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>certificados.pendientes</from-outcome>
+            <to-view-id>/pages/certificadosPendientes.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <!-- ==========================
+             CERTIFICADOS - FIRMADOS
+        =========================== -->
+        <navigation-case>
+            <from-outcome>certificados.firmados</from-outcome>
+            <to-view-id>/pages/certificadosFirmados.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <!-- ==========================
+             CERTIFICADOS - GENERAR TOKEN
+        =========================== -->
+        <navigation-case>
+            <from-outcome>certificados.generartoken</from-outcome>
+            <to-view-id>/pages/certificadosToken.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <!-- ==========================
+             CERTIFICADOS - REGISTRO DECANATURA
+        =========================== -->
+        <navigation-case>
+            <from-outcome>certificados.registrosdecanatura</from-outcome>
+            <to-view-id>/pages/certificadosRegistroDecanatura.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>reportes.certificados</from-outcome>
+            <to-view-id>/pages/reportesCertificados.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>reportes.tokens</from-outcome>
+            <to-view-id>/pages/reportesTokens.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+    </navigation-rule>
+    
+</faces-config>

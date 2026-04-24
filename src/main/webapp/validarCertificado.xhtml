@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+<h:head>
+    <title>Validación de Certificado</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+        }
+
+        .header {
+            background: #d50000;
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .subheader {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 6px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .valido {
+            background: #c8e6c9;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .invalido {
+            background: #ffcdd2;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .seccion {
+            background: #ccc;
+            padding: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 8px;
+            padding: 10px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .valor {
+            background: #eee;
+            padding: 5px;
+            border-radius: 3px;
+        }
+    </style>
+
+</h:head>
+
+<h:body>
+
+<f:metadata>
+    <f:viewAction action="#{validarCertificadoController.init()}"/>
+</f:metadata>
+
+<!-- HEADER -->
+<div class="header">WEB CERTIFICADO - CECOMP</div>
+<div class="subheader">VALIDADOR DE DOCUMENTOS</div>
+
+<div class="container">
+
+    <!-- ESTADO -->
+    <h:panelGroup rendered="#{not empty validarCertificadoController.certificado}">
+        <div class="valido">✔ DOCUMENTO VÁLIDO</div>
+    </h:panelGroup>
+
+    <h:panelGroup rendered="#{empty validarCertificadoController.certificado}">
+        <div class="invalido">✖ DOCUMENTO NO VÁLIDO</div>
+    </h:panelGroup>
+
+    <!-- DATOS -->
+    <h:panelGroup rendered="#{not empty validarCertificadoController.certificado}">
+
+        <!-- DATOS ACADÉMICOS -->
+        <div class="seccion">DATOS ACADÉMICOS</div>
+
+        <div class="grid">
+            <div class="label">CÓDIGO:</div>
+            <div class="valor">#{validarCertificadoController.certificado.id}</div>
+
+            <div class="label">NOMBRES:</div>
+            <div class="valor">#{validarCertificadoController.certificado.estudiante}</div>
+
+            <div class="label">CURSO:</div>
+            <div class="valor">#{validarCertificadoController.certificado.curso}</div>
+
+            <div class="label">NOTA:</div>
+            <div class="valor">#{validarCertificadoController.certificado.nota}</div>
+
+            <div class="label">ESTADO:</div>
+            <div class="valor">
+                #{validarCertificadoController.certificado.nota >= 11 ? 'APROBADO' : 'DESAPROBADO'}
+            </div>
+        </div>
+
+        <!-- DATOS DOCUMENTO -->
+        <div class="seccion">DATOS DEL DOCUMENTO</div>
+
+        <div class="grid">
+            <div class="label">TIPO:</div>
+            <div class="valor">CERTIFICADO DE CURSOS CECOMP</div>
+
+            <div class="label">N° DOCUMENTO:</div>
+            <div class="valor">#{validarCertificadoController.certificado.regDecanatura}</div>
+
+            <div class="label">FECHA EMISIÓN:</div>
+            <div class="valor">#{validarCertificadoController.fechaActual}</div>
+
+            <div class="label">MODALIDAD:</div>
+            <div class="valor">#{validarCertificadoController.certificado.modalidad}</div>
+
+            <div class="label">PROCEDENCIA:</div>
+            <div class="valor">#{validarCertificadoController.certificado.procedencia}</div>
+        </div>
+
+    </h:panelGroup>
+
+</div>
+
+</h:body>
+</html>

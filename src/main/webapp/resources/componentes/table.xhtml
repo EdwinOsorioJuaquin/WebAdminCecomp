@@ -1,0 +1,36 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:composite="http://java.sun.com/jsf/composite"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:h="http://xmlns.jcp.org/jsf/html"
+              xmlns:f="http://xmlns.jcp.org/jsf/core"
+              xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <composite:interface>
+        <composite:attribute required="false" name="cabId" default="comTable" />
+        <composite:attribute required="true" name="cabValue" />
+        <composite:attribute required="false" name="cabPaginator" default="false" />
+        <composite:attribute required="false" name="cabLen" default="col-lg-12" />
+        <composite:attribute required="false" name="cabClass" default="tablaGeneral" />
+        <!-- Nuevo: permitimos un facet externo llamado "footer" -->
+        <composite:facet name="footer" />
+    </composite:interface>
+    <composite:implementation>
+        <div class="form-group row d-flex ">
+            <div align="center" class="#{cc.attrs.cabLen} mx-auto"> 
+                <p:dataTable id="#{cc.attrs.cabId}"
+                             styleClass="table table-hover #{cc.attrs.cabClass}"
+                             scrollable="false"
+                             value="#{cc.attrs.cabValue}" 
+                             var="registro"
+                             rowStyleClass="tablaBorde"  
+                             emptyMessage="No existe registros para mostrar"
+                             paginator="#{cc.attrs.cabPaginator}"
+                             rows="15"
+                             rowIndexVar="row">
+                    <composite:insertChildren/>
+                    <!-- Mostrar facet si se define -->
+                    <composite:insertFacet name="footer" />
+                </p:dataTable>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:component>

@@ -1,0 +1,29 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:composite="http://java.sun.com/jsf/composite"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:h="http://xmlns.jcp.org/jsf/html"
+              xmlns:f="http://xmlns.jcp.org/jsf/core"
+              xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+              xmlns:c="jakarta.tags.core">
+    <composite:interface>
+        <composite:attribute required="false" name="comType" default="separadorSimple" shortDescription="Tipo de item: 'separadorIcon', 'separadorSimple' " />
+        <composite:attribute required="false" name="comIcon" default="pi pi-file-edit" shortDescription="Icono a mostrar " />
+        <composite:attribute required="false" name="comTexto" default="Ingresar Datos:" shortDescription="Texto a mostrar " />
+        <composite:attribute required="false" name="comAlign" default="left" shortDescription="Alineación del texto e icono" />
+        <composite:attribute required="false" name="comClass" default="my-0"  />
+    </composite:interface>
+    <composite:implementation>
+        <c:if test="#{ cc.attrs.comType eq 'separadorIcon'}" >
+            <p:divider align="#{cc.attrs.comAlign}" class="#{cc.attrs.comClass} ps-2" >
+                <div class="inline-flex align-items-center" style="color: var(--colorModuloOscuro)">
+                    <i class="#{cc.attrs.comIcon} mr-1"/>
+                    #{cc.attrs.comTexto}
+                </div>
+            </p:divider>
+        </c:if>
+        <c:if test="#{ cc.attrs.comType eq 'separadorSimple'}" >
+            <p:divider align="#{cc.attrs.comAlign}" class="#{cc.attrs.comClass} " >
+            </p:divider>
+        </c:if>
+    </composite:implementation>
+</ui:component>

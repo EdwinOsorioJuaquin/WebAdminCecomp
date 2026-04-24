@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets">
+    <div class="row" style=" color: #d82f4b;margin-top: -5px; margin-left: 5px; margin-right: 5px">
+        <div class="col-sm-6 hidden-xs text-left">
+            <h style="font-weight: bold">V.</h> <h:outputText value="#{generalController.modulo.version}" style="text-transform: uppercase"/>&nbsp;&nbsp;&nbsp;
+            <h style="font-weight: bold">Server:</h> Producción &nbsp;&nbsp;&nbsp;
+            <h style="font-weight: bold"> User: </h> <h:outputText value="#{generalController.usuario.strUsuario}" style="text-transform: uppercase"/>
+        </div>                
+        <div class="col-sm-6 text-right" style="font-weight: bold">
+            <h >Nuevo Chimbote </h><h:outputText value="#{generalController.framework.doFechaSistemaLetras()}"/>
+        </div>   
+    </div>
+</ui:composition>

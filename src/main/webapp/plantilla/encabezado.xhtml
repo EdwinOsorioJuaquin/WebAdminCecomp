@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <h:form>
+        <p:tooltip  showEffect="clip" hideEffect="clip" />
+        <nav class="navbar navbar-dark navbar-toggleable-md navbar-expand-lg fixed-top scrolling-navbar double-nav cabeceraPral" style="background: #{generalController.modulo.colorClaro}">
+            <!-- Navbar brand -->
+            <div class="navbar-brand">
+                <!-- Breadcrumb-->
+                <div class="breadcrumbs breadcrumb-dn mr-auto cabeceraLogo" style="background: #{generalController.modulo.colorOscuro}">
+                    <div id="divMenu" class="float-start" data-toggle="tooltip"  title="Menú General">
+                        <a id="btnMenu" class="button-collapse" >
+                            <i class="fas fa-bars menu-color menu-icono" style="display: block;"></i>
+                        </a>
+                    </div>
+                    <img src="${facesContext.externalContext.requestContextPath}/resources/images/imagotipo_udemsi_siigaa_white.png" height="40" class="d-inline-block align-top logo-udemsi"
+                         alt="" />
+                </div>
+                <!--/. Breadcrumb-->
+                <p class="h5 black-text nom-mod font-weight-bolder d-none d-xl-block cabeceraTitulo">#{generalController.modulo.cabecera} </p>
+            </div>
+            <!-- Collapsible content -->
+            <ul class="navbar-nav ms-auto nav-flex-icons h-100">
+                <li class="nav-item dropdown avatar d-xl-none" id="myDD" data-toggle="tooltip" title="Perfil de usuario">
+                    <a class="nav-link p-0 dropdown-toggle" id="navbarDropdownMenuLink" style="padding-top: 0.1rem !important;" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <img src="${facesContext.externalContext.requestContextPath} #{resource['images:avatar_bot.jpg']}" class="rounded-circle z-depth-0 mt-1 me-1" alt="avatar image" width="32" height="37"/>
+                    </a>
+                    <div id="dm" class="dropdown-menu dropdown-menu-right dropdown-default example z-depth-1-half"
+                         aria-labelledby="navbarDropdownMenuLink">
+                        <div class="container-fluid">
+                            <div class="avatar mx-auto text-center">
+                                <img src="${facesContext.externalContext.requestContextPath}/resources/images/avatar_bot.jpg" height="100" class="rounded-circle"/>
+                                <p class="mt-1 mb-1 white-text">#{generalController.usuario.strNombreCompleto}</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li id="liActualizar" class="nav-item " >
+                    <p:commandButton id="cmdActualizar"  
+                                     icon="fa fa-rotate"
+                                     ajax="false"
+                                     onclick="javascript:location.reload()"
+                                     class="btnCerrarSesion2"  
+                                     style="border-radius: 19px !important;height: 37px !important;">
+                    </p:commandButton>
+                    <p:tooltip  for="cmdActualizar" value="Actualizar Página" showEffect="clip" hideEffect="clip"/>
+                </li>
+                <li class="nav-item d-none d-sm-block" >
+                    <p:commandButton id="cmdCerrarSesion"  
+                                     icon="fa fa-sign-out"
+                                     value="CERRAR SESION" 
+                                     ajax="false"
+                                     onclick="limpiarStorage()"
+                                     action ="#{generalController.doSalir()}" 
+                                     class="btnCerrarSesion"  
+                                     style="border-radius: 0px !important; background: #{generalController.modulo.colorOscuro}">
+                    </p:commandButton>
+                    <p:tooltip  for="cmdCerrarSesion" value="Cerrar sesion de usuario" showEffect="clip" hideEffect="clip" />
+                </li>
+                <li class="nav-item d-block d-sm-none">
+                    <p:commandButton id="cmdCerrarSesion2"  
+                                     icon="fa fa-sign-out"
+                                     ajax="false"
+                                     onclick="limpiarStorage()"
+                                     action ="#{generalController.doSalir()}" 
+                                     class="btnCerrarSesion2"  
+                                     style="border-radius: 19px !important;height: 37px !important;">
+                    </p:commandButton>
+                    <p:tooltip  for="cmdCerrarSesion2" value="Cerrar sesion de usuario" showEffect="clip" hideEffect="clip"/>
+                </li>
+            </ul>
+        </nav>
+    </h:form>
+</ui:composition>

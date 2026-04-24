@@ -1,0 +1,185 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:composite="http://java.sun.com/jsf/composite"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:h="http://xmlns.jcp.org/jsf/html"
+              xmlns:f="http://xmlns.jcp.org/jsf/core"
+              xmlns:c="jakarta.tags.core"
+              xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <composite:interface>
+        <composite:attribute required="false" name="comVisible" default="true" />
+        <composite:attribute required="false" name="comType" shortDescription="tipo de comando: 'texto', 'select', 'fecha', 'many', 'boolean', 'booleans' " default="texto"/>
+        <composite:attribute required="true" name="cabValue" />
+        <composite:attribute required="false" name="cabLen" default="col-lg-2" />
+        <composite:attribute required="false" name="conLen" default="col-lg-6" />
+        <composite:attribute required="false" name="opVisible" default="true" />
+        <composite:attribute required="false" name="conId" default="comInput" />
+        <composite:attribute required="true" name="conValue" />
+        <composite:attribute required="false" name="conTooltip" default="" />
+        <composite:attribute required="false" name="conClass" />
+        <composite:attribute required="false" name="conStyle" />
+        <composite:attribute required="false" name="conPanel" default="#{cc.attrs.comType eq 'texto' ? 'form-label-group' : 'panel-float-label'}"  />
+        <composite:attribute required="false" name="conRequired" default="true" type="java.lang.Boolean"/>
+        <composite:attribute required="false" name="conRequiredMessage" default="Falta ingresar #{cc.attrs.cabValue}" />
+        <composite:attribute required="false" name="conSelectItem" default="true" type="java.lang.Boolean"/>
+        <composite:attribute required="false" name="conConverter" default="true" type="java.lang.Boolean" shortDescription="Si se usará el selectOneMenuConverter entonces no poner nada sino poner false" />
+        <composite:attribute required="false" name="conOnkeypress" default="if (event.keyCode === 13) {return false;}" />
+        <composite:attribute required="false" name="conFilter" type="java.lang.Boolean" default="false"  />
+        <composite:attribute required="false" name="conMaxlength" default="150" />
+        <composite:attribute required="false" name="opClass" />
+        <composite:attribute required="false" name="conValidator"  />
+        <composite:attribute required="false" name="valTipo"  default="correo" shortDescription="Tipo de validacion: por defecto 'correo' " />
+        <composite:clientBehavior name="change" event="change" targets="#{cc.attrs.conId}"/>
+        <composite:clientBehavior name="blur" event="blur" targets="#{cc.attrs.conId}"/>
+        <composite:clientBehavior name="keyup" event="keyup" targets="#{cc.attrs.conId}"/>
+        <!-- Facet para componentes externos como botones -->
+        <composite:facet name="extras"/>
+    </composite:interface>
+    <composite:implementation>
+        <p:outputPanel rendered="#{cc.attrs.comVisible}" class="p-0">
+            <div class="form-group row d-flex px-2">
+                <h:outputText value="#{cc.attrs.cabValue}:" class="control-label #{cc.attrs.cabLen} d-none d-lg-block"/> 
+                <p:outputPanel id="opInput" 
+                               rendered="#{cc.attrs.opVisible}"
+                               class="#{cc.attrs.conPanel} #{cc.attrs.conLen} px-0 h-100 #{cc.attrs.comType eq 'many' ? 'pt-3 ps-2' : ''} #{cc.attrs.opClass}" >
+                    <!--/////////////////////////////Input tipo combo-->
+                    <c:if test="#{cc.attrs.comType eq 'select' }">
+                        <c:if test="#{cc.attrs.conConverter}">  
+                            <p:selectOneMenu id="#{cc.attrs.conId}" 
+                                             value="#{cc.attrs.conValue}"  
+                                             converter="selectOneMenuConverter"
+                                             class="select-float-label px-1 w-100 text-uppercase #{cc.attrs.conClass}"
+                                             style="#{cc.attrs.conStyle}"
+                                             filter="#{cc.attrs.conFilter}"
+                                             filterMatchMode="contains"
+                                             required="#{cc.attrs.conRequired}"
+                                             requiredMessage="#{cc.attrs.conRequiredMessage}">
+                                /////////////////////////////////////////////////
+                                <c:if test="#{cc.attrs.conSelectItem}">                        
+                                    <f:selectItem itemLabel="- Seleccione -" itemValue="" noSelectionOption="true" />
+                                </c:if>
+                                <!--Insercion de hijos-->
+                                <composite:insertChildren/>
+                            </p:selectOneMenu>  
+                        </c:if>
+                        <c:if test="#{!cc.attrs.conConverter}">  
+                            <p:selectOneMenu id="#{cc.attrs.conId}" 
+                                             value="#{cc.attrs.conValue}"  
+                                             class="select-float-label px-1 w-100 text-uppercase #{cc.attrs.conClass}"
+                                             style="#{cc.attrs.conStyle}"
+                                             required="#{cc.attrs.conRequired}"
+                                             requiredMessage="#{cc.attrs.conRequiredMessage}">
+                                <!-- /////////////////////////////////////////////////-->
+                                <c:if test="#{cc.attrs.conSelectItem}">                        
+                                    <f:selectItem itemLabel="- Seleccione -" itemValue="" noSelectionOption="true" />
+                                </c:if>
+                                <!--Insercion de hijos-->
+                                <composite:insertChildren/>
+                            </p:selectOneMenu>             
+                        </c:if>
+                    </c:if>
+                    <!--/////////////////////////////Input tipo Calendar es decir para fechas-->
+                    <c:if test="#{cc.attrs.comType eq 'fecha' }">
+                        <p:calendar id="#{cc.attrs.conId}"
+                                    value="#{cc.attrs.conValue}"
+                                    pattern="dd-MM-yyyy"
+                                    locale="es"
+                                    mask="true"
+                                    class="#{cc.attrs.conClass}"
+                                    style="#{cc.attrs.conStyle}"
+                                    required="#{cc.attrs.conRequired}"
+                                    requiredMessage="#{cc.attrs.conRequiredMessage}"
+                                    showOn="button">
+                            <!--Insercion de hijos-->
+                            <composite:insertChildren/>
+                        </p:calendar>
+                    </c:if>
+					 <!--/////////////////////////////Input tipo Calendar es decir para horas-->
+                    <c:if test="#{cc.attrs.comType eq 'hora'}">
+                        <p:calendar id="#{cc.attrs.conId}"
+                                    value="#{cc.attrs.conValue}"
+                                    pattern="HH:mm"
+                                    locale="es"
+                                    mask="true"
+                                    timeOnly="true"
+                                    class="#{cc.attrs.conClass}"
+                                    style="#{cc.attrs.conStyle}"
+                                    required="#{cc.attrs.conRequired}"
+                                    requiredMessage="#{cc.attrs.conRequiredMessage}"
+                                    showOn="button">
+                            <!--Insercion de hijos-->
+                            <composite:insertChildren/>
+                        </p:calendar>
+                    </c:if>
+                    <!--/////////////////////////////Input tipo Texto -->
+                    <c:if test="#{cc.attrs.comType eq 'texto' }">
+                        <p:inputText id="#{cc.attrs.conId}"
+                                     widgetVar="w#{cc.attrs.conId}"
+                                     value="#{cc.attrs.conValue}"
+                                     onkeypress="#{cc.attrs.conOnkeypress}"
+                                     placeholder=""
+                                     onblur="this.value = this.value.trim();"
+                                     validatorMessage="#{cc.attrs.conValidator}"
+                                     maxlength="#{cc.attrs.conMaxlength}"
+                                     class="form-control input-md align-items-end w-100 input-float text-uppercase #{cc.attrs.conClass}"
+                                     style="#{cc.attrs.conStyle}"
+                                     required="#{cc.attrs.conRequired}"
+                                     requiredMessage="#{cc.attrs.conRequiredMessage}">
+                            <c:if test="#{not empty cc.attrs.conValidator }">
+                                <f:validateRegex  pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" rendered="#{cc.attrs.valTipo eq 'correo'}" />
+                                <p:ajax event="blur" update="messages" />
+                            </c:if>
+                            <!--Insercion de hijos-->
+                            <composite:insertChildren/>
+                        </p:inputText>
+                    </c:if>  
+                    <!--/////////////////////////////Input tipo many (p:selectManyCheckbox) -->
+                    <c:if test="#{cc.attrs.comType eq 'many' }">
+                        <p:selectManyCheckbox id="#{cc.attrs.conId}"
+                                              value="#{cc.attrs.conValue}"
+                                              converter="selectOneMenuConverter"
+                                              class="select-float-label px-1 w-100 text-uppercase #{cc.attrs.conClass}"
+                                              style="#{cc.attrs.conStyle}"
+                                              layout="grid"
+                                              columns="1"
+                                              required="#{cc.attrs.conRequired}"
+                                              requiredMessage="#{cc.attrs.conRequiredMessage}">
+                            <!--Insercion de hijos-->
+                            <composite:insertChildren/>
+                        </p:selectManyCheckbox>
+                    </c:if>    
+                    <!--/////////////////////////////Input tipo boolean (p:selectBooleanButton) -->
+                    <c:if test="#{cc.attrs.comType eq 'boolean' }">
+                        <p:selectBooleanButton id="#{cc.attrs.conId}"
+                                               value="#{cc.attrs.conValue}" 
+                                               onLabel="SI" 
+                                               offLabel="NO" 
+                                               onIcon="pi pi-check" 
+                                               offIcon="pi pi-times" >
+                            <p:ajax event="change" update="opInput" />
+                            <!--Insercion de hijos-->
+                            <composite:insertChildren/>
+                        </p:selectBooleanButton>
+                    </c:if>
+                    <!--/////////////////////////////Input tipo booleans (p:toggleSwitch) -->
+                    <c:if test="#{cc.attrs.comType eq 'booleans' }">
+                        <p:toggleSwitch id="#{cc.attrs.conId}"
+                                        value="#{cc.attrs.conValue}" 
+                                        class="switch_float mb-1"
+                                        onIcon="pi pi-check" 
+                                        offIcon="pi pi-times" >
+                            <!--Insercion de hijos-->
+                            <composite:insertChildren/>
+                        </p:toggleSwitch>
+                    </c:if>                   
+                    <!-- Componentes como botones, iconos, etc. van fuera -->
+                    <composite:renderFacet name="extras"/>
+                    <p:tooltip  for="#{cc.attrs.conId}" value="#{cc.attrs.conTooltip}" showEffect="clip" hideEffect="clip" />
+                    <p:outputLabel for="#{cc.attrs.conId}" 
+                                   value="#{cc.attrs.cabValue}:" 
+                                   class="#{cc.attrs.comType eq 'texto' ? '' : 'label-float-combo-detalle '} #{cc.attrs.comType eq 'booleans' ? 'label_switch_float' : ''} w-100" 
+                                   style="#{cc.attrs.comType eq 'boolean' and cc.attrs.conValue ? 'color: white;' :''}" />   
+                </p:outputPanel>
+            </div>
+        </p:outputPanel>
+    </composite:implementation>
+</ui:component>

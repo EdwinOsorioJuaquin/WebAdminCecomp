@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+        <title>#{generalController.modulo.titulo}</title>
+        <link rel="icon" type="image/x-icon" href="${facesContext.externalContext.requestContextPath}/resources/images/favicon.png"/>
+        <!-- Font Awesome -->
+        <h:outputStylesheet library="webjars" name="font-awesome/6.5.1/css/fontawesome.css" />
+        <!-- Bootstrap core CSS -->
+        <h:outputStylesheet library="webjars" name="bootstrap/5.3.2/css/bootstrap.css"/>
+        <!-- Bootstrap icons CSS -->
+        <h:outputStylesheet library="webjars" name="bootstrap-icons/1.11.3/font/bootstrap-icons.css"/>
+        <!-- Material Design Bootstrap CSS -->
+        <h:outputStylesheet library="webjars" name="mdbootstrap/4.20.0/css/mdb.css"/>
+        <!-- Labl Flotante CSS -->
+        <h:outputStylesheet library="css" name="label-flotante.css"/>
+        <!-- Plantilla udemsi CSS -->
+        <h:outputStylesheet library="css" name="plantilla-udemsi.css"/>
+        <!-- Udemsi CSS -->
+        <h:outputStylesheet library="css" name="udemsi.css"/>
+        <style>
+            :root {
+                --colorModuloClaro: #{generalController.modulo.colorClaro};
+                --colorModuloOscuro: #{generalController.modulo.colorOscuro};
+            }
+        </style>
+    </h:head>
+    <h:body class="contextoGeneral">
+        <ui:include src="encabezado.xhtml"/>
+        <ui:include src="menu.xhtml"/>
+        <ui:include src="sub-menu.xhtml"/>
+        <div id="rutaNavegacion" class="divNavegacion row" >
+            <div class="col-sm-8 px-0">
+                <i class="#{generalController.strIcono} mx-1"></i>
+                <p:outputLabel 
+                    id="oplNavegacion" 
+                    style="font-size: 10px !important;"
+                    value="#{generalController.rutaNavegacion}" />
+            </div>
+            <div align="right" class="col-sm-4 px-1 d-none d-sm-block">
+                <i class="fa fa-user mx-1"></i>
+                <p:outputLabel id="oplUsuario" 
+                               value="#{generalController.usuario.strUsuario}" 
+                               style="font-size: 10px !important; text-transform: uppercase" />
+            </div> 
+        </div>
+        <div id="contenido" class="container-fluid contenido contenido-exp">
+            <hr class="mt-0"/>
+            <p:growl id="messages" showDetail="true" skipDetailIfEqualsSummary="true" life="5000"   />
+            <ui:insert name="content">Content</ui:insert>
+        </div>
+        <div id="sidenav-overlay"></div>
+        <p:dialog id="dlgProcesar"
+                  widgetVar="dlgProcesando" 
+                  position="center"
+                  modal="true" 
+                  draggable="false" 
+                  closable="false" 
+                  class="dialogSinCabecera"
+                  appendTo="@(body)"
+                  resizable="false">
+            <div style="text-align: center">
+                Procesando...
+                <br></br>
+                <p:graphicImage name="images/procesando.svg" width="30%" height="30%" />
+                <br></br>
+                Espere un momento por favor
+            </div>
+        </p:dialog> 
+        <h:form>
+            <p:confirmDialog global="true" id="cfdConfirmar" widgetVar = "confirmation"  showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Si" type="button" style="background: #{generalController.modulo.colorOscuro} !important;" styleClass="ui-confirmdialog-yes bntIcons" icon="fa fa-fw fa-check" />
+                <p:commandButton value="No" type="button" style="background: #{generalController.modulo.colorOscuro} !important;" styleClass="ui-confirmdialog-no bntIcons" icon="fa fa-fw fa-times" />
+            </p:confirmDialog> 
+        </h:form>
+
+        <!-- ///////////////JAVASCRIPTS//////////-->
+        <!--fontawesome-->
+        <h:outputScript name="webjars/font-awesome/6.5.1/js/fontawesome.js"/>
+        <h:outputScript name="webjars/font-awesome/6.5.1/js/solid.js"/>
+        <!--bootstrap-->
+        <h:outputScript name="webjars/bootstrap/5.3.2/js/bootstrap.bundle.js"/>
+        <!--Plantilla udemsi functions--> 
+        <h:outputScript name="js/plantilla-udemsi.js"/>
+        <!--Udemsi functions--> 
+        <h:outputScript name="js/udemsi.js"/>
+
+    </h:body>
+</html>
