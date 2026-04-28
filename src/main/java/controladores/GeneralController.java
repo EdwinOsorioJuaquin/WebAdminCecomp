@@ -1,5 +1,9 @@
 package controladores;
 
+import ejbPasaporte.ejb.negocio.ejbPspPspGroupUserServiceLocal;
+import ejbPasaporte.ejb.negocio.ejbPspPspUsuarioServiceLocal;
+import ejbPasaporte.entidades.ejbPspPspGroupuser;
+import ejbPasaporte.entidades.ejbPspPspUsuario;
 import jakarta.inject.*;
 import jakarta.enterprise.context.*;
 import jakarta.faces.context.*;
@@ -17,6 +21,7 @@ import javax.naming.*;
 import static libreriaUdemsi.funciones.libreriaGeneral.doGenerarJNDI;
 
 import jakarta.annotation.PostConstruct;
+import static libreriaUdemsi.funciones.libreriaGeneral.doGenerarJNDI;
 
 @Named(value = "generalController")
 @SessionScoped
@@ -30,17 +35,26 @@ public class GeneralController extends BaseController {
 //    private long lngTiempo;
     /////////////////////////////////////////////////////////////////////////////
     //---Variables globales propias de la aplicación-----------------------------
+    /**
+     * Identifica al usuario de la aplicacion desde pssUsurio [Trabajador UNS]
+     */
+    private ejbPspPspUsuario clsPspUsuario;
+    private ejbPspPspGroupuser grupoUsuario;
+    private Boolean blnCargado = Boolean.FALSE;
     //private ejbPspFxaEstudiante usuarioActual;
   
 
     //2. EJB
+    ejbPspPspUsuarioServiceLocal srvPspUsuario;
+    ejbPspPspGroupUserServiceLocal srvPspGroupUser;
     //ejbPspFxaEstudianteServiceLocal srvFxaEstudiante;
     
 
     public GeneralController() {
         try {
             Context context = (Context) new InitialContext();
-            //srvFxaEstudiante = (ejbPspFxaEstudianteServiceLocal) context.lookup(doGenerarJNDI("ejbPasaporte", "1.0", "ejbPspFxaEstudianteServiceLocal"));
+            srvPspUsuario = (ejbPspPspUsuarioServiceLocal) context.lookup(doGenerarJNDI("ejbPasaporte", "1.0", "ejbPspPspUsuarioServiceLocal"));
+            srvPspGroupUser = (ejbPspPspGroupUserServiceLocal) context.lookup(doGenerarJNDI("ejbPasaporte", "1.0", "ejbPspPspGroupUserServiceLocal"));
         } catch (NamingException e) {
             System.out.println("error generalController: " + e);
         }
