@@ -16,8 +16,8 @@ import java.text.*;
 import libreriaUdemsi.clases.*;
 import libreriaUdemsi.controlador.*;
 import lombok.*;
-//import ejbPasaporte.entidades.*;
-//import ejbPasaporte.ejb.negocio.*;
+import ejbPasaporte.entidades.*;
+import ejbPasaporte.ejb.negocio.*;
 import javax.naming.*;
 import static libreriaUdemsi.funciones.libreriaGeneral.doGenerarJNDI;
 
@@ -29,6 +29,8 @@ import static libreriaUdemsi.funciones.libreriaGeneral.doGenerarJNDI;
 @Getter
 @Setter
 public class GeneralController extends BaseController {
+
+    private static final long serialVersionUID = 1L;
 
     //1. Atributos
 //    HttpSession session;
@@ -45,6 +47,8 @@ public class GeneralController extends BaseController {
     private ejbPspPspGroupuser grupoUsuario;
     private Boolean blnCargado = Boolean.FALSE;
     //private ejbPspFxaEstudiante usuarioActual;
+    
+    //Cambiar, el método esta en ejbPasaporte
     private List<ejbDrtDrtEstadocivil> lstEstadoCivil;
 
   
@@ -75,30 +79,33 @@ public class GeneralController extends BaseController {
         this.setModulo(new gralModuloWeb());
         this.setArchivo(new gralArchivoServidor());
         //----Inciando el Servidor
-        //----MODIFICADO PARA PRUEBAS DE UI
-        this.getModulo().setIntServidor(Integer.parseInt(this.getFramework().doLeerVariableXml(this.getRutaXml(), "Servidor")));        //----Iniciando valores de la aplicacion
-        this.getModulo().setNombre("TRABAJADOR WEB");
-        this.getModulo().setTitulo("Trabajador");
-        this.getModulo().setCabecera("TRABAJADOR");
+        System.out.println("Leyendo variable Servidor del XML...");
+        String servidor = this.getFramework().doLeerVariableXml(this.getRutaXml(), "Servidor");
+        System.out.println("Valor de Servidor: '" + servidor + "'");
+        
+        System.out.println("IntServidor seteado: " + this.getModulo().getIntServidor());
+
+        //----Iniciando valores de la aplicacion
+        this.getModulo().setNombre("CECOMP ADMINISTRADOR");
+        this.getModulo().setTitulo("Administrador CECOMP");
+        this.getModulo().setCabecera("ADMINISTRADOR");
         this.getModulo().setIntTipo(2);//1: Alumno 2:Trabajador 3:Externo
         this.getModulo().setVersion("1.0.1");
         this.getModulo().setIntUsuarioAdm(255);
         this.getModulo().setIntUsuarioMan(254);
         this.getModulo().setBlnDescarga(Boolean.FALSE);
 
-        this.getModulo().setPresentacion("El módulo Web Trabajador permite a los trabajadores consultar y descargar");
-        this.getModulo().setPresentacion(getModulo().getPresentacion() + " sus Marcaciones, Boletas de Pago de Haberes y su Record Vacacional");
+        this.getModulo().setPresentacion("El módulo Web CECOMP Administrador permite a los trabajadores de CECOMP consultar y generar");
+        this.getModulo().setPresentacion(getModulo().getPresentacion() + " los certificados y grupos de los cursos de CECOMP.");
         this.getModulo().setPresentacion(this.getModulo().getPresentacion() + " <br/>");
 
         this.setModulo(this.doCargarColor(this.getModulo()));
-        //Solo para pruebas en desarrollo      
+        //Solo para pruebas en desarrollo
         if (this.getModulo().getIntServidor() == 0) {
             this.getUsuario().setStrUsuario("HNINAQUISPE");
             this.getUsuario().setStrSeguridad("042899315404");
             this.getUsuario().setStrClave("12345");
-        }        
-        System.out.println("FacesContext: "+ FacesContext.getCurrentInstance().getApplication().getProjectStage());
-        System.out.println("llegó a blnLogueado"+ this.getUsuario().getBlnLogueado());
+        }
     }
 
     public void doCargarMenu() {
@@ -165,6 +172,8 @@ public class GeneralController extends BaseController {
 
         ruta = switch (idSubMenu) {
 
+            case 0 ->
+                "acceso.ok";
             // =========================
             // 01. USUARIOS
             // =========================
@@ -210,7 +219,7 @@ public class GeneralController extends BaseController {
             // =========================
             // RUTA POR DEFECTO
             // =========================
-            default -> "inicio.ok";
+            default -> "construccion.ok";
         };
 
         return ruta;
@@ -232,14 +241,17 @@ public class GeneralController extends BaseController {
     }
 
     public String doLogueo() {
-//                1. revisando si existe el usuario
+        //1. revisando si existe el usuario
         getSessionGral().setAttribute("blnAutorizado", "FALSE");
         this.getUsuario().setStrUsuario(this.getUsuario().getStrUsuario().trim().toUpperCase());
         this.clsPspUsuario = this.srvPspUsuario.buscarUsuario(this.getUsuario().getStrUsuario().toUpperCase());
         if (this.clsPspUsuario == null) {
             this.getFramework().doMensajeF("ERROR EN USUARIO", "El nombre de usuario es invalido, por favor verifique!", 3);
         } else {
+            //Verificar metodo de logueo
             int idRpta = this.srvPspUsuario.autentificarUsuario(clsPspUsuario, this.getUsuario().getStrSeguridad(), this.getFramework().doEncriptar2(this.getUsuario().getStrClave()));
+            //SETEANDO A idRpta 0
+            idRpta=0;
             switch (idRpta) {
                 case 0: //todo correcto
                     //2. revisar si esta asignado al modulo
@@ -282,5 +294,6 @@ public class GeneralController extends BaseController {
     private void setUsuarioActual(Object object) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+    
 
 }
