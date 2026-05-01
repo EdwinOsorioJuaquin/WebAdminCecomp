@@ -52,13 +52,13 @@
 
                         <p:column width="150" headerText="Acciones" styleClass="text-center">
                             <an:button cmdType="link"
-                                       rendered="#{registro.activo}"
+                                       rendered="#{registro.curso.bandera}"
                                        cmdIcon="fa fa-ban text-danger"
                                        conMensaje="¿Está seguro de cambiar el estado del curso?"
                                        cmdTooltip="Dar de baja el curso"
                                        cmdAction="#{cursoController.doCambiarEstado(registro)}"/>
                             <an:button cmdType="link"
-                                       rendered="#{!registro.activo}"
+                                       rendered="#{!registro.curso.bandera}"
                                        cmdIcon="fa fa-check-circle text-success"
                                        conMensaje="¿Está seguro de cambiar el estado del curso?"
                                        cmdTooltip="Activar el curso"
@@ -75,7 +75,7 @@
                         </p:column>
 
                         <p:column width="300" headerText="Curso">
-                            <an:celda optValue="#{registro.nombreCurso}"/>
+                            <an:celda optValue="#{registro.curso.nomCurso}"/>
                         </p:column>
 
                         <p:column width="150" headerText="Nivel" styleClass="text-center">
@@ -83,13 +83,13 @@
                         </p:column>
 
                         <p:column width="150" headerText="Duración" styleClass="text-center">
-                            <an:celda optValue="#{registro.duracion}" comAlign="text-center"/>
+                            <an:celda optValue="#{registro.curso.duracion}" comAlign="text-center"/>
                         </p:column>
 
                         <p:column width="150" headerText="Estado" styleClass="text-center">
                             <an:celda comType="estado" 
-                                      optValue="#{registro.activo ? 'ACTIVO' : 'INACTIVO'}" 
-                                      txtActivo="#{registro.activo ? 'TRUE' : 'FALSE'}" 
+                                      optValue="#{registro.curso.bandera ? 'ACTIVO' : 'INACTIVO'}" 
+                                      txtActivo="#{registro.curso.bandera ? 'TRUE' : 'FALSE'}" 
                                       comAlign="text-center"/>
                         </p:column>
 
@@ -130,14 +130,14 @@
                     <an:input cabValue="Nombre del curso"
                               cabLen="col-lg-2"
                               conLen="col-lg-6"
-                              conValue="#{cursoController.clsCursoDTO.nombreCurso}"
+                              conValue="#{cursoController.clsCursoDTO.curso.nomCurso}"
                               conTooltip="Ingrese el nombre del curso"
                               conRequired="true"/>
 
                     <an:input cabValue="Duración"
                               cabLen="col-lg-2"
                               conLen="col-lg-3"
-                              conValue="#{cursoController.clsCursoDTO.duracion}"
+                              conValue="#{cursoController.clsCursoDTO.curso.duracion}"
                               conTooltip="Ejemplo: '04 SEMANAS'"
                               conRequired="true"/>
 

@@ -33,20 +33,13 @@ public class CursoController implements Serializable {
     private List<ejbCcoCepNivelModalidad> lstNivelesModalidad;
     private Integer idNivelSeleccionado;
 
-    // Constantes de vista
     private static final String VISTA_LISTA = "LISTA";
     private static final String VISTA_NUEVO = "NUEVO";
     private static final String VISTA_TEMAS = "TEMAS";
 
-    // ============================
-    // 2. EJB
-    // ============================
     private ejbCcoCepCursoServiceLocal srvCurso;
     private ejbCcoCepNivelModalidadServiceLocal srvNivelModalidad;
 
-    // ============================
-    // 3. CONSTRUCTOR
-    // ============================
     public CursoController() {
         try {
             Context context = new InitialContext();
@@ -57,10 +50,6 @@ public class CursoController implements Serializable {
         }
     }
 
-    // ============================
-    // 4. ACCIONES JSF
-    // ============================
-
     public void doIniciarPagina() {
         System.out.println("Llegó a doIniciarPagina");
         strValor = VISTA_LISTA;
@@ -68,6 +57,8 @@ public class CursoController implements Serializable {
         cargarCursos();
         cargarNivelesModalidad();
         clsCursoDTO = new ejbCcoCursoDTO();
+        clsCursoDTO.setCurso(new ejbCcoCepCurso());
+        clsCursoDTO.getCurso().setBandera(true);
         temas = buildTemasVacios(4);
         idEdicion = null;
         idNivelSeleccionado = null;
@@ -78,7 +69,6 @@ public class CursoController implements Serializable {
             lstNivelesModalidad = srvNivelModalidad.listarNivelesModalidad();
             System.out.println("Niveles cargados: " + (lstNivelesModalidad != null ? lstNivelesModalidad.size() : 0));
         } catch (Exception e) {
-            System.out.println("Error al cargar niveles: " + e);
             lstNivelesModalidad = new ArrayList<>();
         }
     }
@@ -92,7 +82,6 @@ public class CursoController implements Serializable {
             }
             lstCursosViewDTO = new ArrayList<>(lstCursosDTO);
         } catch (Exception e) {
-            System.out.println("Error al cargar cursos: " + e);
             lstCursosDTO = new ArrayList<>();
             lstCursosViewDTO = new ArrayList<>();
         }
@@ -107,12 +96,11 @@ public class CursoController implements Serializable {
         } else {
             List<ejbCcoCursoDTO> filtrado = new ArrayList<>();
             for (ejbCcoCursoDTO dto : lstCursosDTO) {
-                String nombre = (dto.getNombreCurso() == null) ? "" : dto.getNombreCurso().toLowerCase();
-                if (nombre.contains(q)) filtrado.add(dto);
+                String nombre = dto.getCurso() != null ? dto.getCurso().getNomCurso() : "";
+                if (nombre.toLowerCase().contains(q)) filtrado.add(dto);
             }
             lstCursosViewDTO = filtrado;
         }
-
         generalController.getFramework().doMensajeF("BÚSQUEDA", "Filtro aplicado correctamente", 1);
     }
 
@@ -121,14 +109,13 @@ public class CursoController implements Serializable {
         strValor = VISTA_NUEVO;
         idEdicion = null;
         clsCursoDTO = new ejbCcoCursoDTO();
-        clsCursoDTO.setActivo(true);
+        clsCursoDTO.setCurso(new ejbCcoCepCurso());
+        clsCursoDTO.getCurso().setBandera(true);
         temas = buildTemasVacios(4);
         idNivelSeleccionado = null;
 
-        // Asignar nivel por defecto (el primero de la lista, normalmente "01" Básico)
         if (lstNivelesModalidad != null && !lstNivelesModalidad.isEmpty()) {
             idNivelSeleccionado = lstNivelesModalidad.get(0).getIdNivMod();
-            System.out.println("Nivel por defecto: " + idNivelSeleccionado);
         }
     }
 
@@ -137,13 +124,10 @@ public class CursoController implements Serializable {
         if (cursoDTO == null || cursoDTO.getCurso() == null) return;
 
         strValor = VISTA_NUEVO;
-        idEdicion = cursoDTO.getIdCurso();
-        
-        // Recargar entidad completa desde BD
-        ejbCcoCepCurso cursoCompleto = srvCurso.buscarPorId(cursoDTO.getIdCurso());
+        idEdicion = cursoDTO.getCurso().getIdCurso();
+        ejbCcoCepCurso cursoCompleto = srvCurso.buscarPorId(cursoDTO.getCurso().getIdCurso());
         clsCursoDTO = new ejbCcoCursoDTO(cursoCompleto);
 
-        // Cargar el ID del nivel actual
         if (cursoCompleto.getCepNivelModalidad() != null) {
             idNivelSeleccionado = cursoCompleto.getCepNivelModalidad().getIdNivMod();
         } else {
@@ -153,7 +137,6 @@ public class CursoController implements Serializable {
         if (lstNivelesModalidad == null || lstNivelesModalidad.isEmpty()) {
             cargarNivelesModalidad();
         }
-        
         temas = buildTemasVacios(4);
     }
 
@@ -162,43 +145,31 @@ public class CursoController implements Serializable {
         if (!validarCursoBasico()) return;
 
         try {
-            // 1. Obtener la entidad gestionada del nivel seleccionado
             ejbCcoCepNivelModalidad nivel = null;
             if (idNivelSeleccionado != null) {
                 nivel = srvNivelModalidad.buscarPorId(idNivelSeleccionado);
-                System.out.println("Nivel seleccionado: " + nivel.getNomNivMod() + " (ID: " + nivel.getIdNivMod() + ")");
             }
 
-            // 2. Construir la entidad Curso con los datos del DTO
-            ejbCcoCepCurso cursoGuardar = new ejbCcoCepCurso();
-            cursoGuardar.setNomCurso(clsCursoDTO.getNombreCurso());
-            cursoGuardar.setDuracion(clsCursoDTO.getDuracion());
-            cursoGuardar.setBandera(clsCursoDTO.getActivo());
-            
-            if (clsCursoDTO.getCurso() != null) {
-                cursoGuardar.setAbreviatura(clsCursoDTO.getCurso().getAbreviatura());
+            ejbCcoCepCurso cursoGuardar = clsCursoDTO.getCurso();
+            if (cursoGuardar == null) {
+                cursoGuardar = new ejbCcoCepCurso();
             }
             cursoGuardar.setCepNivelModalidad(nivel);
 
             if (idEdicion == null || idEdicion == 0) {
-                // Nuevo curso - asignar ID manualmente
                 int nuevoId = obtenerNuevoIdCurso();
-                System.out.println("nuevo id: " + nuevoId);
                 cursoGuardar.setIdCurso(nuevoId);
                 srvCurso.crear(cursoGuardar);
                 generalController.getFramework().doMensajeF("GUARDAR", "Curso agregado correctamente", 1);
             } else {
-                // Actualizar curso existente
                 cursoGuardar.setIdCurso(idEdicion);
                 srvCurso.actualizar(cursoGuardar);
                 generalController.getFramework().doMensajeF("ACTUALIZAR", "Curso actualizado correctamente", 1);
             }
 
-            // Recargar datos y volver a la lista
             cargarCursos();
             doBuscar();
             strValor = VISTA_LISTA;
-            idNivelSeleccionado = null;
 
         } catch (Exception e) {
             System.out.println("Error al guardar: " + e.getMessage());
@@ -207,84 +178,82 @@ public class CursoController implements Serializable {
         }
     }
 
-    public void doEliminar(ejbCcoCursoDTO cursoDTO) {
-        System.out.println("Llegó a doEliminar");
-        if (cursoDTO == null || cursoDTO.getCurso() == null) return;
+    public void doGuardarTemas() {
+        if (!validarCursoBasico()) return;
+        if (!validarTemas()) return;
+        if (clsCursoDTO != null) {
+            clsCursoDTO.setTemas(limpiarTemas(temas));
+        }
+        doGuardar();
+    }
 
+    public void doEliminar(ejbCcoCursoDTO cursoDTO) {
+        if (cursoDTO == null || cursoDTO.getCurso() == null) return;
         ejbCcoCepCurso curso = cursoDTO.getCurso();
         curso.setBandera(false);
         srvCurso.actualizar(curso);
         generalController.getFramework().doMensajeF("BAJA", "Curso dado de baja correctamente", 2);
-
         cargarCursos();
         doBuscar();
     }
 
     public void doCambiarEstado(ejbCcoCursoDTO cursoDTO) {
-        System.out.println("Llegó a doCambiarEstado");
         if (cursoDTO == null || cursoDTO.getCurso() == null) return;
-
         ejbCcoCepCurso curso = cursoDTO.getCurso();
         boolean nuevoEstado = !curso.getBandera();
         curso.setBandera(nuevoEstado);
         srvCurso.actualizar(curso);
-
         String mensaje = nuevoEstado ? "Curso activado correctamente" : "Curso dado de baja correctamente";
         int tipoMsg = nuevoEstado ? 1 : 2;
         generalController.getFramework().doMensajeF(nuevoEstado ? "ACTIVAR" : "BAJA", mensaje, tipoMsg);
-
         cargarCursos();
         doBuscar();
     }
 
     public void doContinuarTemas() {
-        System.out.println("Llegó a doContinuarTemas");
         if (!validarCursoBasico()) return;
         if (temas == null || temas.isEmpty()) temas = buildTemasVacios(4);
         strValor = VISTA_TEMAS;
     }
 
     public void doVolver() {
-        System.out.println("Llegó a doVolver");
         strValor = VISTA_LISTA;
         strBusqueda = "";
         doBuscar();
     }
 
     public void doVolverCursoDesdeTemas() {
-        System.out.println("Llegó a doVolverCursoDesdeTemas");
         strValor = VISTA_NUEVO;
     }
-
-    // ============================
-    // 5. MÉTODOS PRIVADOS
-    // ============================
 
     private int obtenerNuevoIdCurso() {
         int maxId = 0;
         if (lstCursosDTO != null && !lstCursosDTO.isEmpty()) {
             for (ejbCcoCursoDTO dto : lstCursosDTO) {
-                Integer id = dto.getIdCurso();
-                if (id != null && id > maxId) {
-                    maxId = id;
-                }
+                Integer id = dto.getCurso() != null ? dto.getCurso().getIdCurso() : null;
+                if (id != null && id > maxId) maxId = id;
             }
         }
         return maxId + 1;
     }
 
     private boolean validarCursoBasico() {
-        if (clsCursoDTO == null) clsCursoDTO = new ejbCcoCursoDTO();
-
-        if (isBlank(clsCursoDTO.getNombreCurso())) {
+        if (clsCursoDTO == null || clsCursoDTO.getCurso() == null) {
+            clsCursoDTO = new ejbCcoCursoDTO();
+            clsCursoDTO.setCurso(new ejbCcoCepCurso());
+        }
+        
+        ejbCcoCepCurso curso = clsCursoDTO.getCurso();
+        
+        if (isBlank(curso.getNomCurso())) {
             generalController.getFramework().doMensajeF("VALIDACIÓN", "Ingrese el nombre del curso", 2);
             return false;
         }
-        if (isBlank(clsCursoDTO.getDuracion())) {
+        if (isBlank(curso.getDuracion())) {
             generalController.getFramework().doMensajeF("VALIDACIÓN", "Ingrese la duración del curso", 2);
             return false;
         }
-        if (clsCursoDTO.getCurso() == null || isBlank(clsCursoDTO.getCurso().getAbreviatura())) {
+        if (isBlank(curso.getAbreviatura())) {
             generalController.getFramework().doMensajeF("VALIDACIÓN", "Ingrese la abreviatura del curso", 2);
             return false;
         }
