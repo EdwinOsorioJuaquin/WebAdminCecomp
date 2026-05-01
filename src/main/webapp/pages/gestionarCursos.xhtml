@@ -16,7 +16,7 @@
 
     <ui:define name="content">
         <div align="center" class="card-titulo mb-1">Gestionar cursos</div>
-        <h:form id="frmPrincipal" class="form-horizontal h-100"  >
+        <h:form id="frmPrincipal" class="form-horizontal h-100">
             <div id="divPrincipal" class="card-contenido">
 
                 <!-- ========== VISTA LISTA ========== -->
@@ -25,7 +25,8 @@
                         <an:button cmdValue="Volver"
                                    cmdIcon="fa fa-arrow-left"
                                    cmdAction="#{cursoController.doVolver()}"
-                                   cmdTooltip="Volver"/>
+                                   cmdTooltip="Volver"
+                                   rendered="#{not empty cursoController.strBusqueda}"/>
                         <an:button cmdValue="Buscar"
                                    cmdIcon="fa fa-search"
                                    cmdAction="#{cursoController.doBuscar()}"
@@ -43,13 +44,13 @@
                               conTooltip="Ingrese nombre del curso para buscar"
                               conRequired="false"/>
                     <an:extra comType="separadorSimple" comClass="my-2"/>
+
                     <an:table id="cdtCurso"
                               cabId="cdtCurso"
-                              cabValue="#{cursoController.lstCursosView}"
+                              cabValue="#{cursoController.lstCursosViewDTO}"
                               cabPaginator="true">
 
                         <p:column width="150" headerText="Acciones" styleClass="text-center">
-                            <!-- DAR DE BAJA / ACTIVAR -->
                             <an:button cmdType="link"
                                        rendered="#{registro.activo}"
                                        cmdIcon="fa fa-ban text-danger"
@@ -68,18 +69,33 @@
                                        cmdTooltip="Editar curso"
                                        cmdAction="#{cursoController.doEditar(registro)}"/>
                         </p:column>
-                        <p:column width="50" headerText="Nro" styleClass="text-center"><an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/></p:column>
-                        <p:column width="350" headerText="Curso"><an:celda optValue="#{registro.nombre}"/></p:column>
-                        <p:column width="150" headerText="Nivel" styleClass="text-center"><an:celda optValue="#{registro.nivel}" comAlign="text-center"/></p:column>
-                        <p:column width="150" headerText="Duración" styleClass="text-center"><an:celda optValue="#{registro.duracion}" comAlign="text-center"/></p:column>
-                        <p:column width="220" headerText="Precio público" styleClass="text-center"><an:celda comType="moneda" optValue="#{registro.precioGeneral}" comAlign="text-center"/></p:column>
-                        <p:column width="220" headerText="Precio Alumno UNS" styleClass="text-center"><an:celda comType="moneda" optValue="#{registro.precioAlumnoUns}" comAlign="text-center"/></p:column>
-                        <p:column width="150" headerText="Estado" styleClass="text-center"><an:celda comType="estado" optValue="#{registro.estado}" txtActivo="#{registro.estado eq 'ACTIVO' ? 'TRUE' : 'FALSE'}" comAlign="text-center"/>
+
+                        <p:column width="50" headerText="Nro" styleClass="text-center">
+                            <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="300" headerText="Curso">
+                            <an:celda optValue="#{registro.nombreCurso}"/>
+                        </p:column>
+
+                        <p:column width="150" headerText="Nivel" styleClass="text-center">
+                            <an:celda optValue="#{registro.nombreNivel}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="150" headerText="Duración" styleClass="text-center">
+                            <an:celda optValue="#{registro.duracion}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="150" headerText="Estado" styleClass="text-center">
+                            <an:celda comType="estado" 
+                                      optValue="#{registro.activo ? 'ACTIVO' : 'INACTIVO'}" 
+                                      txtActivo="#{registro.activo ? 'TRUE' : 'FALSE'}" 
+                                      comAlign="text-center"/>
                         </p:column>
 
                         <f:facet name="footer">
                             <an:celda txtClass="fw-bold bg-transparent"
-                                      optValue="Total cursos: #{cursoController.lstCursosView != null ? cursoController.lstCursosView.size() : 0}"/>
+                                      optValue="Total cursos: #{cursoController.lstCursosViewDTO != null ? cursoController.lstCursosViewDTO.size() : 0}"/>
                         </f:facet>
 
                     </an:table>
@@ -114,51 +130,38 @@
                     <an:input cabValue="Nombre del curso"
                               cabLen="col-lg-2"
                               conLen="col-lg-6"
-                              conValue="#{cursoController.nuevoCurso.nombre}"
-                              conTooltip="Ingrese el nombre del curso"/>
-
-                    <an:input cabValue="Nivel"
-                              cabLen="col-lg-2"
-                              conLen="col-lg-3"
-                              conValue="#{cursoController.nuevoCurso.nivel}"
-                              conTooltip="Ingrese el nivel del curso (BÁSICO, INTERMEDIO, AVANZADO)"/>
+                              conValue="#{cursoController.clsCursoDTO.nombreCurso}"
+                              conTooltip="Ingrese el nombre del curso"
+                              conRequired="true"/>
 
                     <an:input cabValue="Duración"
                               cabLen="col-lg-2"
                               conLen="col-lg-3"
-                              conValue="#{cursoController.nuevoCurso.duracion}"
-                              conTooltip="Ejemplo: '04 SEMANAS'"/>
+                              conValue="#{cursoController.clsCursoDTO.duracion}"
+                              conTooltip="Ejemplo: '04 SEMANAS'"
+                              conRequired="true"/>
 
-                    <an:input cabValue="Precio público general"
-                              cabLen="col-lg-2"
-                              conLen="col-lg-3"
-                              conValue="#{cursoController.nuevoCurso.precioGeneral}"
-                              conTooltip="Precio para público en general"/>
-
-                    <an:input cabValue="Precio Alumno UNS"
-                              cabLen="col-lg-2"
-                              conLen="col-lg-3"
-                              conValue="#{cursoController.nuevoCurso.precioAlumnoUns}"
-                              conTooltip="Precio con descuento para alumnos UNS"/>
-
-                    <an:input cabValue="Precio Trabajador UNS"
-                              cabLen="col-lg-2"
-                              conLen="col-lg-3"
-                              conValue="#{cursoController.nuevoCurso.precioTrabajadorUns}"
-                              conTooltip="Precio para trabajadores UNS o hijos"/>
-
-                    <an:input cabValue="Precio Alumno Externo"
-                              cabLen="col-lg-2"
-                              conLen="col-lg-3"
-                              conValue="#{cursoController.nuevoCurso.precioExterno}"
-                              conTooltip="Precio para público externo"/>
-
-                    <an:input cabValue="Curso activo"
-                              comType="booleans"
+                    <an:input cabValue="Abreviatura"
                               cabLen="col-lg-2"
                               conLen="col-lg-2"
-                              conValue="#{cursoController.nuevoCurso.activo}"
-                              conTooltip="Activar o desactivar la vigencia del curso"/>
+                              conValue="#{cursoController.clsCursoDTO.curso.abreviatura}"
+                              conTooltip="Ejemplo: 'EXC', 'JAVA', 'OFI'"
+                              conRequired="true"/>
+
+                    <!-- Select para Nivel Modalidad -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Nivel</div>
+                        <div class="col-lg-3">
+                            <p:selectOneMenu value="#{cursoController.idNivelSeleccionado}" 
+                                             style="width:100%">
+                                <f:selectItems value="#{cursoController.lstNivelesModalidad}" 
+                                               var="nivel"
+                                               itemLabel="#{nivel.nomNivMod}" 
+                                               itemValue="#{nivel.idNivMod}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
                 </h:panelGroup>
 
                 <!-- ========== VISTA TEMAS ========== -->
