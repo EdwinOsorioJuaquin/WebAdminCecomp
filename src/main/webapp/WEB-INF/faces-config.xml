@@ -27,7 +27,12 @@
         </navigation-case>
         <navigation-case>
             <from-outcome>gestionar.cursos</from-outcome>
-            <to-view-id>/pages/gestionarCursos.xhtml</to-view-id>
+            <to-view-id>/pages/gestionar/Cursos.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>gestionar.precios</from-outcome>
+            <to-view-id>/pages/gestionar/Precios.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>

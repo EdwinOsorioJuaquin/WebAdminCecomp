@@ -128,12 +128,13 @@ public class GeneralController extends BaseController {
         menu = new gralMenuGeneral(2, "GESTIONAR", "fa fa-folder-open", null, "d-block");
         lstSubMenu.add(new gralMenuSub(21, "Cursos", null, null, null, true));
         lstSubMenu.add(new gralMenuSub(22, "Fichas", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(23, "Pagos", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(24, "Asignaciones", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(25, "Grupos", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(26, "Tipos de pago", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(27, "Notas Curso", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(28, "Credenciales Acceso", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(23, "Precios", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(24, "Pagos", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(25, "Asignaciones", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(26, "Grupos", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(27, "Tipos de pago", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(28, "Notas Curso", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(29, "Credenciales Acceso", null, null, null, true));
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
 
         //--- MENU 03: CERTIFICADOS ----------------//
@@ -188,12 +189,13 @@ public class GeneralController extends BaseController {
             // =========================
             case 21 -> "gestionar.cursos";
             case 22 -> "gestionar.fichas";
-            case 23 -> "gestionar.pagos";
-            case 24 -> "gestionar.asignaciones";
-            case 25 -> "gestionar.grupos";
-            case 26 -> "gestionar.tiposdepago";
-            case 27 -> "gestionar.notas";
-            case 28 -> "gestionar.credenciales";
+            case 23 -> "gestionar.precios";
+            case 24 -> "gestionar.pagos";
+            case 25 -> "gestionar.asignaciones";
+            case 26 -> "gestionar.grupos";
+            case 27 -> "gestionar.tiposdepago";
+            case 28 -> "gestionar.notas";
+            case 29 -> "gestionar.credenciales";
             // =========================
             // 03. CERTIFICADOS
             // =========================
