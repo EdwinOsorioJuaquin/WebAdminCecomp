@@ -40,7 +40,7 @@
 
         <navigation-case>
             <from-outcome>alumnos.lista</from-outcome>
-            <to-view-id>/pages/listaAlumnos.xhtml</to-view-id>
+            <to-view-id>/pages/alumnos/listaAlumnos.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 
@@ -76,7 +76,7 @@
 
         <navigation-case>
             <from-outcome>grupos.docentes</from-outcome>
-            <to-view-id>/pages/gestionarAsignaciones.xhtml</to-view-id>
+            <to-view-id>/pages/grupos/listarDocentes.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 

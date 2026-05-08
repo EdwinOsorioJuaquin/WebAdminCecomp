@@ -11,45 +11,41 @@
                 xmlns:f="jakarta.faces.core">
 
     <f:metadata>
-        <f:viewAction action="#{alumnoGeneralController.doIniciarPagina()}"/>
+        <f:viewAction action="#{docenteGeneralController.doIniciarPagina()}"/>
     </f:metadata>
 
     <ui:define name="content">
-        <div align="center" class="card-titulo mb-1">Lista de Alumnos</div>
+        <div align="center" class="card-titulo mb-1">Lista de Docentes</div>
         <h:form id="frmPrincipal" class="form-horizontal h-100">
             <div id="divPrincipal" class="card-contenido">
 
-                <an:seccion cabLabel="Consulta de Alumnos" cabLen="col-sm-6" cmdLen="col-sm-6">
+                <an:seccion cabLabel="Consulta de Docentes" cabLen="col-sm-6" cmdLen="col-sm-6">
                     <an:button cmdValue="Volver"
                                cmdIcon="fa fa-arrow-left"
-                               cmdAction="#{alumnoGeneralController.doVolver()}"
+                               cmdAction="#{docenteGeneralController.doVolver()}"
                                cmdTooltip="Volver"
-                               rendered="#{not empty alumnoGeneralController.strBusqueda}"/>
+                               rendered="#{not empty docenteGeneralController.strBusqueda}"/>
                     <an:button cmdValue="Buscar"
                                cmdIcon="fa fa-search"
-                               cmdAction="#{alumnoGeneralController.doBuscar()}"
-                               cmdTooltip="Buscar alumnos por nombre o DNI"/>
+                               cmdAction="#{docenteGeneralController.doBuscar()}"
+                               cmdTooltip="Buscar docentes por nombre, DNI o especialidad"/>
                 </an:seccion>
 
-                <an:input cabValue="Búsqueda por nombre o DNI"
+                <an:input cabValue="Búsqueda por nombre, DNI o especialidad"
                           cabLen="col-lg-2"
                           conLen="col-lg-4"
-                          conValue="#{alumnoGeneralController.strBusqueda}"
-                          conTooltip="Ingrese nombre o DNI para buscar"
+                          conValue="#{docenteGeneralController.strBusqueda}"
+                          conTooltip="Ingrese nombre, DNI o especialidad para buscar"
                           conRequired="false"/>
                 <an:extra comType="separadorSimple" comClass="my-2"/>
 
-                <an:table id="cdtAlumno"
-                          cabId="cdtAlumno"
-                          cabValue="#{alumnoGeneralController.lstAlumnosViewDTO}"
+                <an:table id="cdtDocente"
+                          cabId="cdtDocente"
+                          cabValue="#{docenteGeneralController.lstDocentesViewDTO}"
                           cabPaginator="true">
 
                     <p:column width="50" headerText="Nro" styleClass="text-center">
                         <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
-                    </p:column>
-
-                    <p:column width="100" headerText="Tipo" styleClass="text-center">
-                        <an:celda optValue="#{registro.tipo}" comAlign="text-center"/>
                     </p:column>
 
                     <p:column width="120" headerText="DNI" styleClass="text-center">
@@ -60,7 +56,7 @@
                         <an:celda optValue="#{registro.nombreCompleto}"/>
                     </p:column>
 
-                    <p:column width="200" headerText="Correo" styleClass="text-center">
+                    <p:column width="200" headerText="Email" styleClass="text-center">
                         <an:celda optValue="#{registro.email}" comAlign="text-center"/>
                     </p:column>
 
@@ -68,19 +64,15 @@
                         <an:celda optValue="#{registro.celular}" comAlign="text-center"/>
                     </p:column>
 
-                    <p:column width="150" headerText="Correo Login" styleClass="text-center">
-                        <an:celda optValue="#{registro.correoLogin}" comAlign="text-center"/>
+                    <p:column width="150" headerText="Especialidad" styleClass="text-center">
+                        <an:celda optValue="#{registro.especialidad}" comAlign="text-center"/>
                     </p:column>
 
-                    <p:column width="150" headerText="Código" styleClass="text-center">
-                        <an:celda optValue="#{registro.codigoEstudiante}" comAlign="text-center"/>
+                    <p:column width="120" headerText="Fecha Ingreso" styleClass="text-center">
+                        <an:celda optValue="#{registro.fechaIng}" comAlign="text-center"/>
                     </p:column>
 
-                    <p:column width="100" headerText="Ciclo" styleClass="text-center">
-                        <an:celda optValue="#{registro.cicloNumero}" comAlign="text-center"/>
-                    </p:column>
-
-                    <p:column width="120" headerText="Estado" styleClass="text-center">
+                    <p:column width="100" headerText="Estado" styleClass="text-center">
                         <an:celda comType="estado" 
                                   optValue="#{registro.estado}" 
                                   txtActivo="#{registro.estado == 'ACTIVO' ? 'TRUE' : 'FALSE'}" 
@@ -89,7 +81,7 @@
 
                     <f:facet name="footer">
                         <an:celda txtClass="fw-bold bg-transparent"
-                                  optValue="Total alumnos: #{alumnoGeneralController.lstAlumnosViewDTO != null ? alumnoGeneralController.lstAlumnosViewDTO.size() : 0}"/>
+                                  optValue="Total docentes: #{docenteGeneralController.lstDocentesViewDTO != null ? docenteGeneralController.lstDocentesViewDTO.size() : 0}"/>
                     </f:facet>
 
                 </an:table>
