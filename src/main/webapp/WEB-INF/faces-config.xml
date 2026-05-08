@@ -3,118 +3,146 @@
               xmlns="https://jakarta.ee/xml/ns/jakartaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_1.xsd">
+
     <navigation-rule>
+
         <from-view-id>*</from-view-id>
+
+        <!-- =====================================
+             ACCESO
+        ====================================== -->
         <navigation-case>
             <from-outcome>acceso.ok</from-outcome>
             <to-view-id>/bienvenido.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
         <navigation-case>
             <from-outcome>acceso.error</from-outcome>
             <to-view-id>/login.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
         <navigation-case>
             <from-outcome>certificado.validar</from-outcome>
             <to-view-id>/validarCertificado.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
+        <!-- =====================================
+             ALUMNOS
+        ====================================== -->
         <navigation-case>
-            <from-outcome>usuarios.alumnos</from-outcome>
-            <to-view-id>/pages/gestionarAlumnos.xhtml</to-view-id>
+            <from-outcome>alumnos.registro</from-outcome>
+            <to-view-id>/pages/alumnos/registrarAlumnos.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
         <navigation-case>
-            <from-outcome>gestionar.cursos</from-outcome>
-            <to-view-id>/pages/gestionar/Cursos.xhtml</to-view-id>
+            <from-outcome>alumnos.lista</from-outcome>
+            <to-view-id>/pages/listaAlumnos.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
+        <!-- =====================================
+             CURSOS
+        ====================================== -->
         <navigation-case>
-            <from-outcome>gestionar.precios</from-outcome>
-            <to-view-id>/pages/gestionar/Precios.xhtml</to-view-id>
+            <from-outcome>cursos.lista</from-outcome>
+            <to-view-id>/pages/cursos/Cursos.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
         <navigation-case>
-            <from-outcome>gestionar.fichas</from-outcome>
-            <to-view-id>/pages/gestionarFichas.xhtml</to-view-id>
+            <from-outcome>cursos.precios</from-outcome>
+            <to-view-id>/pages/cursos/Precios.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
         <navigation-case>
-            <from-outcome>gestionar.pagos</from-outcome>
-            <to-view-id>/pages/gestionarPagos.xhtml</to-view-id>
+            <from-outcome>cursos.plan</from-outcome>
+            <to-view-id>/pages/cursos/PlanCurricular.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
+        <!-- =====================================
+             GRUPOS
+        ====================================== -->
         <navigation-case>
-            <from-outcome>gestionar.asignaciones</from-outcome>
-            <to-view-id>/pages/gestionarAsignaciones.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>gestionar.grupos</from-outcome>
+            <from-outcome>grupos.lista</from-outcome>
             <to-view-id>/pages/gestionarGrupos.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
+        <navigation-case>
+            <from-outcome>grupos.docentes</from-outcome>
+            <to-view-id>/pages/gestionarAsignaciones.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <!-- =====================================
+             CERTIFICADOS
+        ====================================== -->
+        <navigation-case>
+            <from-outcome>certificados.lista</from-outcome>
+            <to-view-id>/pages/certificadosSolicitados.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>certificados.generar</from-outcome>
+            <to-view-id>/pages/certificadosPendientes.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>certificados.registros</from-outcome>
+            <to-view-id>/pages/cer3nP5oFahNL86vESFrkKjmuupsQa1mPzN7.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <!-- =====================================
+             FICHAS
+        ====================================== -->
+        <navigation-case>
+            <from-outcome>fichas.lista</from-outcome>
+            <to-view-id>/pages/gestionarFichas.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <!-- =====================================
+             PAGOS
+        ====================================== -->
+        <navigation-case>
+            <from-outcome>pagos.lista</from-outcome>
+            <to-view-id>/pages/gestionarPagos.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <!-- =====================================
+             CONFIGURACIONES EXTRA
+        ====================================== -->
         <navigation-case>
             <from-outcome>gestionar.tiposdepago</from-outcome>
             <to-view-id>/pages/gestionarTipoPago.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
         <navigation-case>
             <from-outcome>gestionar.notas</from-outcome>
             <to-view-id>/pages/gestionarNotas.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-        
-        
-        <!-- ==========================
-            CERTIFICADOS - SOLICITADOS Y PENDIENTES
-        =========================== -->
-        <navigation-case>
-            <from-outcome>certificados.solicitados</from-outcome>
-            <to-view-id>/pages/certificadosSolicitados.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        
-        <navigation-case>
-            <from-outcome>certificados.pendientes</from-outcome>
-            <to-view-id>/pages/certificadosPendientes.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
 
-        <!-- ==========================
-             CERTIFICADOS - FIRMADOS
-        =========================== -->
-        <navigation-case>
-            <from-outcome>certificados.firmados</from-outcome>
-            <to-view-id>/pages/certificadosFirmados.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-        <!-- ==========================
-             CERTIFICADOS - GENERAR TOKEN
-        =========================== -->
-        <navigation-case>
-            <from-outcome>certificados.generartoken</from-outcome>
-            <to-view-id>/pages/certificadosToken.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-        <!-- ==========================
-             CERTIFICADOS - REGISTRO DECANATURA
-        =========================== -->
-        <navigation-case>
-            <from-outcome>certificados.registrosdecanatura</from-outcome>
-            <to-view-id>/pages/certificadosRegistroDecanatura.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        
+        <!-- =====================================
+             REPORTES
+        ====================================== -->
         <navigation-case>
             <from-outcome>reportes.certificados</from-outcome>
             <to-view-id>/pages/reportesCertificados.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-        
+
         <navigation-case>
             <from-outcome>reportes.tokens</from-outcome>
             <to-view-id>/pages/reportesTokens.xhtml</to-view-id>
@@ -122,5 +150,5 @@
         </navigation-case>
 
     </navigation-rule>
-    
+
 </faces-config>

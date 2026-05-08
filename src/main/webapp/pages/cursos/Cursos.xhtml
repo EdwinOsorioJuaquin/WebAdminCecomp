@@ -74,19 +74,27 @@
                             <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
                         </p:column>
 
-                        <p:column width="300" headerText="Curso">
+                        <p:column width="250" headerText="Curso">
                             <an:celda optValue="#{registro.curso.nomCurso}"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="Abreviatura" styleClass="text-center">
+                            <an:celda optValue="#{registro.curso.abreviatura}" comAlign="text-center"/>
                         </p:column>
 
                         <p:column width="150" headerText="Nivel" styleClass="text-center">
                             <an:celda optValue="#{registro.nombreNivel}" comAlign="text-center"/>
                         </p:column>
 
-                        <p:column width="150" headerText="Duración" styleClass="text-center">
+                        <p:column width="150" headerText="Plan Curricular" styleClass="text-center">
+                            <an:celda optValue="#{registro.nombrePlan}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="Duración" styleClass="text-center">
                             <an:celda optValue="#{registro.curso.duracion}" comAlign="text-center"/>
                         </p:column>
 
-                        <p:column width="150" headerText="Estado" styleClass="text-center">
+                        <p:column width="120" headerText="Estado" styleClass="text-center">
                             <an:celda comType="estado" 
                                       optValue="#{registro.curso.bandera ? 'ACTIVO' : 'INACTIVO'}" 
                                       txtActivo="#{registro.curso.bandera ? 'TRUE' : 'FALSE'}" 
@@ -113,12 +121,6 @@
                                    cmdUpdate="@form"
                                    cmdAction="#{cursoController.doVolver()}"/>
 
-                        <an:button cmdValue="Siguiente"
-                                   cmdIcon="fa fa-arrow-right"
-                                   cmdClass="bntIconsMedio"
-                                   cmdUpdate="@form"
-                                   cmdAction="#{cursoController.doContinuarTemas()}"
-                                   cmdTooltip="Continuar con el registro de temas del curso"/>
                         <an:button cmdValue="Guardar curso"
                                    cmdIcon="fa fa-save"
                                    cmdClass="bntIconsMedio"
@@ -162,36 +164,21 @@
                         </div>
                     </div>
 
-                </h:panelGroup>
+                    <!-- Select para Plan Curricular -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Plan Curricular</div>
+                        <div class="col-lg-4">
+                            <p:selectOneMenu value="#{cursoController.idPlanSeleccionado}" 
+                                             style="width:100%">
+                                <f:selectItem itemLabel="-- Seleccione Plan Curricular --" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value="#{cursoController.lstPlanesDisponibles}" 
+                                               var="plan"
+                                               itemLabel="#{plan.nomPland}" 
+                                               itemValue="#{plan.idPland}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
 
-                <!-- ========== VISTA TEMAS ========== -->
-                <h:panelGroup id="pngTemas"
-                              rendered="#{cursoController.strValor eq 'TEMAS'}"
-                              layout="block">
-
-                    <an:seccion cabLabel="Temas del Curso" cabLen="col-sm-6" cmdLen="col-sm-6">
-                        <an:button cmdValue="Volver"
-                                   cmdIcon="fa fa-arrow-left"
-                                   cmdClass="bntIconsMedio me-1"
-                                   cmdUpdate="@form"
-                                   cmdAction="#{cursoController.doVolverCursoDesdeTemas()}"
-                                   cmdTooltip="Volver al formulario de curso"/>
-
-                        <an:button cmdValue="Guardar todo"
-                                   cmdIcon="fa fa-save"
-                                   cmdClass="bntIconsMedio"
-                                   cmdUpdate="@form"
-                                   cmdAction="#{cursoController.doGuardarTemas()}"
-                                   cmdTooltip="Guardar curso y temas"/>
-                    </an:seccion>
-
-                    <ui:repeat value="#{cursoController.temas}" var="tema" varStatus="st">
-                        <an:input cabValue="Tema #{st.index + 1}"
-                                  cabLen="col-lg-2"
-                                  conLen="col-lg-6"
-                                  conValue="#{cursoController.temas[st.index]}"
-                                  conTooltip="Ingrese el nombre del tema #{st.index + 1}"/>
-                    </ui:repeat>
                 </h:panelGroup>
 
             </div>

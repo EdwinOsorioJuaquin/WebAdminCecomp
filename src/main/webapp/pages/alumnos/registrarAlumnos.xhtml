@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{alumnoController.doIniciarPagina()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">Registrar Alumno Externo</div>
+        <h:form id="frmPrincipal" class="form-horizontal h-100">
+            <div id="divPrincipal" class="card-contenido">
+
+                <p:growl id="growl" showDetail="true" life="3000"/>
+
+                <!-- ===================================================== -->
+                <!-- PASO 1: DATOS PERSONALES -->
+                <!-- ===================================================== -->
+                <h:panelGroup id="pngPersona" rendered="#{alumnoController.pasoPersona}">
+                    
+                    <an:seccion cabLabel="Datos Personales" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Registrar"
+                                   cmdIcon="fa fa-save"
+                                   cmdClass="bntIconsMedio"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{alumnoController.doGuardarPersona()}"
+                                   cmdTooltip="Continuar con datos de acceso"/>
+                    </an:seccion>
+
+                    <an:input cabValue="DNI"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-3"
+                              conValue="#{alumnoController.personaEdit.numeroPndid}"
+                              conTooltip="DNI del alumno"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Nombres"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-5"
+                              conValue="#{alumnoController.personaEdit.nombre}"
+                              conTooltip="Nombres del alumno"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Apellido Paterno"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{alumnoController.personaEdit.apPaterno}"
+                              conTooltip="Apellido Paterno"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Apellido Materno"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{alumnoController.personaEdit.apMaterno}"
+                              conTooltip="Apellido Materno"
+                              conRequired="true"/>
+
+                    <!-- Select para Sexo -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Sexo</div>
+                        <div class="col-lg-2">
+                            <p:selectOneMenu value="#{alumnoController.personaEdit.sexo}" 
+                                             style="width:100%"
+                                             required="true"
+                                             requiredMessage="Seleccione sexo">
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Masculino" itemValue="M"/>
+                                <f:selectItem itemLabel="Femenino" itemValue="F"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <!-- Fecha Nacimiento con calendar mejorado -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Fecha Nacimiento</div>
+                        <div class="col-lg-3">
+                            <p:calendar value="#{alumnoController.personaEdit.fechaNac}"
+                                        pattern="dd/MM/yyyy"
+                                        showButtonPanel="true"
+                                        navigator="true"
+                                        yearRange="c-80:c+0"
+                                        showOn="button"
+                                        style="width:100%"
+                                        required="true"
+                                        requiredMessage="Ingrese fecha de nacimiento"/>
+                        </div>
+                    </div>
+
+                    <an:seccion cabLabel="Datos de Contacto" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <!-- Sin botones por ahora -->
+                    </an:seccion>
+
+                    <an:input cabValue="Dirección"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-6"
+                              conValue="#{alumnoController.personaEdit.direccion}"
+                              conTooltip="Dirección domiciliaria"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Celular"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-2"
+                              conValue="#{alumnoController.personaEdit.celularPrin}"
+                              conTooltip="Número de celular"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Correo Electrónico"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{alumnoController.personaEdit.emailPrin}"
+                              conTooltip="Correo electrónico"
+                              conRequired="true"/>
+
+                </h:panelGroup>
+
+                <!-- ===================================================== -->
+                <!-- PASO 2: DATOS DE ACCESO -->
+                <!-- ===================================================== -->
+                <h:panelGroup id="pngAlumno" rendered="#{alumnoController.pasoAlumno}">
+                    
+                    <an:seccion cabLabel="Datos de Acceso" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{alumnoController.doVolverPersona()}"
+                                   cmdTooltip="Volver a datos personales"/>
+                        <an:button cmdValue="Guardar Alumno"
+                                   cmdIcon="fa fa-save"
+                                   cmdClass="bntIconsMedio"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{alumnoController.doGuardarAlumno()}"
+                                   cmdTooltip="Registrar alumno externo"/>
+                    </an:seccion>
+
+                    <!-- Resumen de persona registrada (solo lectura) -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Persona Registrada</div>
+                        <div class="col-lg-6">
+                            <p:outputLabel value="#{alumnoController.personaEdit.nombreCompleto} - DNI: #{alumnoController.personaEdit.numeroPndid}"
+                                           style="font-weight:bold"/>
+                        </div>
+                    </div>
+
+                    <an:input cabValue="Correo Login"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{alumnoController.alumnoEdit.correoLogin}"
+                              conTooltip="Correo para iniciar sesión"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Contraseña"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-3"
+                              conValue="#{alumnoController.alumnoEdit.password}"
+                              conTooltip="Contraseña de acceso"
+                              conRequired="true"/>
+
+                </h:panelGroup>
+
+            </div>
+        </h:form>
+
+        <!-- Dialog de Procesando -->
+        <p:dialog id="dlgProcesando" widgetVar="dlgProcesando" modal="true" closable="false" resizable="false" draggable="false" style="width:200px;height:80px;">
+            <div style="text-align:center;">
+                <i class="fa fa-spinner fa-pulse fa-2x"></i>
+                <p:outputLabel value=" Procesando..." style="margin-left:10px;"/>
+            </div>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

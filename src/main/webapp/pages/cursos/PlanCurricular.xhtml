@@ -1,0 +1,406 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{planCurricularController.doIniciarPagina()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div style="width:100%;border-top:2px solid white; padding-top: 0px;"/>
+        <div align="center" class="card-titulo mb-1">
+            Gestionar Planes Curriculares
+        </div>
+        
+        <h:form id="frmPrincipal" class="form-horizontal mb-0 h-100">
+            <div id="divPrincipal" class="card-contenido">
+
+                <!-- ========== VISTA LISTA ========== -->
+                <h:panelGroup id="pngLista" rendered="#{planCurricularController.strValor eq 'LISTA'}">
+                    
+                    <div class="card-cabecera row px-0">
+                        <div class="col-8 px-1 divTituloCabecera">
+                            <i class="bi bi-grid-fill iconoCabecera"></i>
+                            <p:outputLabel value="Lista de Planes Curriculares"/>
+                        </div>
+                        <div class="col-4 pe-1 divcomandosCabecera">
+                            <div class="row float-end pe-1">
+                                <p:commandButton id="btnVolver" 
+                                                 class="bntIconsMedio"
+                                                 rendered="#{not empty planCurricularController.strBusqueda}"
+                                                 icon="fa fa-fw fa-arrow-left"
+                                                 action="#{planCurricularController.doVolver()}"
+                                                 update="@form"
+                                                 immediate="true"
+                                                 value="Volver">
+                                </p:commandButton>
+                                <p:commandButton id="btnBuscar" 
+                                                 class="bntIconsMedio"
+                                                 icon="fa fa-fw fa-search"
+                                                 action="#{planCurricularController.doBuscar()}"
+                                                 update="@form"
+                                                 value="Buscar">
+                                </p:commandButton>
+                                <p:commandButton id="btnNuevo" 
+                                                 class="bntIconsMedio"
+                                                 icon="fa fa-fw fa-plus"
+                                                 action="#{planCurricularController.doNuevo()}"
+                                                 update="@form"
+                                                 value="Nuevo">
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row d-flex">
+                        <h:outputText value="Búsqueda por nombre:" class="control-label col-lg-2 d-none d-lg-block"/>
+                        <p:outputPanel class="form-label-group col-lg-4 px-0">
+                            <p:inputText id="itBusqueda"
+                                         value="#{planCurricularController.strBusqueda}"
+                                         placeholder=""
+                                         class="form-control input-md w-100">
+                                <p:ajax event="keyup" update="btnBuscar"/>
+                            </p:inputText>
+                            <p:outputLabel value="Ingrese nombre del plan curricular" for="itBusqueda"/>
+                        </p:outputPanel>
+                    </div>
+                    
+                    <an:table id="cdtPlan"
+                              cabId="cdtPlan"
+                              cabValue="#{planCurricularController.lstPlanesView}"
+                              cabPaginator="true">
+
+                        <p:column width="200" headerText="Acciones" styleClass="text-center">
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-list"
+                                       cmdValue="Sesiones"
+                                       cmdTooltip="Gestionar sesiones del plan"
+                                       cmdAction="#{planCurricularController.doGestionarSesiones(registro)}"/>
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-edit text-info ms-2"
+                                       cmdValue="Editar"
+                                       cmdTooltip="Editar plan"
+                                       cmdAction="#{planCurricularController.doEditar(registro)}"/>
+                        </p:column>
+
+                        <p:column width="50" headerText="Nro" styleClass="text-center">
+                            <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="300" headerText="Nombre del Plan">
+                            <an:celda optValue="#{registro.nomPland}"/>
+                        </p:column>
+
+                        <p:column width="400" headerText="Descripción">
+                            <an:celda optValue="#{registro.desPland}"/>
+                        </p:column>
+
+                        <p:column width="150" headerText="Fecha Registro" styleClass="text-center">
+                            <an:celda optValue="#{registro.fechaRegis}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="Estado" styleClass="text-center">
+                            <an:celda comType="estado" 
+                                      optValue="#{registro.estadoPland ? 'ACTIVO' : 'INACTIVO'}" 
+                                      txtActivo="#{registro.estadoPland ? 'TRUE' : 'FALSE'}" 
+                                      comAlign="text-center"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"
+                                      optValue="Total planes: #{planCurricularController.lstPlanesView != null ? planCurricularController.lstPlanesView.size() : 0}"/>
+                        </f:facet>
+
+                    </an:table>
+                </h:panelGroup>
+
+                <!-- ========== VISTA NUEVO / EDITAR ========== -->
+                <h:panelGroup id="pngNuevoPlan" rendered="#{planCurricularController.strValor eq 'NUEVO'}">
+                    
+                    <div class="card-cabecera row px-0">
+                        <div class="col-8 px-1 divTituloCabecera">
+                            <i class="bi bi-grid-fill iconoCabecera"></i>
+                            <p:outputLabel value="Registro de Plan Curricular"/>
+                        </div>
+                        <div class="col-4 pe-1 divcomandosCabecera">
+                            <div class="row float-end pe-1">
+                                <p:commandButton id="btnVolverPlan"
+                                                 class="bntIconsMedio"
+                                                 icon="fa fa-fw fa-arrow-left"
+                                                 action="#{planCurricularController.doVolver()}"
+                                                 update="@form"
+                                                 value="Volver"/>
+                                <p:commandButton id="btnGuardarPlan"
+                                                 class="bntIconsMedio"
+                                                 icon="fa fa-fw fa-save"
+                                                 action="#{planCurricularController.doGuardar()}"
+                                                 update="@form"
+                                                 value="Guardar plan"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row d-flex">
+                        <h:outputText value="Nombre del plan:" class="control-label col-lg-2 d-none d-lg-block"/>
+                        <p:outputPanel class="form-label-group col-lg-6 px-0">
+                            <p:inputText id="itNomPlan"
+                                         value="#{planCurricularController.clsPlan.nomPland}"
+                                         class="form-control input-md w-100"
+                                         required="true"
+                                         maxlength="40"/>
+                            <p:outputLabel value="Ingrese nombre del plan curricular" for="itNomPlan"/>
+                        </p:outputPanel>
+                    </div>
+                    
+                    <div class="form-group row d-flex">
+                        <h:outputText value="Descripción:" class="control-label col-lg-2 d-none d-lg-block"/>
+                        <p:outputPanel class="form-label-group col-lg-8 px-0">
+                            <p:inputTextarea id="itDesPlan"
+                                             value="#{planCurricularController.clsPlan.desPland}"
+                                             rows="3"
+                                             class="form-control w-100"
+                                             maxlength="100"/>
+                            <p:outputLabel value="Ingrese descripción del plan" for="itDesPlan"/>
+                        </p:outputPanel>
+                    </div>
+                    
+                    <div class="form-group row d-flex">
+                        <h:outputText value="Activo:" class="control-label col-lg-2 d-none d-lg-block"/>
+                        <p:outputPanel class="col-lg-2 px-0">
+                            <p:selectBooleanCheckbox id="chkActivo" value="#{planCurricularController.clsPlan.estadoPland}"/>
+                        </p:outputPanel>
+                    </div>
+                    
+                </h:panelGroup>
+
+                <!-- ========== GESTIÓN DE SESIONES ========== -->
+                <h:panelGroup id="pngSesiones" rendered="#{planCurricularController.strValor eq 'SESIONES'}">
+                    
+                    <div class="card-cabecera row px-0">
+                        <div class="col-8 px-1 divTituloCabecera">
+                            <i class="bi bi-grid-fill iconoCabecera"></i>
+                            <p:outputLabel value="Gestión de Sesiones - #{planCurricularController.clsPlan != null ? planCurricularController.clsPlan.nomPland : 'Plan'}"/>
+                        </div>
+                        <div class="col-4 pe-1 divcomandosCabecera">
+                            <div class="row float-end pe-1">
+                                <p:commandButton id="btnVolverPlanes"
+                                                 class="bntIconsMedio"
+                                                 icon="fa fa-fw fa-arrow-left"
+                                                 action="#{planCurricularController.doVolverPlanes()}"
+                                                 update="@form"
+                                                 value="Volver a planes"/>
+                                <p:commandButton id="btnNuevaSesion"
+                                                 class="bntIconsMedio"
+                                                 icon="fa fa-fw fa-plus"
+                                                 action="#{planCurricularController.doNuevaSesion()}"
+                                                 update="@form"
+                                                 value="Nueva Sesión"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <an:table id="cdtSesion"
+                              cabId="cdtSesion"
+                              cabValue="#{planCurricularController.lstSesiones}"
+                              cabPaginator="true">
+
+                        <p:column width="200" headerText="Acciones" styleClass="text-center">
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-list"
+                                       cmdValue="Subtemas"
+                                       cmdTooltip="Gestionar subtemas de la sesión"
+                                       cmdAction="#{planCurricularController.doGestionarSubtemas(registro)}"/>
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-edit text-info ms-2"
+                                       cmdValue="Editar"
+                                       cmdTooltip="Editar sesión"
+                                       cmdAction="#{planCurricularController.doEditarSesion(registro)}"/>
+                        </p:column>
+
+                        <p:column width="50" headerText="Nro" styleClass="text-center">
+                            <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="300" headerText="Nombre Sesión">
+                            <an:celda optValue="#{registro.nombreSesion}"/>
+                        </p:column>
+
+                        <p:column width="200" headerText="Estado" styleClass="text-center">
+                            <an:celda comType="estado"
+                                      optValue="#{registro.estadoSesion ? 'ACTIVO' : 'INACTIVO'}"
+                                      txtActivo="#{registro.estadoSesion ? 'TRUE' : 'FALSE'}"
+                                      comAlign="text-center"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"
+                                      optValue="Total sesiones: #{planCurricularController.lstSesiones != null ? planCurricularController.lstSesiones.size() : 0}"/>
+                        </f:facet>
+
+                    </an:table>
+                    
+                    <h:panelGroup rendered="#{planCurricularController.vistaSesion == 'NUEVO'}">
+                        <div class="card-cabecera row px-0 mt-3">
+                            <div class="col-8 px-1 divTituloCabecera">
+                                <i class="bi bi-grid-fill iconoCabecera"></i>
+                                <p:outputLabel value="Formulario de Sesión"/>
+                            </div>
+                            <div class="col-4 pe-1 divcomandosCabecera">
+                                <div class="row float-end pe-1">
+                                    <p:commandButton id="btnVolverSesiones"
+                                                     class="bntIconsMedio"
+                                                     icon="fa fa-fw fa-arrow-left"
+                                                     action="#{planCurricularController.doVolverSesiones()}"
+                                                     update="@form"
+                                                     value="Volver"/>
+                                    <p:commandButton id="btnGuardarSesion"
+                                                     class="bntIconsMedio"
+                                                     icon="fa fa-fw fa-save"
+                                                     action="#{planCurricularController.doGuardarSesion()}"
+                                                     update="@form"
+                                                     value="Guardar sesión"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row d-flex">
+                            <h:outputText value="Nombre de la sesión:" class="control-label col-lg-2 d-none d-lg-block"/>
+                            <p:outputPanel class="form-label-group col-lg-6 px-0">
+                                <p:inputText id="itNombreSesion"
+                                             value="#{planCurricularController.clsSesion.nombreSesion}"
+                                             class="form-control input-md w-100"
+                                             required="true"
+                                             maxlength="100"/>
+                                <p:outputLabel value="Ingrese el nombre de la sesión (ej: Introducción a Word)" for="itNombreSesion"/>
+                            </p:outputPanel>
+                        </div>
+                        
+                        <div class="form-group row d-flex">
+                            <h:outputText value="Estado:" class="control-label col-lg-2 d-none d-lg-block"/>
+                            <p:outputPanel class="col-lg-2 px-0">
+                                <p:selectBooleanCheckbox id="chkSesionActiva" value="#{planCurricularController.clsSesion.estadoSesion}"/>
+                            </p:outputPanel>
+                        </div>
+                    </h:panelGroup>
+                    
+                </h:panelGroup>
+
+                <!-- ========== GESTIÓN DE SUBTEMAS ========== -->
+                <h:panelGroup id="pngSubtemas" rendered="#{planCurricularController.strValor eq 'SUBTEMAS'}">
+                    
+                    <div class="card-cabecera row px-0">
+                        <div class="col-8 px-1 divTituloCabecera">
+                            <i class="bi bi-grid-fill iconoCabecera"></i>
+                            <p:outputLabel value="Gestión de Subtemas - Plan: #{planCurricularController.clsPlan != null ? planCurricularController.clsPlan.nomPland : 'Plan'} | Sesión: #{planCurricularController.clsSesion != null ? planCurricularController.clsSesion.nombreSesion : 'Sesión'}"/>
+                        </div>
+                        <div class="col-4 pe-1 divcomandosCabecera">
+                            <div class="row float-end pe-1">
+                                <p:commandButton id="btnVolverSesionesDesdeSubtemas"
+                                                 class="bntIconsMedio"
+                                                 icon="fa fa-fw fa-arrow-left"
+                                                 action="#{planCurricularController.doVolverSesionesDesdeSubtemas()}"
+                                                 update="@form"
+                                                 value="Volver a sesiones"/>
+                                <p:commandButton id="btnNuevoSubtema"
+                                                 class="bntIconsMedio"
+                                                 icon="fa fa-fw fa-plus"
+                                                 action="#{planCurricularController.doNuevoSubtema()}"
+                                                 update="@form"
+                                                 value="Nuevo Subtema"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <an:table id="cdtSubtema"
+                              cabId="cdtSubtema"
+                              cabValue="#{planCurricularController.lstSubtemas}"
+                              cabPaginator="true">
+
+                        <p:column width="150" headerText="Acciones" styleClass="text-center">
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-edit text-info ms-2"
+                                       cmdValue="Editar"
+                                       cmdTooltip="Editar subtema"
+                                       cmdAction="#{planCurricularController.doEditarSubtema(registro)}"/>
+                        </p:column>
+
+                        <p:column width="50" headerText="Nro" styleClass="text-center">
+                            <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="400" headerText="Nombre del Subtema">
+                            <an:celda optValue="#{registro.nomTem}"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="Estado" styleClass="text-center">
+                            <an:celda comType="estado"
+                                      optValue="#{registro.estadoTem ? 'ACTIVO' : 'INACTIVO'}"
+                                      txtActivo="#{registro.estadoTem ? 'TRUE' : 'FALSE'}"
+                                      comAlign="text-center"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"
+                                      optValue="Total subtemas: #{planCurricularController.lstSubtemas != null ? planCurricularController.lstSubtemas.size() : 0}"/>
+                        </f:facet>
+
+                    </an:table>
+                    
+                    <h:panelGroup rendered="#{planCurricularController.vistaSubtema == 'NUEVO'}">
+                        <div class="card-cabecera row px-0 mt-3">
+                            <div class="col-8 px-1 divTituloCabecera">
+                                <i class="bi bi-grid-fill iconoCabecera"></i>
+                                <p:outputLabel value="Formulario de Subtema"/>
+                            </div>
+                            <div class="col-4 pe-1 divcomandosCabecera">
+                                <div class="row float-end pe-1">
+                                    <p:commandButton id="btnVolverSubtemas"
+                                                     class="bntIconsMedio"
+                                                     icon="fa fa-fw fa-arrow-left"
+                                                     action="#{planCurricularController.doVolverSubtemas()}"
+                                                     update="@form"
+                                                     value="Volver"/>
+                                    <p:commandButton id="btnGuardarSubtema"
+                                                     class="bntIconsMedio"
+                                                     icon="fa fa-fw fa-save"
+                                                     action="#{planCurricularController.doGuardarSubtema()}"
+                                                     update="@form"
+                                                     value="Guardar subtema"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row d-flex">
+                            <h:outputText value="Nombre del subtema:" class="control-label col-lg-2 d-none d-lg-block"/>
+                            <p:outputPanel class="form-label-group col-lg-6 px-0">
+                                <p:inputText id="itNomSubtema"
+                                             value="#{planCurricularController.clsSubtema.nomTem}"
+                                             class="form-control input-md w-100"
+                                             required="true"
+                                             maxlength="100"/>
+                                <p:outputLabel value="Ingrese nombre del subtema" for="itNomSubtema"/>
+                            </p:outputPanel>
+                        </div>
+                        
+                        <div class="form-group row d-flex">
+                            <h:outputText value="Activo:" class="control-label col-lg-2 d-none d-lg-block"/>
+                            <p:outputPanel class="col-lg-2 px-0">
+                                <p:selectBooleanCheckbox id="chkSubtemaActivo" value="#{planCurricularController.clsSubtema.estadoTem}"/>
+                            </p:outputPanel>
+                        </div>
+                    </h:panelGroup>
+                    
+                </h:panelGroup>
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

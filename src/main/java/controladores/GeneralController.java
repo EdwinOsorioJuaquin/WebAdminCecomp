@@ -109,63 +109,128 @@ public class GeneralController extends BaseController {
     }
 
     public void doCargarMenu() {
+
         List<gralMenuSub> lstSubMenu;
         gralMenuGeneral menu;
+
         this.getLstMenu().clear();
 
-        //--- MENU 01: USUARIOS ----------------//
+        // =====================================
+        // 01. ALUMNOS
+        // =====================================
         lstSubMenu = new ArrayList<>();
-        menu = new gralMenuGeneral(1, "USUARIOS", "fa fa-user", null, "d-block");
-        lstSubMenu.add(new gralMenuSub(11, "Alumnos", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(12, "Docentes", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(13, "Decano", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(14, "Director Cecomp", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(15, "Administrador", null, null, null, true));
+
+        menu = new gralMenuGeneral(
+                1,
+                "ALUMNOS",
+                "fa fa-user",
+                null,
+                "d-block"
+        );
+
+        lstSubMenu.add(new gralMenuSub(11, "Registrar Alumnos", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(12, "Lista de Alumnos", null, null, null, true));
+
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
 
-        //--- MENU 02: GESTIONAR ----------------//
+        // =====================================
+        // 02. CURSOS
+        // =====================================
         lstSubMenu = new ArrayList<>();
-        menu = new gralMenuGeneral(2, "GESTIONAR", "fa fa-folder-open", null, "d-block");
+
+        menu = new gralMenuGeneral(
+                2,
+                "CURSOS",
+                "fa fa-book",
+                null,
+                "d-block"
+        );
+
         lstSubMenu.add(new gralMenuSub(21, "Cursos", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(22, "Fichas", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(22, "Plan Curricular", null, null, null, true));
         lstSubMenu.add(new gralMenuSub(23, "Precios", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(24, "Pagos", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(25, "Asignaciones", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(26, "Grupos", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(27, "Tipos de pago", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(28, "Notas Curso", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(29, "Credenciales Acceso", null, null, null, true));
+
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
 
-        //--- MENU 03: CERTIFICADOS ----------------//
+        // =====================================
+        // 03. GRUPOS
+        // =====================================
         lstSubMenu = new ArrayList<>();
-        menu = new gralMenuGeneral(3, "CERTIFICADOS", "fa fa-certificate", null, "d-block");
-        lstSubMenu.add(new gralMenuSub(31, "Solicitados", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(32, "Pendientes", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(33, "Firmados", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(34, "Generar Token", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(35, "Registros Decanatura", null, null, null, true));
+
+        menu = new gralMenuGeneral(
+                3,
+                "GRUPOS",
+                "fa fa-users",
+                null,
+                "d-block"
+        );
+
+        lstSubMenu.add(new gralMenuSub(31, "Grupos", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(32, "Docentes", null, null, null, true));
+
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
 
-        //--- MENU 04: REPORTES ----------------//
+        // =====================================
+        // 04. CERTIFICADOS
+        // =====================================
         lstSubMenu = new ArrayList<>();
-        menu = new gralMenuGeneral(4, "REPORTES", "fa fa-file-alt", null, "d-block");
+
+        menu = new gralMenuGeneral(
+                4,
+                "CERTIFICADOS",
+                "fa fa-certificate",
+                null,
+                "d-block"
+        );
+
         lstSubMenu.add(new gralMenuSub(41, "Certificados", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(42, "Tokens", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(42, "Generar", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(43, "Registros Decanatura", null, null, null, true));
+
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
 
-        //--- MENU 05: CONFIGURACIÓN ----------------//
+        // =====================================
+        // 05. FICHAS
+        // =====================================
         lstSubMenu = new ArrayList<>();
-        menu = new gralMenuGeneral(5, "CONFIGURACIÓN", "fa fa-cog", null, "d-block");
-        lstSubMenu.add(new gralMenuSub(51, "Respaldo", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(52, "Papelera", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(53, "Bitácora", null, null, null, true));
+
+        menu = new gralMenuGeneral(
+                5,
+                "FICHAS",
+                "fa fa-file-alt",
+                null,
+                "d-block"
+        );
+
+        lstSubMenu.add(new gralMenuSub(51, "Fichas", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(52, "Notas", null, null, null, true));
+
+
+        this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
+
+        // =====================================
+        // 06. PAGOS
+        // =====================================
+        lstSubMenu = new ArrayList<>();
+
+        menu = new gralMenuGeneral(
+                6,
+                "PAGOS",
+                "fa fa-money-bill",
+                null,
+                "d-block"
+        );
+
+        lstSubMenu.add(new gralMenuSub(61, "Pagos", null, null, null, true));
+
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
     }
 
 
     public String doNavegacion(int idMenu, int idSubMenu) {
-        String ruta = "";
+
+        String ruta;
+
         System.out.println("Menú seleccionado: " + idMenu + " | Submenú: " + idSubMenu);
 
         this.getModulo().setBlnPrimerAcceso(Boolean.TRUE);
@@ -175,52 +240,47 @@ public class GeneralController extends BaseController {
 
             case 0 ->
                 "acceso.ok";
-            // =========================
-            // 01. USUARIOS
-            // =========================
-            case 11 -> "usuarios.alumnos";
-            case 12 -> "usuarios.docentes";
-            case 13 -> "usuarios.decano";
-            case 14 -> "usuarios.directorcecomp";
-            case 15 -> "usuarios.administrador";
 
-            // =========================
-            // 02. GESTIONAR
-            // =========================
-            case 21 -> "gestionar.cursos";
-            case 22 -> "gestionar.fichas";
-            case 23 -> "gestionar.precios";
-            case 24 -> "gestionar.pagos";
-            case 25 -> "gestionar.asignaciones";
-            case 26 -> "gestionar.grupos";
-            case 27 -> "gestionar.tiposdepago";
-            case 28 -> "gestionar.notas";
-            case 29 -> "gestionar.credenciales";
-            // =========================
-            // 03. CERTIFICADOS
-            // =========================
-            case 31 -> "certificados.solicitados";
-            case 32 -> "certificados.pendientes";
-            case 33 -> "certificados.firmados";
-            case 34 -> "certificados.generartoken";
-            case 35 -> "certificados.registrosdecanatura";
+            // =====================================
+            // 01. ALUMNOS
+            // =====================================
+            case 11 -> "alumnos.registro";
+            case 12 -> "alumnos.lista";
 
-            // =========================
-            // 04. REPORTES
-            // =========================
-            case 41 -> "reportes.certificados";
-            case 42 -> "reportes.tokens";
+            // =====================================
+            // 02. CURSOS
+            // =====================================
+            case 21 -> "cursos.lista";
+            case 22 -> "cursos.plan";
+            case 23 -> "cursos.precios";
 
-            // =========================
-            // 05. CONFIGURACIÓN
-            // =========================
-            case 51 -> "configuracion.respaldo";
-            case 52 -> "configuracion.papelera";
-            case 53 -> "configuracion.bitacora";
+            // =====================================
+            // 03. GRUPOS
+            // =====================================
+            case 31 -> "grupos.lista";
+            case 32 -> "grupos.docentes";
 
-            // =========================
+            // =====================================
+            // 04. CERTIFICADOS
+            // =====================================
+            case 41 -> "certificados.lista";
+            case 42 -> "certificados.generar";
+            case 43 -> "certificados.registros";
+
+            // =====================================
+            // 05. FICHAS
+            // =====================================
+            case 51 -> "fichas.lista";
+            case 52 -> "fichas.lista";
+
+            // =====================================
+            // 06. PAGOS
+            // =====================================
+            case 61 -> "pagos.lista";
+
+            // =====================================
             // RUTA POR DEFECTO
-            // =========================
+            // =====================================
             default -> "construccion.ok";
         };
 
