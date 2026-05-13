@@ -165,7 +165,7 @@ public class GeneralController extends BaseController {
                 "d-block"
         );
 
-        lstSubMenu.add(new gralMenuSub(31, "Grupos", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(31, "Gestionar Grupos", null, null, null, true));
         lstSubMenu.add(new gralMenuSub(32, "Docentes", null, null, null, true));
 
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
@@ -183,9 +183,8 @@ public class GeneralController extends BaseController {
                 "d-block"
         );
 
-        lstSubMenu.add(new gralMenuSub(41, "Certificados", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(42, "Generar", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(43, "Registros Decanatura", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(41, "Gestionar Certificados", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(42, "Registros Decanatura", null, null, null, true));
 
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
 
@@ -202,7 +201,7 @@ public class GeneralController extends BaseController {
                 "d-block"
         );
 
-        lstSubMenu.add(new gralMenuSub(51, "Fichas", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(51, "Gestionar Fichas", null, null, null, true));
         lstSubMenu.add(new gralMenuSub(52, "Notas", null, null, null, true));
 
 
@@ -257,20 +256,19 @@ public class GeneralController extends BaseController {
             // =====================================
             // 03. GRUPOS
             // =====================================
-            case 31 -> "grupos.lista";
+            case 31 -> "grupos.gestionarGrupos";
             case 32 -> "grupos.docentes";
 
             // =====================================
             // 04. CERTIFICADOS
             // =====================================
-            case 41 -> "certificados.lista";
-            case 42 -> "certificados.generar";
-            case 43 -> "certificados.registros";
+            case 41 -> "certificados.gestionar";
+            case 42 -> "certificados.registros";
 
             // =====================================
             // 05. FICHAS
             // =====================================
-            case 51 -> "fichas.lista";
+            case 51 -> "fichas.gestionarFichas";
             case 52 -> "fichas.lista";
 
             // =====================================

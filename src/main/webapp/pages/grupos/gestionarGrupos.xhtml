@@ -1,0 +1,281 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{grupoController.doIniciarPagina()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">Gestionar Grupos</div>
+        <h:form id="frmPrincipal" class="form-horizontal h-100">
+            <div id="divPrincipal" class="card-contenido">
+
+                <p:growl id="growl" showDetail="true" life="3000"/>
+
+                <!-- ========== VISTA LISTA ========== -->
+                <h:panelGroup id="pngLista" rendered="#{grupoController.strValor eq 'LISTA'}">
+                    
+                    <an:seccion cabLabel="Lista de Grupos" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdAction="#{grupoController.doVolver()}"
+                                   cmdTooltip="Volver"
+                                   rendered="#{not empty grupoController.strBusqueda}"/>
+                        <an:button cmdValue="Buscar"
+                                   cmdIcon="fa fa-search"
+                                   cmdAction="#{grupoController.doBuscar()}"
+                                   cmdTooltip="Buscar grupos por curso o docente"/>
+                        <an:button cmdValue="Nuevo"
+                                   cmdIcon="fa fa-plus"
+                                   cmdAction="#{grupoController.doNuevo()}"
+                                   cmdTooltip="Registrar un nuevo grupo"/>
+                    </an:seccion>
+
+                    <an:input cabValue="Búsqueda por curso o docente"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{grupoController.strBusqueda}"
+                              conTooltip="Ingrese nombre del curso o docente para buscar"
+                              conRequired="false"/>
+                    <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                    <an:table id="cdtGrupo"
+                              cabId="cdtGrupo"
+                              cabValue="#{grupoController.lstGruposViewDTO}"
+                              cabPaginator="true">
+
+                        <p:column width="150" headerText="Acciones" styleClass="text-center">
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-edit text-info"
+                                       cmdValue="Editar"
+                                       cmdTooltip="Editar grupo"
+                                       cmdAction="#{grupoController.doEditar(registro)}"/>
+                            <an:button cmdType="link"
+                                       rendered="#{registro.estado}"
+                                       cmdIcon="fa fa-ban text-danger"
+                                       conMensaje="¿Está seguro de cerrar el grupo?"
+                                       cmdTooltip="Cerrar grupo"
+                                       cmdAction="#{grupoController.doCambiarEstado(registro)}"/>
+                            <an:button cmdType="link"
+                                       rendered="#{!registro.estado}"
+                                       cmdIcon="fa fa-check-circle text-success"
+                                       conMensaje="¿Está seguro de abrir el grupo?"
+                                       cmdTooltip="Abrir grupo"
+                                       cmdAction="#{grupoController.doCambiarEstado(registro)}"/>
+                        </p:column>
+
+                        <p:column width="50" headerText="Nro" styleClass="text-center">
+                            <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="250" headerText="Curso">
+                            <an:celda optValue="#{registro.nombreCurso}"/>
+                        </p:column>
+
+                        <p:column width="200" headerText="Docente">
+                            <an:celda optValue="#{registro.nombreDocente}"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="Nivel" styleClass="text-center">
+                            <an:celda optValue="#{registro.nombreNivel}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="100" headerText="Ciclo" styleClass="text-center">
+                            <an:celda optValue="#{registro.nombreCiclo}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="100" headerText="Grupo" styleClass="text-center">
+                            <an:celda optValue="#{registro.nombreGrupo}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="Fecha Inicio" styleClass="text-center">
+                            <an:celda optValue="#{registro.fecha}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="Fecha Fin" styleClass="text-center">
+                            <an:celda optValue="#{registro.fechaFin}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="100" headerText="Estado" styleClass="text-center">
+                            <an:celda comType="estado" 
+                                      optValue="#{registro.estado ? 'ACTIVO' : 'CERRADO'}" 
+                                      txtActivo="#{registro.estado ? 'TRUE' : 'FALSE'}" 
+                                      comAlign="text-center"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"
+                                      optValue="Total grupos: #{grupoController.lstGruposViewDTO != null ? grupoController.lstGruposViewDTO.size() : 0}"/>
+                        </f:facet>
+
+                    </an:table>
+
+                </h:panelGroup>
+
+                <!-- ========== VISTA NUEVO / EDITAR ========== -->
+                <h:panelGroup id="pngNuevoGrupo"
+                              rendered="#{grupoController.strValor eq 'NUEVO' or grupoController.strValor eq 'EDITAR'}"
+                              layout="block">
+
+                    <an:seccion cabLabel="Registro de Grupo" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{grupoController.doVolver()}"/>
+
+                        <an:button cmdValue="Guardar"
+                                   cmdIcon="fa fa-save"
+                                   cmdClass="bntIconsMedio"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{grupoController.doGuardar()}"
+                                   cmdTooltip="Guardar los datos del grupo"/>
+                    </an:seccion>
+
+                    <!-- Select para Curso -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Curso</div>
+                        <div class="col-lg-4">
+                            <p:selectOneMenu value="#{grupoController.idCursoSeleccionado}" 
+                                             style="width:100%"
+                                             required="true"
+                                             requiredMessage="Seleccione un curso">
+                                <f:selectItem itemLabel="-- Seleccione Curso --" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{grupoController.lstCursos}" 
+                                               var="curso"
+                                               itemLabel="#{curso.nomCurso}" 
+                                               itemValue="#{curso.idCurso}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <!-- Select para Docente -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Docente</div>
+                        <div class="col-lg-4">
+                            <p:selectOneMenu value="#{grupoController.idPersonalSeleccionado}" 
+                                             style="width:100%"
+                                             required="true"
+                                             requiredMessage="Seleccione un docente">
+                                <f:selectItem itemLabel="-- Seleccione Docente --" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{grupoController.lstDocentes}" 
+                                               var="docente"
+                                               itemLabel="#{docente.idEsc.idDir.nombreCompleto}" 
+                                               itemValue="#{docente.idPersonal}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <!-- Select para Ciclo -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Ciclo</div>
+                        <div class="col-lg-2">
+                            <p:selectOneMenu value="#{grupoController.idCicloSeleccionado}" 
+                                             style="width:100%">
+                                <f:selectItem itemLabel="-- Seleccione Ciclo --" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{grupoController.lstCiclos}" 
+                                               var="ciclo"
+                                               itemLabel="#{ciclo.nomCiclo}" 
+                                               itemValue="#{ciclo.idCiclo}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <!-- Select para Nivel -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Nivel</div>
+                        <div class="col-lg-2">
+                            <p:selectOneMenu value="#{grupoController.idNivelSeleccionado}" 
+                                             style="width:100%">
+                                <f:selectItem itemLabel="-- Seleccione Nivel --" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{grupoController.lstNiveles}" 
+                                               var="nivel"
+                                               itemLabel="#{nivel.nombreNivel}" 
+                                               itemValue="#{nivel.idNivel}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <!-- Select para Grupo -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Grupo</div>
+                        <div class="col-lg-2">
+                            <p:selectOneMenu value="#{grupoController.idGrupoSeleccionado}" 
+                                             style="width:100%">
+                                <f:selectItem itemLabel="-- Seleccione Grupo --" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{grupoController.lstGruposCurso}" 
+                                               var="grupoCurso"
+                                               itemLabel="#{grupoCurso.nombre}" 
+                                               itemValue="#{grupoCurso.idGrupo}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <!-- Fecha Inicio -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Fecha Inicio</div>
+                        <div class="col-lg-3">
+                            <p:calendar value="#{grupoController.clsGrupoEdit.fecha}"
+                                        pattern="dd/MM/yyyy"
+                                        showButtonPanel="true"
+                                        navigator="true"
+                                        yearRange="c-10:c+10"
+                                        style="width:100%"
+                                        required="true"
+                                        requiredMessage="La fecha de inicio es obligatoria">
+                                <f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+                            </p:calendar>
+                        </div>
+                    </div>
+
+                    <!-- Fecha Fin -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Fecha Fin</div>
+                        <div class="col-lg-3">
+                            <p:calendar value="#{grupoController.clsGrupoEdit.fechaFin}"
+                                        pattern="dd/MM/yyyy"
+                                        showButtonPanel="true"
+                                        navigator="true"
+                                        yearRange="c-10:c+10"
+                                        style="width:100%">
+                                <f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+                            </p:calendar>
+                        </div>
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Estado</div>
+                        <div class="col-lg-2">
+                            <p:selectOneMenu value="#{grupoController.clsGrupoEdit.estado}" 
+                                             style="width:100%">
+                                <f:selectItem itemLabel="ACTIVO" itemValue="true"/>
+                                <f:selectItem itemLabel="CERRADO" itemValue="false"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                </h:panelGroup>
+
+            </div>
+        </h:form>
+
+        <!-- Dialog de Procesando -->
+        <p:dialog id="dlgProcesando" widgetVar="dlgProcesando" modal="true" closable="false" resizable="false" draggable="false" style="width:200px;height:80px;">
+            <div style="text-align:center;">
+                <i class="fa fa-spinner fa-pulse fa-2x"></i>
+                <p:outputLabel value=" Procesando..." style="margin-left:10px;"/>
+            </div>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

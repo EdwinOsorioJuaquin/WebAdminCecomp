@@ -69,8 +69,8 @@
              GRUPOS
         ====================================== -->
         <navigation-case>
-            <from-outcome>grupos.lista</from-outcome>
-            <to-view-id>/pages/gestionarGrupos.xhtml</to-view-id>
+            <from-outcome>grupos.gestionarGrupos</from-outcome>
+            <to-view-id>/pages/grupos/gestionarGrupos.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 
@@ -84,14 +84,8 @@
              CERTIFICADOS
         ====================================== -->
         <navigation-case>
-            <from-outcome>certificados.lista</from-outcome>
-            <to-view-id>/pages/certificadosSolicitados.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-        <navigation-case>
-            <from-outcome>certificados.generar</from-outcome>
-            <to-view-id>/pages/certificadosPendientes.xhtml</to-view-id>
+            <from-outcome>certificados.gestionar</from-outcome>
+            <to-view-id>/pages/certificados/gestionarCertificados.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 
@@ -105,8 +99,8 @@
              FICHAS
         ====================================== -->
         <navigation-case>
-            <from-outcome>fichas.lista</from-outcome>
-            <to-view-id>/pages/gestionarFichas.xhtml</to-view-id>
+            <from-outcome>fichas.gestionarFichas</from-outcome>
+            <to-view-id>/pages/fichas/gestionarFichas.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 
