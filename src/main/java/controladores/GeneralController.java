@@ -202,7 +202,7 @@ public class GeneralController extends BaseController {
         );
 
         lstSubMenu.add(new gralMenuSub(51, "Gestionar Fichas", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(52, "Notas", null, null, null, true));
+//        lstSubMenu.add(new gralMenuSub(52, "Notas", null, null, null, true));
 
 
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
@@ -269,7 +269,7 @@ public class GeneralController extends BaseController {
             // 05. FICHAS
             // =====================================
             case 51 -> "fichas.gestionarFichas";
-            case 52 -> "fichas.lista";
+//            case 52 -> "fichas.lista";
 
             // =====================================
             // 06. PAGOS

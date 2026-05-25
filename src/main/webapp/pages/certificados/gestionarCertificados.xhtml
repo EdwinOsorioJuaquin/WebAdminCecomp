@@ -54,11 +54,14 @@
                               cabPaginator="true">
 
                         <p:column width="120" headerText="Acciones" styleClass="text-center">
-                            <an:button cmdType="link"
-                                       cmdIcon="fa fa-download text-primary"
-                                       cmdValue="Descargar"
-                                       cmdTooltip="Descargar certificado PDF"
-                                       cmdAction="#{certificadoController.doDescargarCertificado(registro)}"/>
+                            <p:commandButton id="btnDescargarCert"
+                                             styleClass="btn btn-primary btn-sm"
+                                             icon="fa fa-download"
+                                             value="Descargar"
+                                             actionListener="#{certificadoController.doDescargarCertificado(registro)}"
+                                             update="@form">
+                                <p:fileDownload value="#{generalController.archivo.streamedFile}" />
+                            </p:commandButton>
                         </p:column>
 
                         <p:column width="50" headerText="Nro" styleClass="text-center">
@@ -139,11 +142,11 @@
                               cabPaginator="true">
 
                         <p:column width="80" headerText="Seleccionar" styleClass="text-center">
-                            <an:button cmdType="link"
-                                       cmdIcon="fa fa-check-circle text-success"
-                                       cmdValue="Seleccionar"
-                                       cmdTooltip="Seleccionar esta matrícula"
-                                       cmdAction="#{certificadoController.doSeleccionarMatricula(registro)}"/>
+                            <p:commandButton value="Seleccionar"
+                                             action="#{certificadoController.doSeleccionarMatricula(registro)}"
+                                             icon="fa fa-check-circle"
+                                             styleClass="btn btn-success btn-sm"
+                                             update="@form"/>
                         </p:column>
 
                         <p:column width="50" headerText="Nro" styleClass="text-center">
