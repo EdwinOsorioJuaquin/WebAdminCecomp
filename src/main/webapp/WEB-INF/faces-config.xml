@@ -109,7 +109,7 @@
         ====================================== -->
         <navigation-case>
             <from-outcome>pagos.lista</from-outcome>
-            <to-view-id>/pages/gestionarPagos.xhtml</to-view-id>
+            <to-view-id>/pages/pagos/listaPagosCecomp.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 

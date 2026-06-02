@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                template="/plantilla/plantilla.xhtml">
+
+    <f:metadata>
+        <f:viewAction action="#{pagoCecompController.doIniciarPagina()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">Lista de Pagos CECOMP</div>
+        <h:form id="frmPrincipal" class="form-horizontal mb-0 h-100">
+            <div id="divPrincipal" class="card-contenido">
+                
+                <h:panelGroup id="pngBusqueda" rendered="true">
+                    <an:seccion cabLabel="Lista de Pagos" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-fw fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdTooltip="Volver al menú principal"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{pagoCecompController.doVolver()}"/>
+                        <an:button cmdValue="Limpiar"
+                                   cmdIcon="fa fa-fw fa-eraser"
+                                   cmdClass="bntIconsMedio"
+                                   cmdTooltip="Limpiar filtros"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{pagoCecompController.doLimpiarFiltros()}"/>
+                    </an:seccion>
+                    
+                    <an:input cabValue="Búsqueda por Nombre"
+                              cabLen="col-lg-2"
+                              opClass="d-flex"
+                              conValue="#{pagoCecompController.strBusqueda}"
+                              conTooltip="Ingrese nombre del estudiante"
+                              conRequired="false">
+                        <f:facet name="extras">
+                            <an:button cmdType="simple"
+                                       cmdValue="Buscar"
+                                       cmdIcon="fa fa-search"
+                                       cmdClass="bntIconsMedio ms-2"
+                                       cmdUpdate="@form"
+                                       cmdOnStart="PF('dlgProcesando').show();"
+                                       cmdOnComplete="PF('dlgProcesando').hide();"
+                                       cmdAction="#{pagoCecompController.doBuscar()}"/>
+                        </f:facet>
+                    </an:input>
+                    
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Rango Fechas</div>
+                        <div class="col-lg-3">
+                            <p:calendar value="#{pagoCecompController.fechaInicio}"
+                                        pattern="dd/MM/yyyy"
+                                        placeholder="Fecha Inicio"
+                                        showButtonPanel="true"
+                                        navigator="true"
+                                        style="width:100%"/>
+                        </div>
+                        <div class="col-lg-3">
+                            <p:calendar value="#{pagoCecompController.fechaFin}"
+                                        pattern="dd/MM/yyyy"
+                                        placeholder="Fecha Fin"
+                                        showButtonPanel="true"
+                                        navigator="true"
+                                        style="width:100%"/>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Rango Montos</div>
+                        <div class="col-lg-2">
+                            <p:inputNumber value="#{pagoCecompController.montoMinimo}"
+                                           symbol="S/ "
+                                           thousandSeparator=","
+                                           decimalPlaces="2"
+                                           placeholder="Monto Mínimo"
+                                           style="width:100%"/>
+                        </div>
+                        <div class="col-lg-2">
+                            <p:inputNumber value="#{pagoCecompController.montoMaximo}"
+                                           symbol="S/ "
+                                           thousandSeparator=","
+                                           decimalPlaces="2"
+                                           placeholder="Monto Máximo"
+                                           style="width:100%"/>
+                        </div>
+                    </div>
+                    
+                    <an:extra comType="separadorSimple" comClass="my-2"/>
+                </h:panelGroup>
+                
+                <h:panelGroup id="pngTabla" rendered="true">
+                    <an:seccion cabLabel="Listado de Pagos"
+                                cabLen="col-sm-6"
+                                cmdLen="col-sm-6">
+                    </an:seccion>
+                    
+                    <an:table cabId="tblPagos"
+                              cabValue="#{pagoCecompController.lstPagosViewDTO}"
+                              cabPaginator="true"
+                              cabClass="tablaGeneral">
+                        
+                        <p:column width="60" headerText="N°" styleClass="text-center">
+                            <an:celda comType="indice"
+                                      optValue="#{row + 1}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        
+                        <p:column width="120" headerText="Fecha" styleClass="text-center">
+                            <an:celda optValue="#{registro.fechaFormateada}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        
+                        <p:column width="120" headerText="Ficha" styleClass="text-center">
+                            <an:celda optValue="#{registro.pago.numDocumento}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        
+                        <p:column width="300" headerText="Estudiante">
+                            <an:celda optValue="#{registro.pago.estudiante}"/>
+                        </p:column>
+                        
+                        <p:column width="120" headerText="Grupo" styleClass="text-center">
+                            <an:celda optValue=""
+                                      comAlign="text-center"/>
+                        </p:column>
+                        
+                        <p:column width="250" headerText="Curso">
+                            <an:celda optValue="#{registro.pago.nombreConcepto}"/>
+                        </p:column>
+                        
+                        <p:column width="150" headerText="Motivo" styleClass="text-center">
+                            <an:celda optValue=""
+                                      comAlign="text-center"/>
+                        </p:column>
+                        
+                        <p:column width="120" headerText="Monto" styleClass="text-center">
+                            <an:celda optValue="#{registro.montoFormateado}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        
+                        <p:column width="180" headerText="Procedencia" styleClass="text-center">
+                            <an:celda optValue="#{registro.pago.nombrePagador}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        
+                        <p:column width="150" headerText="Operación" styleClass="text-center">
+                            <an:celda optValue="#{registro.pago.numDocumento}"
+                                      comAlign="text-center"/>
+                        </p:column>
+                        
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"
+                                      optValue="Total pagos: #{pagoCecompController.lstPagosViewDTO != null ? pagoCecompController.lstPagosViewDTO.size() : 0} | Total monto: #{pagoCecompController.totalMontoFormateado}"/>
+                        </f:facet>
+                        
+                    </an:table>
+                </h:panelGroup>
+                
+            </div>
+        </h:form>
+        
+        <p:dialog id="dlgProcesando" widgetVar="dlgProcesando" modal="true" closable="false" 
+                  resizable="false" draggable="false" style="width:200px;height:80px;">
+            <div style="text-align:center;">
+                <i class="fa fa-spinner fa-pulse fa-2x"></i>
+                <p:outputLabel value=" Procesando..." style="margin-left:10px;"/>
+            </div>
+        </p:dialog>
+        
+    </ui:define>
+</ui:composition>
