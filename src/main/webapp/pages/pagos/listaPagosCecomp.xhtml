@@ -21,12 +21,22 @@
                 
                 <h:panelGroup id="pngBusqueda" rendered="true">
                     <an:seccion cabLabel="Lista de Pagos" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <!-- Botón Volver: solo aparece si hay búsqueda activa -->
                         <an:button cmdValue="Volver"
                                    cmdIcon="fa fa-fw fa-arrow-left"
                                    cmdClass="bntIconsMedio me-1"
-                                   cmdTooltip="Volver al menú principal"
+                                   cmdTooltip="Volver al listado completo"
                                    cmdUpdate="@form"
-                                   cmdAction="#{pagoCecompController.doVolver()}"/>
+                                   cmdAction="#{pagoCecompController.doVolver()}"
+                                   rendered="#{not empty pagoCecompController.strBusqueda or pagoCecompController.fechaInicio != null or pagoCecompController.fechaFin != null or pagoCecompController.montoMinimo != null or pagoCecompController.montoMaximo != null}"/>
+                        
+                        <an:button cmdValue="Buscar"
+                                   cmdIcon="fa fa-fw fa-search"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdTooltip="Buscar pagos"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{pagoCecompController.doBuscar()}"/>
+                        
                         <an:button cmdValue="Limpiar"
                                    cmdIcon="fa fa-fw fa-eraser"
                                    cmdClass="bntIconsMedio"
@@ -40,18 +50,7 @@
                               opClass="d-flex"
                               conValue="#{pagoCecompController.strBusqueda}"
                               conTooltip="Ingrese nombre del estudiante"
-                              conRequired="false">
-                        <f:facet name="extras">
-                            <an:button cmdType="simple"
-                                       cmdValue="Buscar"
-                                       cmdIcon="fa fa-search"
-                                       cmdClass="bntIconsMedio ms-2"
-                                       cmdUpdate="@form"
-                                       cmdOnStart="PF('dlgProcesando').show();"
-                                       cmdOnComplete="PF('dlgProcesando').hide();"
-                                       cmdAction="#{pagoCecompController.doBuscar()}"/>
-                        </f:facet>
-                    </an:input>
+                              conRequired="false"/>
                     
                     <div class="row mb-2">
                         <div class="col-lg-2 text-end fw-bold">Rango Fechas</div>
