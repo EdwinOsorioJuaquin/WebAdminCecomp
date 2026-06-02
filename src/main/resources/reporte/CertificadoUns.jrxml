@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CertificadoUNS" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8ecc11ed-99ce-4e69-ae77-94dbd9aa9cb9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="687"/>
+	<parameter name="P_CODIGO" class="java.lang.String"/>
+	<parameter name="P_NOMBRE_COMPLETO" class="java.lang.String"/>
+	<parameter name="P_CURSO" class="java.lang.String"/>
+	<parameter name="P_HORAS" class="java.lang.String"/>
+	<parameter name="P_FECHA_INICIO" class="java.lang.String"/>
+	<parameter name="P_FECHA_FIN" class="java.lang.String"/>
+	<parameter name="P_LUGAR_FECHA" class="java.lang.String"/>
+	<background>
+		<band height="595">
+			<rectangle>
+				<reportElement x="15" y="15" width="812" height="565" uuid="4b1de124-c352-47d3-8424-85796e8a39c0"/>
+				<graphicElement>
+					<pen lineWidth="3.0" lineColor="#7A0019"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="25" y="25" width="792" height="545" uuid="d3596d8b-cb8a-4912-8aa2-5fb3e546bcbb"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="#C9A227"/>
+				</graphicElement>
+			</rectangle>
+		</band>
+	</background>
+	<detail>
+		<band height="1350" splitType="Immediate">
+			<staticText>
+				<reportElement x="170" y="45" width="500" height="30" uuid="2a24fc32-d5c8-47de-8782-d0740550c12e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UNIVERSIDAD NACIONAL DEL SANTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="80" width="500" height="20" uuid="3a852ca7-51e5-4b2a-947f-630edf9a31fb"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[Centro de Cómputo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="120" width="350" height="20" uuid="8ad0f8c8-ffc2-494b-bfda-ab7facfc423d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<text><![CDATA[Resolución Rectoral N.° 122-2025-CU-R-UNS]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="620" y="120" width="150" height="20" uuid="2dac65da-9af0-4026-a51b-e9a8210039da"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{P_CODIGO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="250" y="170" width="340" height="45" uuid="0592610b-d36d-479b-a220-81bd52fadcde"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="30" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="240" width="640" height="30" uuid="845be70f-475e-4a0e-a3e5-b6469ad66ab8"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="13"/>
+				</textElement>
+				<text><![CDATA[El Centro de Cómputo de la Universidad Nacional del Santa otorga el presente reconocimiento a:
+                ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="285" width="640" height="40" uuid="f8796df9-4b51-4217-ab9a-ba3a37d402a1"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="24" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{P_NOMBRE_COMPLETO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="110" y="340" width="620" height="60" uuid="5b3d4f39-d8cb-4f07-8a03-95a4af4dfbc9"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Por haber aprobado el curso de \"" 
++ $P{P_CURSO}
++ "\" con una duración de "
++ $P{P_HORAS}
++ " horas teórico-prácticas, desarrollado del "
++ $P{P_FECHA_INICIO}
++ " al "
++ $P{P_FECHA_FIN}
++ "."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="460" y="430" width="270" height="20" uuid="8c64125a-9808-4085-ac6e-ee867acba7fb"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{P_LUGAR_FECHA}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="130" y="490" width="240" height="1" uuid="dd0db080-faaa-4a99-85d8-d63f5169a28f"/>
+			</line>
+			<staticText>
+				<reportElement x="120" y="500" width="260" height="20" uuid="1dde009d-4ff9-4309-9f68-9a723b0407f0"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dr. Hugo Esteban Caselli Gismondi
+                ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="518" width="260" height="15" uuid="7499fe0f-12e2-4910-a313-5ad9ec3736aa"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<text><![CDATA[Decano de la Facultad de Ingeniería
+                ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="470" y="490" width="240" height="1" uuid="003ad13b-7ad0-4234-b1f2-954b6a280d62"/>
+			</line>
+			<staticText>
+				<reportElement x="450" y="500" width="280" height="20" uuid="6f81720c-0c32-478c-81ec-b9270f982c35"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ms. Carlos Alfredo Mendoza Corpus
+                ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="450" y="518" width="280" height="15" uuid="0fb459f6-c052-40f9-a49b-d3f8a254f1f7"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<text><![CDATA[Director del Cecomp]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="555" width="220" height="15" uuid="5045e68e-3147-4950-be14-183edc621fca"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="9" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[www.uns.edu.pe/cecomp]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="837" width="360" height="30" uuid="70d54a4d-253d-40a9-a974-94dee3983809"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE ACADÉMICO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="897" width="600" height="20" uuid="43b917cf-8a41-449d-b1a9-173e7dbc3478"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Estudiante: " + $P{P_NOMBRE_COMPLETO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="927" width="600" height="20" uuid="18b29ffd-3576-4fd8-a974-39824030bc81"/>
+				<textElement>
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Curso: " + $P{P_CURSO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="952" width="600" height="20" uuid="6f1e5d8e-a651-4d8f-95f3-73af2c381633"/>
+				<textElement>
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Periodo: " + $P{P_FECHA_INICIO} + " al " + $P{P_FECHA_FIN}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="80" y="1007" width="680" height="230" uuid="2658c7b1-2ebd-4167-973e-af07f37cdb74"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="90" y="1017" width="60" height="20" uuid="75a7bbd7-aa85-4481-a8d3-1ac7044e140c"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[N°]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="1017" width="420" height="20" uuid="23aa7a60-80a4-4e8e-a7f2-eabacfddeba8"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TEMA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="640" y="1017" width="80" height="20" uuid="de2da25f-c16e-427e-8676-d602439cf05f"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="1057" width="50" height="20" uuid="cd5f9a04-34b3-4e30-a8ed-99621d7a698a"/>
+				<text><![CDATA[01]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="1057" width="350" height="20" uuid="13db638e-636a-4024-909f-2875075daf0f"/>
+				<text><![CDATA[Windows 10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="660" y="1057" width="50" height="20" uuid="34e16f73-bea1-4812-b5f4-6e861745814d"/>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="1092" width="50" height="20" uuid="543dd1ad-ae4e-436b-82ee-fff522d79a6f"/>
+				<text><![CDATA[02]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="1092" width="350" height="20" uuid="337a8bf7-05b9-4a3a-b764-04c6815ece56"/>
+				<text><![CDATA[Microsoft Word 2016]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="660" y="1092" width="50" height="20" uuid="4ff6e4e3-ec34-42cd-b7e8-027b7cefc3bd"/>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="1127" width="50" height="20" uuid="a8bcc660-3aae-4b5b-8a34-2bc70a504d6a"/>
+				<text><![CDATA[03]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="1127" width="350" height="20" uuid="45b67584-b150-47b9-8adf-0f1b36b1352e"/>
+				<text><![CDATA[Microsoft Excel 2016]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="660" y="1127" width="50" height="20" uuid="b7d24ad3-6d10-4594-8c8b-b6a456635879"/>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="1162" width="50" height="20" uuid="0397e926-55da-4c07-a012-eef5b04469d9"/>
+				<text><![CDATA[04]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="1162" width="350" height="20" uuid="2bca417f-2532-4025-a191-9f7d03083890"/>
+				<text><![CDATA[Microsoft Power Point 2016]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="660" y="1162" width="50" height="20" uuid="dcb2fc5b-8e6b-4050-afab-87c3daf82190"/>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="500" y="1207" width="140" height="20" uuid="230a62eb-0c3c-4929-a445-c554cdb19e21"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Promedio Final:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="660" y="1207" width="50" height="20" uuid="5af29100-913f-4dbf-9b19-5a29aa0a94e2"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<line>
+				<reportElement x="300" y="1237" width="240" height="1" uuid="16b81b3d-e9cf-4276-935b-ea1f1f736460"/>
+			</line>
+			<staticText>
+				<reportElement x="250" y="1277" width="320" height="20" uuid="ed490229-bcf4-407d-904d-917e934641e7"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ms. Carlos Alfredo Mendoza Corpus
+                ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="1297" width="320" height="15" uuid="2c7e13ba-ac9a-4ce0-9abd-2fd0415f54ad"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<text><![CDATA[Director del Cecomp]]></text>
+			</staticText>
+			<line>
+				<reportElement x="280" y="1266" width="240" height="1" uuid="19a842ee-4617-4a69-9055-2d059ed90295"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

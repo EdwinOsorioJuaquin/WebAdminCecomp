@@ -16,8 +16,8 @@
             
             <module name="deployment.ejbCecomp-1.0.jar"/>
            
-<!--           <module name="deployment.ejbPasaporte-1.0.jar" />
-            <module name="deployment.ejbDirectorio-1.0.jar" />-->
+            <module name="deployment.ejbPasaporte-1.0.jar" />
+            <module name="deployment.ejbDirectorio-1.0.jar" />
 
         </dependencies>
     </deployment>

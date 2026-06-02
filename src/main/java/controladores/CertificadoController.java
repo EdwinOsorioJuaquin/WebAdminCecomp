@@ -1,748 +1,289 @@
 package controladores;
 
-import jakarta.annotation.PostConstruct;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import java.io.InputStream;
+import ejbCecomp.clases.ejbCcoCertificadoDTO;
+import ejbCecomp.clases.ejbCcoMatriculaDTO;
+import ejbCecomp.entidades.*;
+import ejbCecomp.ejb.negocio.*;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import lombok.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import lombok.Getter;
+import lombok.Setter;
+import net.sf.jasperreports.engine.JasperPrint;
+import static libreriaUdemsi.funciones.libreriaGeneral.doGenerarJNDI;
 
-@Named(value = "certificadoController")
+@Named("certificadoController")
 @SessionScoped
-@Getter @Setter
+@Getter
+@Setter
 public class CertificadoController implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // ===========================================================
-    // === INYECCIÓN =============================================
-    // ===========================================================
     @Inject
     private GeneralController generalController;
 
-    // ===========================================================
-    // === NAVEGACIÓN / ESTADO ===================================
-    // ===========================================================
-    private String vistaActiva; // "PENDIENTES", "FIRMADOS", "TOKEN", "DECANATURA"
+    private List<ejbCcoCertificadoDTO> lstCertificadosDTO;
+    private List<ejbCcoCertificadoDTO> lstCertificadosViewDTO;
+    private List<ejbCcoMatriculaDTO> lstMatriculasDisponibles;
     private String strBusqueda;
+    private String strValor;
+    
+    private ejbCcoCepCecCert clsCertificadoEdit;
+    private Integer idMatriculaSeleccionada;
+    private Integer resolucionSeleccionada;
+    private Date fechaCertificado;
+    
+    private ejbCcoCepCecCertServiceLocal srvCertificado;
+    private ejbCcoCepCcoMatriculaCabServiceLocal srvMatricula;
 
-    // ===========================================================
-    // === LISTAS CERTIFICADOS (BASE / VIEW) =====================
-    // ===========================================================
-    private List<Certificado> lstPendientesBase;
-    private List<Certificado> lstPendientes;
+    private static final String VISTA_LISTA = "LISTA";
+    private static final String VISTA_NUEVO = "NUEVO";
 
-    private List<Certificado> lstFirmadosBase;
-    private List<Certificado> lstFirmados;
+    public CertificadoController() {
+        try {
+            Context context = new InitialContext();
+            srvCertificado = (ejbCcoCepCecCertServiceLocal) context.lookup(
+                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCecCertServiceLocal")
+            );
+            srvMatricula = (ejbCcoCepCcoMatriculaCabServiceLocal) context.lookup(
+                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCcoMatriculaCabServiceLocal")
+            );
+        } catch (NamingException e) {
+            System.out.println("Error JNDI CertificadoController: " + e.getMessage());
+        }
+    }
 
-    // TOKEN
-    private List<Certificado> lstTokenBase;        // base general que contiene candidatos (algunos ya con token)
-    private List<Certificado> lstToken;            // vista: SOLO pendientes (sin token)
-    private List<Certificado> lstTokenGenerados;   // nuevos tokens generados (para vista "Reportes Token")
-    private List<Certificado> lstSeleccionados;    // selección de la tabla
-
-    // ===========================================================
-    // === REGISTRO DECANATURA (BASE / VIEW) =====================
-    // ===========================================================
-    private Integer numInicio;
-    private Integer numFin;
-
-    private Integer totalRegistrados;
-    private Integer totalDisponibles;
-    private Integer ultimoAsignado;
-    private Integer proximoDisponible;
-
-    private List<RegistroDecanatura> lstRegistrosBase;
-    private List<RegistroDecanatura> lstRegistros; // vista
-
-    // ===========================================================
-    // === INIT ===================================================
-    // ===========================================================
-    @PostConstruct
-    public void init() {
+    public void doIniciarPagina() {
+        strValor = VISTA_LISTA;
         strBusqueda = "";
-        vistaActiva = "PENDIENTES";
-
-        // certificados
-        lstPendientesBase = new ArrayList<>();
-        lstPendientes = new ArrayList<>();
-
-        lstFirmadosBase = new ArrayList<>();
-        lstFirmados = new ArrayList<>();
-
-        lstTokenBase = new ArrayList<>();
-        lstToken = new ArrayList<>();
-        lstTokenGenerados = new ArrayList<>();
-        lstSeleccionados = new ArrayList<>();
-
-        // decanatura
-        lstRegistrosBase = new ArrayList<>();
-        lstRegistros = new ArrayList<>();
-
-        numInicio = null;
-        numFin = null;
-
-        totalRegistrados = 0;
-        totalDisponibles = 0;
-        ultimoAsignado = 0;
-        proximoDisponible = 0;
-
-        // demo
-        cargarEjemploPendientes();
-        cargarEjemploFirmados();
-        cargarEjemploToken();
-
-        // arranque
-        doIniciarPendientes();
+        cargarCertificados();
+        cargarMatriculasDisponibles();
     }
 
-    // ===========================================================
-    // === INICIO DE CADA VISTA ==================================
-    // ===========================================================
-    public void doIniciarPendientes() {
-        vistaActiva = "PENDIENTES";
-        strBusqueda = "";
-        lstPendientes = new ArrayList<>(lstPendientesBase);
-        info("Pendientes", "Vista Pendientes iniciada");
-    }
-
-    public void doIniciarFirmados() {
-        vistaActiva = "FIRMADOS";
-        strBusqueda = "";
-        lstFirmados = new ArrayList<>(lstFirmadosBase);
-        info("Firmados", "Vista Firmados iniciada");
-    }
-
-    public void doIniciarToken() {
-        vistaActiva = "TOKEN";
-        strBusqueda = "";
-        if (lstSeleccionados != null) lstSeleccionados.clear();
-
-        refrescarPendientesToken();
-        info("Token", "Vista Token iniciada (pendientes)");
-    }
-
-    public void doIniciarRegistroDecanatura() {
-        vistaActiva = "DECANATURA";
-        strBusqueda = "";
-        lstRegistros = new ArrayList<>(lstRegistrosBase);
-        actualizarIndicadores();
-        info("Decanatura", "Vista Registro Decanatura iniciada");
-    }
-
-    // ===========================================================
-    // === BÚSQUEDAS =============================================
-    // ===========================================================
-    // Pendientes: filtra por estudiante
-    public void doBuscarPendientes() {
-        String f = normalizar(strBusqueda);
-        if (f.isBlank()) {
-            lstPendientes = new ArrayList<>(lstPendientesBase);
-            info("Búsqueda", "Mostrando todos los pendientes");
-            return;
+    private void cargarCertificados() {
+        try {
+            lstCertificadosDTO = srvCertificado.listarCertificadosDTO();
+            lstCertificadosViewDTO = new ArrayList<>(lstCertificadosDTO);
+        } catch (Exception e) {
+            System.out.println("Error cargar certificados: " + e.getMessage());
+            lstCertificadosDTO = new ArrayList<>();
+            lstCertificadosViewDTO = new ArrayList<>();
         }
-
-        List<Certificado> out = new ArrayList<>();
-        for (Certificado c : lstPendientesBase) {
-            if (contiene(c.getEstudiante(), f)) out.add(c);
-        }
-        lstPendientes = out;
-        info("Búsqueda", "Se encontraron " + out.size() + " pendientes");
-    }
-
-    // Firmados: filtra por estudiante/curso
-    public void doBuscarFirmados() {
-        String f = normalizar(strBusqueda);
-        if (f.isBlank()) {
-            lstFirmados = new ArrayList<>(lstFirmadosBase);
-            info("Búsqueda", "Mostrando todos los firmados");
-            return;
-        }
-
-        List<Certificado> out = new ArrayList<>();
-        for (Certificado c : lstFirmadosBase) {
-            if (contiene(c.getEstudiante(), f) || contiene(c.getCurso(), f)) out.add(c);
-        }
-        lstFirmados = out;
-        info("Búsqueda", "Se encontraron " + out.size() + " firmados");
-    }
-
-    // Token: filtra por estudiante/curso (sobre pendientes)
-    public void doBuscarToken() {
-        String f = normalizar(strBusqueda);
-        List<Certificado> basePend = getPendientesToken();
-
-        if (f.isBlank()) {
-            lstToken = new ArrayList<>(basePend);
-            info("Búsqueda", "Mostrando certificados pendientes de token");
-            return;
-        }
-
-        List<Certificado> out = new ArrayList<>();
-        for (Certificado c : basePend) {
-            if (contiene(c.getEstudiante(), f) || contiene(c.getCurso(), f)) out.add(c);
-        }
-        lstToken = out;
-        info("Búsqueda", "Se encontraron " + out.size() + " pendientes de token");
-    }
-
-    // Decanatura: filtra por número (si strBusqueda es número)
-    public void doBuscarRegistros() {
-        String f = normalizar(strBusqueda);
-        if (f.isBlank()) {
-            lstRegistros = new ArrayList<>(lstRegistrosBase);
-            info("Búsqueda", "Mostrando todos los registros");
-            return;
-        }
-
-        Integer nro = null;
-        try { nro = Integer.parseInt(f); } catch (Exception e) { }
-
-        List<RegistroDecanatura> out = new ArrayList<>();
-        if (nro != null) {
-            for (RegistroDecanatura r : lstRegistrosBase) {
-                if (r.getNumero() == nro) out.add(r);
-            }
-        }
-        lstRegistros = out;
-        info("Búsqueda", "Se encontraron " + out.size() + " registros");
-    }
-
-    // ===========================================================
-    // === TOKEN ==================================================
-    // ===========================================================
-    public void doGenerarTokenMasivo() {
-        if (lstSeleccionados == null || lstSeleccionados.isEmpty()) {
-            warn("Validación", "Seleccione al menos un certificado");
-            return;
-        }
-
-        int generados = 0;
-
-        for (Certificado c : lstSeleccionados) {
-            // evitar regenerar
-            if (c.getToken() != null && !c.getToken().isBlank()) continue;
-
-            // (opcional) regla: solo si firmados y con reg decanatura válido
-            // if (!"SI".equalsIgnoreCase(c.getFirmaDecano()) || !"SI".equalsIgnoreCase(c.getFirmaDirector())) continue;
-
-            c.setToken(generarToken());
-            generados++;
-
-            // mover a "generados"
-            if (!lstTokenGenerados.contains(c)) {
-                lstTokenGenerados.add(c);
-            }
-        }
-
-        lstSeleccionados.clear();
-
-        // refrescar pendientes de token (ya no deben verse aquí)
-        refrescarPendientesToken();
-
-        ok("Token", "Tokens generados: " + generados);
-    }
-
-    private void refrescarPendientesToken() {
-        lstToken = new ArrayList<>(getPendientesToken());
-    }
-
-    private List<Certificado> getPendientesToken() {
-        List<Certificado> out = new ArrayList<>();
-        for (Certificado c : lstTokenBase) {
-            if (c.getToken() == null || c.getToken().isBlank()) {
-                out.add(c);
-            }
-        }
-        return out;
-    }
-
-    private String generarToken() {
-        return "TK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-    }
-
-    // ===========================================================
-    // === REGISTRO DECANATURA ===================================
-    // ===========================================================
-    public void doRegistrarRango() {
-        if (numInicio == null || numFin == null) {
-            warn("Validación", "Ingrese Desde y Hasta");
-            return;
-        }
-        if (numInicio <= 0 || numFin <= 0) {
-            warn("Validación", "Los números deben ser mayores a 0");
-            return;
-        }
-        if (numInicio > numFin) {
-            warn("Validación", "Desde no puede ser mayor que Hasta");
-            return;
-        }
-
-        int creados = 0;
-
-        for (int i = numInicio; i <= numFin; i++) {
-            final int numeroActual = i;
-            boolean existe = lstRegistrosBase.stream()
-                    .anyMatch(r -> r.getNumero() == numeroActual);
-
-            if (!existe) {
-                lstRegistrosBase.add(new RegistroDecanatura(numeroActual, "DISPONIBLE", "-", fechaHoy(), true));
-                creados++;
-            }
-        }
-
-        // refrescar vista e indicadores
-        lstRegistros = new ArrayList<>(lstRegistrosBase);
-        actualizarIndicadores();
-
-        ok("Decanatura", "Rango registrado. Nuevos: " + creados);
-    }
-
-    public void actualizarIndicadores() {
-        totalRegistrados = lstRegistrosBase.size();
-
-        totalDisponibles = (int) lstRegistrosBase.stream()
-                .filter(r -> r.isActivo() && "DISPONIBLE".equals(r.getEstado()))
-                .count();
-
-        OptionalInt maxAsignado = lstRegistrosBase.stream()
-                .filter(r -> "ASIGNADO".equals(r.getEstado()))
-                .mapToInt(RegistroDecanatura::getNumero)
-                .max();
-
-        ultimoAsignado = maxAsignado.isPresent() ? maxAsignado.getAsInt() : null;
-
-        proximoDisponible = lstRegistrosBase.stream()
-                .filter(r -> r.isActivo() && "DISPONIBLE".equals(r.getEstado()))
-                .mapToInt(RegistroDecanatura::getNumero)
-                .min()
-                .orElse(0);
-
-        if (proximoDisponible == 0) proximoDisponible = null;
-    }
-
-    // BAJA/ACTIVAR registro decanatura
-    public void doCambiarEstadoRegistro(RegistroDecanatura r) {
-        if (r == null) return;
-
-        // regla: no dar de baja si asignado
-        if ("ASIGNADO".equals(r.getEstado()) && r.isActivo()) {
-            warn("Restricción", "No se puede dar de baja un registro ASIGNADO");
-            return;
-        }
-
-        if (r.isActivo()) {
-            r.setActivo(false);
-            r.setEstado("BAJA");
-            warn("BAJA", "Registro dado de baja");
-        } else {
-            r.setActivo(true);
-            if ("BAJA".equals(r.getEstado())) r.setEstado("DISPONIBLE");
-            ok("ACTIVAR", "Registro activado");
-        }
-
-        actualizarIndicadores();
-    }
-
-    // ===========================================================
-    // === DEMOS ==================================================
-    // ===========================================================
-    private void cargarEjemploPendientes() {
-        lstPendientesBase.add(new Certificado(1, "Trejo Obregón Rodrigo Emilio", "Grupo 1B", "Programación con Java",
-                "Remoto", "ALUMNO UNS", "--", "NO", "NO", null));
-        lstPendientesBase.add(new Certificado(2, "Trejo Obregón Rodrigo Emilio", "Grupo 1B", "Autocad Básico",
-                "Presencial", "ALUMNO UNS", "--", "NO", "NO", null));
-
-        lstPendientes = new ArrayList<>(lstPendientesBase);
-    }
-
-    private void cargarEjemploFirmados() {
-        lstFirmadosBase.add(new Certificado(10, "Trejo Obregón Rodrigo Emilio", "Grupo 1B", "Ofimática Intermedio",
-                "Remoto", "ALUMNO UNS", "0013-2025", "SI", "SI", null));
-        lstFirmadosBase.add(new Certificado(11, "Trejo Obregón Rodrigo Emilio", "Grupo 1B", "Power BI",
-                "Presencial", "PÚBLICO EN GENERAL", "0014-2025", "SI", "SI", null));
-
-        lstFirmados = new ArrayList<>(lstFirmadosBase);
-    }
-
-    private void cargarEjemploToken() {
-        // estos son candidatos a token (al inicio sin token)
-        lstTokenBase.add(new Certificado(20, "Trejo Obregón Rodrigo Emilio", "Grupo 1B", "Programación con Java",
-                "Remoto", "ALUMNO UNS", "0013-2025", "SI", "SI", null));
-        lstTokenBase.add(new Certificado(21, "Trejo Obregón Rodrigo Emilio", "Grupo 1B", "Autocad Básico",
-                "Presencial", "ALUMNO UNS", "0013-2025", "SI", "SI", null));
-
-        // vista pendiente
-        refrescarPendientesToken();
-    }
-
-    private String fechaHoy() {
-        return new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-    }
-
-    // ===========================================================
-    // === HELPERS MENSAJES ======================================
-    // ===========================================================
-    private String normalizar(String s) {
-        return (s == null) ? "" : s.trim().toUpperCase();
-    }
-
-    private boolean contiene(String campo, String filtroUpper) {
-        if (campo == null) return false;
-        return campo.toUpperCase().contains(filtroUpper);
-    }
-
-    private void ok(String t, String m) {
-        if (generalController != null && generalController.getFramework() != null) {
-            generalController.getFramework().doMensajeF(t, m, 1);
-        } else {
-            System.out.println("[OK] " + t + ": " + m);
-        }
-    }
-
-    private void info(String t, String m) {
-        if (generalController != null && generalController.getFramework() != null) {
-            generalController.getFramework().doMensajeF(t, m, 1);
-        } else {
-            System.out.println("[INFO] " + t + ": " + m);
-        }
-    }
-
-    private void warn(String t, String m) {
-        if (generalController != null && generalController.getFramework() != null) {
-            generalController.getFramework().doMensajeF(t, m, 2);
-        } else {
-            System.out.println("[WARN] " + t + ": " + m);
-        }
-    }
-
-    // ===========================================================
-    // === CLASES INTERNAS =======================================
-    // ===========================================================
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter @Setter
-    public static class Certificado implements Serializable {
-        private int id;
-        private String estudiante;
-        private String grupo;
-        private String curso;
-        private String modalidad;
-        private String procedencia;
-        private String regDecanatura;
-        private String firmaDecano;
-        private String firmaDirector;
-        private String token;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter @Setter
-    public static class RegistroDecanatura implements Serializable {
-        private int numero;
-        private String estado;       // DISPONIBLE / ASIGNADO / BAJA
-        private String asignadoA;
-        private String fechaRegistro;
-        private boolean activo;
     }
     
-    // ===========================================================
-// === REPORTES TOKENS =======================================
-// ===========================================================
-private String strBusquedaTokens;
-
-private List<TokenReporte> lstTokensReportBase; // base
-private List<TokenReporte> lstTokensReportView; // vista
-
-// Iniciar vista
-public void doIniciarReportesTokens() {
-    vistaActiva = "REPORTE_TOKENS";
-    if (strBusquedaTokens == null) strBusquedaTokens = "";
-
-    if (lstTokensReportBase == null) lstTokensReportBase = new ArrayList<>();
-    if (lstTokensReportView == null) lstTokensReportView = new ArrayList<>();
-
-    // demo inicial si está vacío
-    if (lstTokensReportBase.isEmpty()) {
-        cargarEjemploReporteTokens();
-    }
-
-    // refrescar estados y vista completa
-    recalcularEstadosTokens();
-    lstTokensReportView = new ArrayList<>(lstTokensReportBase);
-}
-
-// Buscar
-public void doBuscarReportesTokens() {
-    recalcularEstadosTokens();
-
-    String filtro = (strBusquedaTokens == null) ? "" : strBusquedaTokens.trim().toUpperCase();
-    if (filtro.isBlank()) {
-        lstTokensReportView = new ArrayList<>(lstTokensReportBase);
-        return;
-    }
-
-    List<TokenReporte> out = new ArrayList<>();
-    for (TokenReporte t : lstTokensReportBase) {
-        if (contiene(t.getToken(), filtro)
-                || contiene(t.getEstudiante(), filtro)
-                || contiene(t.getCurso(), filtro)) {
-            out.add(t);
+    private void cargarMatriculasDisponibles() {
+        lstMatriculasDisponibles = new ArrayList<>();
+        try {
+            List<ejbCcoCepCcoMatriculaCab> matriculas = srvMatricula.listarTodos();
+            if (matriculas != null) {
+                for (ejbCcoCepCcoMatriculaCab mat : matriculas) {
+                    if (mat.getNotaFinal() != null && mat.getNotaFinal() >= 14) {
+                        boolean tieneCertificado = srvCertificado.yaTieneCertificado(mat.getIdMtaAlu());
+                        if (!tieneCertificado) {
+                            lstMatriculasDisponibles.add(new ejbCcoMatriculaDTO(mat));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error cargar matrículas disponibles: " + e.getMessage());
         }
     }
-    lstTokensReportView = out;
-}
 
-// Ver certificado (por ahora demo)
-public void doVerCertificadoToken(TokenReporte reg) {
-    // Aquí luego: abrir pdf/descargar según tu framework
-    // Por ahora solo mensaje:
-    // generalController.getFramework().doMensajeF("CERTIFICADO", "Ver certificado de " + reg.getEstudiante(), 1);
-    System.out.println("Ver certificado token: " + (reg != null ? reg.getToken() : ""));
-}
-
-// Marcar como usado (activa token por 15 días)
-public void doMarcarUsado(TokenReporte reg) {
-    if (reg == null) return;
-
-    if (reg.getFechaActivacion() == null) {
-        reg.setFechaActivacion(new Date());
-        reg.setFechaVencimiento(sumarDias(reg.getFechaActivacion(), 15));
-    }
-    recalcularEstadosTokens();
-    doBuscarReportesTokens();
-}
-
-// Recalcular estado/días en base a la fecha actual
-private void recalcularEstadosTokens() {
-    if (lstTokensReportBase == null) return;
-
-    Date hoy = truncarHora(new Date());
-
-    for (TokenReporte t : lstTokensReportBase) {
-        if (t.getFechaActivacion() == null) {
-            t.setEstado("DISPONIBLE");
-            t.setFechaVencimiento(null);
-            continue;
-        }
-
-        // si tiene activación pero no vencimiento, lo calculamos
-        if (t.getFechaVencimiento() == null) {
-            t.setFechaVencimiento(sumarDias(t.getFechaActivacion(), 15));
-        }
-
-        Date venc = truncarHora(t.getFechaVencimiento());
-
-        if (hoy.after(venc)) {
-            t.setEstado("VENCIDO");
+    public void doBuscar() {
+        String q = (strBusqueda == null) ? "" : strBusqueda.trim().toLowerCase();
+        
+        if (q.isBlank()) {
+            lstCertificadosViewDTO = new ArrayList<>(lstCertificadosDTO);
         } else {
-            t.setEstado("ACTIVO");
+            List<ejbCcoCertificadoDTO> filtrado = new ArrayList<>();
+            for (ejbCcoCertificadoDTO dto : lstCertificadosDTO) {
+                String nombreAlumno = dto.getNombreCompleto() != null ? dto.getNombreCompleto().toLowerCase() : "";
+                String dni = dto.getDni() != null ? dto.getDni().toLowerCase() : "";
+                
+                if (nombreAlumno.contains(q) || dni.contains(q)) {
+                    filtrado.add(dto);
+                }
+            }
+            lstCertificadosViewDTO = filtrado;
+        }
+        generalController.getFramework().doMensajeF("BÚSQUEDA", "Filtro aplicado correctamente", 1);
+    }
+
+    public void doNuevo() {
+        strValor = VISTA_NUEVO;
+        limpiarFormulario();
+        cargarMatriculasDisponibles();
+        strBusqueda = "";
+    }
+
+    public void doGenerarCertificado() {
+        if (idMatriculaSeleccionada == null) {
+            generalController.getFramework().doMensajeF("VALIDACIÓN", "Debe seleccionar una matrícula", 2);
+            return;
+        }
+        
+        if (resolucionSeleccionada == null || resolucionSeleccionada <= 0) {
+            generalController.getFramework().doMensajeF("VALIDACIÓN", "Debe ingresar un número de resolución válido", 2);
+            return;
+        }
+        
+        try {
+            ejbCcoCepCcoMatriculaCab matricula = srvMatricula.buscarPorId(idMatriculaSeleccionada);
+            if (matricula == null) {
+                generalController.getFramework().doMensajeF("ERROR", "No se encontró la matrícula", 3);
+                return;
+            }
+            
+            if (matricula.getNotaFinal() == null || matricula.getNotaFinal() < 14) {
+                generalController.getFramework().doMensajeF("VALIDACIÓN", 
+                    "La matrícula tiene nota " + (matricula.getNotaFinal() != null ? matricula.getNotaFinal() : "sin nota") + 
+                    ". Se requiere nota >= 14 para certificar", 2);
+                return;
+            }
+            
+            if (srvCertificado.yaTieneCertificado(idMatriculaSeleccionada)) {
+                generalController.getFramework().doMensajeF("VALIDACIÓN", "Esta matrícula ya tiene un certificado", 2);
+                return;
+            }
+            
+            ejbCcoCepCecCert certificado = srvCertificado.generarCertificado(
+                idMatriculaSeleccionada, 
+                resolucionSeleccionada, 
+                fechaCertificado != null ? fechaCertificado : new Date()
+            );
+            
+            if (certificado != null) {
+                generalController.getFramework().doMensajeF("ÉXITO", "Certificado generado correctamente", 1);
+                doVolver();
+            } else {
+                generalController.getFramework().doMensajeF("ERROR", "No se pudo generar el certificado", 3);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            generalController.getFramework().doMensajeF("ERROR", "Error al generar certificado: " + e.getMessage(), 3);
         }
     }
-}
 
-// Helpers
-
-
-private Date sumarDias(Date base, int dias) {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(base);
-    cal.add(Calendar.DAY_OF_MONTH, dias);
-    return cal.getTime();
-}
-
-private Date truncarHora(Date d) {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(d);
-    cal.set(Calendar.HOUR_OF_DAY, 0);
-    cal.set(Calendar.MINUTE, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MILLISECOND, 0);
-    return cal.getTime();
-}
-
-// Demo
-private void cargarEjemploReporteTokens() {
-    // algunos DISPONIBLES (sin activación)
-    lstTokensReportBase.add(new TokenReporte("006841977", "Trejo Obregón Rodrigo Emilio", "Programación Orientada a Objetos con Java", null, null, "DISPONIBLE"));
-    lstTokensReportBase.add(new TokenReporte("005841965", "Trejo Obregón Rodrigo Emilio", "Autocad Básico", null, null, "DISPONIBLE"));
-
-    // algunos ACTIVOS (con activación)
-    Date act1 = parseFecha("08-08-2025");
-    Date ven1 = sumarDias(act1, 15);
-    lstTokensReportBase.add(new TokenReporte("004841955", "Trejo Obregón Rodrigo Emilio", "Autocad Básico", act1, ven1, "ACTIVO"));
-
-    // VENCIDO
-    Date act2 = parseFecha("10-03-2025");
-    Date ven2 = sumarDias(act2, 15);
-    lstTokensReportBase.add(new TokenReporte("001841123", "Trejo Obregón Rodrigo Emilio", "Ofimática Empresarial Intermedio", act2, ven2, "VENCIDO"));
-}
-
-private Date parseFecha(String s) {
-    try {
-        return new SimpleDateFormat("dd-MM-yyyy").parse(s);
-    } catch (Exception e) {
-        return null;
-    }
-}
-
-// ===========================================================
-// === CLASE TokenReporte ====================================
-// ===========================================================
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter @Setter
-public static class TokenReporte implements Serializable {
-    private String token;
-    private String estudiante;
-    private String curso;
-
-    private Date fechaActivacion;   // null si no usado
-    private Date fechaVencimiento;  // activación + 15
-
-    private String estado; // DISPONIBLE / ACTIVO / VENCIDO
-
-    public String getFechaActivacionTxt() {
-        return formatearFecha(fechaActivacion);
-    }
-    public String getFechaVencimientoTxt() {
-        return formatearFecha(fechaVencimiento);
+    public void doVolver() {
+        strValor = VISTA_LISTA;
+        strBusqueda = "";
+        cargarCertificados();
+        cargarMatriculasDisponibles();
     }
 
-    public String getDiasRestantesTxt() {
-        if (fechaActivacion == null || fechaVencimiento == null) return "-";
-
-        Date hoy = truncar(new Date());
-        Date ven = truncar(fechaVencimiento);
-
-        long diff = ven.getTime() - hoy.getTime();
-        long dias = diff / (1000L * 60 * 60 * 24);
-
-        if (dias < 0) return "0";
-        return String.format("%02d", dias);
+    private void limpiarFormulario() {
+        clsCertificadoEdit = new ejbCcoCepCecCert();
+        idMatriculaSeleccionada = null;
+        resolucionSeleccionada = null;
+        fechaCertificado = new Date();
     }
-
-    private static Date truncar(Date d) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(d);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTime();
+    
+    public void doSeleccionarMatricula(ejbCcoMatriculaDTO matricula) {
+        this.idMatriculaSeleccionada = matricula.getIdMtaAlu();
+        generalController.getFramework().doMensajeF("MATRÍCULA", 
+            "Matrícula seleccionada: " + matricula.getNombreCompleto() + " - " + matricula.getNombreCurso(), 1);
     }
+    
+    public void doDescargarCertificado(ejbCcoCertificadoDTO dto) {
+        try {
 
-    private static String formatearFecha(Date d) {
-        if (d == null) return "-";
-        return new SimpleDateFormat("dd-MM-yyyy").format(d);
-    }
-}
+            if (dto == null || dto.getIdCert() == null) {
+                generalController.getFramework()
+                    .doMensajeF("ERROR", "Certificado no válido", 3);
+                return;
+            }
 
-// ===========================================================
-// === REPORTE CERTIFICADOS ==================================
-// ===========================================================
-private String strTokenBusqueda;
+            Map<String, Object> parametros = new HashMap<>();
 
-private List<ReporteCertificado> lstReporteCertBase;
-private List<ReporteCertificado> lstReporteCertView;
+            parametros.put("P_CODIGO",
+                    "CERT-" + String.format("%06d", dto.getIdCert()));
 
-public void doIniciarReportesCertificados() {
-    vistaActiva = "REPORTE_CERTIFICADOS";
-    if (strTokenBusqueda == null) strTokenBusqueda = "";
+            parametros.put("P_NOMBRE_COMPLETO",
+                    dto.getNombreCompleto());
 
-    if (lstReporteCertBase == null) lstReporteCertBase = new ArrayList<>();
-    if (lstReporteCertView == null) lstReporteCertView = new ArrayList<>();
+            parametros.put("P_CURSO",
+                    dto.getNombreCurso());
 
-    if (lstReporteCertBase.isEmpty()) {
-        cargarEjemploReporteCertificados();
-    }
+            parametros.put("P_HORAS", "40");
 
-    // refrescar (si fecha emision depende del token)
-    lstReporteCertView = new ArrayList<>(lstReporteCertBase);
-}
+            SimpleDateFormat sdf =
+                    new SimpleDateFormat("dd/MM/yyyy");
 
-public void doBuscarReportesCertificados() {
-    String filtro = (strTokenBusqueda == null) ? "" : strTokenBusqueda.trim().toUpperCase();
+            parametros.put("P_FECHA_INICIO",
+                    sdf.format(dto.getFechaCert()));
 
-    if (filtro.isBlank()) {
-        lstReporteCertView = new ArrayList<>(lstReporteCertBase);
-        return;
-    }
+            parametros.put("P_FECHA_FIN",
+                    sdf.format(dto.getFechaCert()));
 
-    List<ReporteCertificado> out = new ArrayList<>();
-    for (ReporteCertificado r : lstReporteCertBase) {
-        if (contiene(r.getToken(), filtro)
-                || contiene(r.getEstudiante(), filtro)
-                || contiene(r.getCurso(), filtro)) {
-            out.add(r);
+            SimpleDateFormat sdfLugar =
+                    new SimpleDateFormat(
+                            "dd 'de' MMMM 'de' yyyy",
+                            new Locale("es", "PE")
+                    );
+
+            parametros.put("P_LUGAR_FECHA",
+                    "Nuevo Chimbote, "
+                    + sdfLugar.format(new Date()));
+
+            parametros.put("REPORT_LOCALE",
+                    new Locale("es", "PE"));
+
+            // IMPORTANTE
+            List<String> dummy = new ArrayList<>();
+            dummy.add("OK");
+
+            JasperPrint jasperPrint =
+                    generalController.getFramework()
+                    .doGenerarJasper(
+                            dummy,
+                            parametros,
+                            "CertificadoUNS"
+                    );
+
+            generalController.getArchivo().setStreamedFile(
+                    generalController.getFramework()
+                    .doReportePdfStream(
+                            jasperPrint,
+                            "Certificado_" + dto.getDni()
+                    )
+            );
+
+            generalController.getFramework()
+                    .doMensajeF(
+                            "DESCARGA",
+                            "Certificado descargado correctamente",
+                            1
+                    );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            generalController.getFramework()
+                    .doMensajeF(
+                            "ERROR",
+                            "Error: " + e.getMessage(),
+                            3
+                    );
         }
     }
-    lstReporteCertView = out;
-}
-
-public void doPrevisualizarCertificado(ReporteCertificado reg) {
-    if (reg == null) return;
-    System.out.println("Previsualizar PDF certificado: " + reg.getNumeroCertificado() + " token=" + reg.getToken());
-    // Aquí luego conectas tu framework PDF viewer / streamed content.
-}
-
-public void doDescargarCertificado(ReporteCertificado reg) {
-    if (reg == null) return;
-    System.out.println("Descargar PDF certificado: " + reg.getNumeroCertificado() + " token=" + reg.getToken());
-    // Aquí luego generas Jasper/streamedfile
-}
-
-// Demo base
-private void cargarEjemploReporteCertificados() {
-    // fechaEmision = fechaActivacion del token (si no hay activación: null -> "-")
-    Date act1 = parseFecha("01-02-2025");
-
-    lstReporteCertBase.add(new ReporteCertificado(
-            "C001", "001-2025", act1,
-            "Nombre de Estudiante", "EXCEL",
-            "INTERMEDIO", "PRESENCIAL", "CURSO",
-            "TK-006841977"
-    ));
-
-    lstReporteCertBase.add(new ReporteCertificado(
-            "C001", "001-2025", act1,
-            "Nombre de Estudiante", "PROGRAMACIÓN ORIENTADA A OBJETOS EN JAVA",
-            "-", "VIRTUAL", "CURSO",
-            "TK-005841965"
-    ));
-
-    // token aún no usado => sin emisión
-    lstReporteCertBase.add(new ReporteCertificado(
-            "C001", "001-2025", null,
-            "Nombre de Estudiante", "OFIMÁTICA EMPRESARIAL",
-            "BÁSICO", "VIRTUAL", "EXAMEN SUFIC.",
-            "TK-004841955"
-    ));
-}
-
-// ===========================================================
-// === CLASE ReporteCertificado ===============================
-// ===========================================================
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter @Setter
-public static class ReporteCertificado implements Serializable {
-    private String numeroCertificado; // ej: C001
-    private String regDecanatura;     // ej: 001-2025
-    private Date fechaEmision;        // = fechaActivacion token
-    private String estudiante;
-    private String curso;
-    private String nivel;
-    private String modalidad;
-    private String categoria;
-    private String token;
-
-    public String getFechaEmisionTxt() {
-        if (fechaEmision == null) return "-";
-        return new SimpleDateFormat("dd-MM-yyyy").format(fechaEmision);
-    }
-}
-
 }

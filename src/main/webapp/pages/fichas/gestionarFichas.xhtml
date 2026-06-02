@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{matriculaController.doIniciarPagina()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">Gestionar Matrículas</div>
+        <h:form id="frmPrincipal" class="form-horizontal h-100">
+            <div id="divPrincipal" class="card-contenido">
+
+                <p:growl id="growl" showDetail="true" life="3000"/>
+
+                <!-- ========== VISTA LISTA ========== -->
+                <h:panelGroup id="pngLista" rendered="#{matriculaController.strValor eq 'LISTA'}">
+                    
+                    <an:seccion cabLabel="Lista de Matrículas" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdAction="#{matriculaController.doVolver()}"
+                                   cmdTooltip="Volver"
+                                   rendered="#{not empty matriculaController.strBusqueda}"/>
+                        <an:button cmdValue="Buscar"
+                                   cmdIcon="fa fa-search"
+                                   cmdAction="#{matriculaController.doBuscar()}"
+                                   cmdTooltip="Buscar matrículas por alumno o curso"/>
+                        <an:button cmdValue="Nueva Matrícula"
+                                   cmdIcon="fa fa-plus"
+                                   cmdAction="#{matriculaController.doNuevo()}"
+                                   cmdTooltip="Registrar una nueva matrícula"/>
+                    </an:seccion>
+
+                    <an:input cabValue="Búsqueda por alumno o curso"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{matriculaController.strBusqueda}"
+                              conTooltip="Ingrese nombre del alumno o curso para buscar"
+                              conRequired="false"/>
+                    <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                    <an:table id="cdtMatricula"
+                              cabId="cdtMatricula"
+                              cabValue="#{matriculaController.lstMatriculasViewDTO}"
+                              cabPaginator="true">
+
+                        <p:column width="100" headerText="Acciones" styleClass="text-center">
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-edit text-info"
+                                       cmdValue="Editar"
+                                       cmdTooltip="Editar matrícula"
+                                       cmdAction="#{matriculaController.doEditar(registro)}"/>
+                        </p:column>
+
+                        <p:column width="50" headerText="Nro" styleClass="text-center">
+                            <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="100" headerText="DNI" styleClass="text-center">
+                            <an:celda optValue="#{registro.dni}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="250" headerText="Alumno">
+                            <an:celda optValue="#{registro.nombreCompleto}"/>
+                        </p:column>
+
+                        <p:column width="200" headerText="Curso">
+                            <an:celda optValue="#{registro.nombreCurso}"/>
+                        </p:column>
+
+                        <p:column width="150" headerText="Docente">
+                            <an:celda optValue="#{registro.nombreDocente}"/>
+                        </p:column>
+
+                        <p:column width="100" headerText="Nivel" styleClass="text-center">
+                            <an:celda optValue="#{registro.nombreNivel}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="80" headerText="Grupo" styleClass="text-center">
+                            <an:celda optValue="#{registro.nombreGrupo}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="100" headerText="Nota Final" styleClass="text-center">
+                            <an:celda optValue="#{registro.notaFinal != null ? registro.notaFinal : '-'}" comAlign="text-center"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"
+                                      optValue="Total matrículas: #{matriculaController.lstMatriculasViewDTO != null ? matriculaController.lstMatriculasViewDTO.size() : 0}"/>
+                        </f:facet>
+
+                    </an:table>
+
+                </h:panelGroup>
+
+                <!-- ========== VISTA NUEVO / EDITAR ========== -->
+                <h:panelGroup id="pngNuevaMatricula"
+                              rendered="#{matriculaController.strValor eq 'NUEVO' or matriculaController.strValor eq 'EDITAR'}">
+
+                    <an:seccion cabLabel="#{matriculaController.modoEdicion ? 'Editar Matrícula' : 'Nueva Matrícula'}" 
+                                cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{matriculaController.doVolver()}"/>
+
+                        <an:button cmdValue="Guardar"
+                                   cmdIcon="fa fa-save"
+                                   cmdClass="bntIconsMedio"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{matriculaController.doGuardar()}"
+                                   cmdTooltip="Guardar la matrícula"/>
+                    </an:seccion>
+
+                    <!-- Select para Grupo -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Grupo</div>
+                        <div class="col-lg-6">
+                            <p:selectOneMenu value="#{matriculaController.idGrupoSeleccionado}" 
+                                             style="width:100%"
+                                             required="true"
+                                             requiredMessage="Seleccione un grupo"
+                                             disabled="#{matriculaController.modoEdicion}">
+                                <f:selectItem itemLabel="-- Seleccione Grupo --" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{matriculaController.lstGruposDTO}" 
+                                               var="grupo"
+                                               itemLabel="#{grupo.nombreCurso} - #{grupo.nombreDocente} - #{grupo.nombreGrupo}" 
+                                               itemValue="#{grupo.idAd}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <!-- Búsqueda de Alumno (solo en nuevo) -->
+                    <h:panelGroup rendered="#{not matriculaController.modoEdicion}">
+                        <div class="row mb-2">
+                            <div class="col-lg-2 text-end fw-bold">Buscar Alumno</div>
+                            <div class="col-lg-4">
+                                <p:inputText value="#{matriculaController.strBusquedaAlumno}" 
+                                             style="width:100%"
+                                             placeholder="Ingrese DNI o nombre para buscar"/>
+                            </div>
+                            <div class="col-lg-1">
+                                <p:commandButton value="Buscar" 
+                                                 action="#{matriculaController.doBuscarAlumnos()}"
+                                                 update="@form"
+                                                 icon="fa fa-search"
+                                                 styleClass="btn btn-primary btn-sm"/>
+                            </div>
+                            <div class="col-lg-1">
+                                <p:commandButton value="Limpiar" 
+                                                 action="#{matriculaController.doLimpiarBusquedaAlumno()}"
+                                                 update="@form"
+                                                 icon="fa fa-eraser"
+                                                 styleClass="btn btn-secondary btn-sm"/>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de resultados de búsqueda usando an:table -->
+                        <div class="row mb-2" rendered="#{not empty matriculaController.lstAlumnosBusqueda}">
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-8">
+                                <an:table id="cdtAlumnosBusqueda"
+                                          cabId="cdtAlumnosBusqueda"
+                                          cabValue="#{matriculaController.lstAlumnosBusqueda}"
+                                          cabPaginator="false">
+
+                                    <p:column width="100" headerText="Acciones" styleClass="text-center">
+                                        <p:commandButton value="Seleccionar"
+                                                         action="#{matriculaController.doSeleccionarAlumno(registro)}"
+                                                         update="@form"
+                                                         icon="fa fa-check-circle"
+                                                         styleClass="btn btn-success btn-sm"/>
+                                    </p:column>
+
+                                    <p:column width="50" headerText="Nro" styleClass="text-center">
+                                        <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                                    </p:column>
+
+                                    <p:column width="120" headerText="DNI" styleClass="text-center">
+                                        <an:celda optValue="#{registro.dni}" comAlign="text-center"/>
+                                    </p:column>
+
+                                    <p:column headerText="Nombre Completo">
+                                        <an:celda optValue="#{registro.nombreCompleto}"/>
+                                    </p:column>
+
+                                    <p:column width="100" headerText="Tipo" styleClass="text-center">
+                                        <an:celda optValue="#{registro.tipo}" comAlign="text-center"/>
+                                    </p:column>
+
+                                    <f:facet name="footer">
+                                        <an:celda txtClass="fw-bold bg-transparent"
+                                                  optValue="Total alumnos encontrados: #{matriculaController.lstAlumnosBusqueda.size()}"/>
+                                    </f:facet>
+
+                                </an:table>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+
+                    <!-- Alumno Seleccionado -->
+                    <div class="row mb-2" rendered="#{matriculaController.alumnoSeleccionado != null}">
+                        <div class="col-lg-2 text-end fw-bold">Alumno</div>
+                        <div class="col-lg-6">
+                            <p:outputLabel value="#{matriculaController.alumnoSeleccionado.dni} - #{matriculaController.alumnoSeleccionado.nombreCompleto} (#{matriculaController.alumnoSeleccionado.tipo})" 
+                                           style="font-weight:bold;color:green"/>
+                        </div>
+                        <div class="col-lg-1" rendered="#{not matriculaController.modoEdicion}">
+                            <p:commandButton value="Cambiar" 
+                                             action="#{matriculaController.doLimpiarBusquedaAlumno()}"
+                                             update="@form"
+                                             icon="fa fa-exchange-alt"
+                                             styleClass="btn btn-warning btn-sm"/>
+                        </div>
+                    </div>
+
+                    <!-- Nota Final -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Nota Final</div>
+                        <div class="col-lg-2">
+                            <p:inputText value="#{matriculaController.clsMatriculaEdit.notaFinal}" 
+                                         style="width:100%"
+                                         required="false"
+                                         placeholder="0 - 20">
+                                <f:convertNumber integerOnly="true"/>
+                            </p:inputText>
+                            <p:outputLabel value="(Valor entre 0 y 20)" style="font-size:11px;color:gray"/>
+                        </div>
+                    </div>
+
+                </h:panelGroup>
+
+            </div>
+        </h:form>
+
+        <!-- Dialog de Procesando -->
+        <p:dialog id="dlgProcesando" widgetVar="dlgProcesando" modal="true" closable="false" resizable="false" draggable="false" style="width:200px;height:80px;">
+            <div style="text-align:center;">
+                <i class="fa fa-spinner fa-pulse fa-2x"></i>
+                <p:outputLabel value=" Procesando..." style="margin-left:10px;"/>
+            </div>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,388 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{docenteCecompController.doIniciarPagina()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">Gestionar Docentes CEcomp</div>
+        <h:form id="frmPrincipal" class="form-horizontal h-100">
+            <div id="divPrincipal" class="card-contenido">
+
+                <p:growl id="growl" showDetail="true" life="3000"/>
+
+                <!-- ========== VISTA LISTA ========== -->
+                <h:panelGroup id="pngLista" rendered="#{docenteCecompController.strValor eq 'LISTA'}">
+                    
+                    <an:seccion cabLabel="Lista de Docentes CEcomp" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdAction="#{docenteCecompController.doVolver()}"
+                                   cmdTooltip="Volver"
+                                   rendered="#{not empty docenteCecompController.strBusqueda}"/>
+                        <an:button cmdValue="Buscar"
+                                   cmdIcon="fa fa-search"
+                                   cmdAction="#{docenteCecompController.doBuscar()}"
+                                   cmdTooltip="Buscar docentes por nombre, DNI o especialidad"/>
+                        <an:button cmdValue="Nuevo Externo"
+                                   cmdIcon="fa fa-user-plus"
+                                   cmdAction="#{docenteCecompController.doSeleccionarNuevo()}"
+                                   cmdTooltip="Registrar un nuevo docente externo"/>
+                        <an:button cmdValue="Vincular Universitario"
+                                   cmdIcon="fa fa-university"
+                                   cmdAction="#{docenteCecompController.doSeleccionarExistente()}"
+                                   cmdTooltip="Vincular docente universitario existente"/>
+                    </an:seccion>
+
+                    <an:input cabValue="Búsqueda por nombre, DNI o especialidad"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{docenteCecompController.strBusqueda}"
+                              conTooltip="Ingrese nombre, DNI o especialidad para buscar"
+                              conRequired="false"/>
+                    <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                    <an:table id="cdtDocente"
+                              cabId="cdtDocente"
+                              cabValue="#{docenteCecompController.lstDocentesViewDTO}"
+                              cabPaginator="true">
+
+                        <p:column width="150" headerText="Acciones" styleClass="text-center">
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-edit text-info"
+                                       cmdValue="Editar"
+                                       cmdTooltip="Editar docente"
+                                       cmdAction="#{docenteCecompController.doEditar(registro)}"/>
+                            <an:button cmdType="link"
+                                       rendered="#{registro.bandera}"
+                                       cmdIcon="fa fa-ban text-danger"
+                                       conMensaje="¿Está seguro de cambiar el estado del docente?"
+                                       cmdTooltip="Dar de baja el docente"
+                                       cmdAction="#{docenteCecompController.doCambiarEstado(registro)}"/>
+                            <an:button cmdType="link"
+                                       rendered="#{!registro.bandera}"
+                                       cmdIcon="fa fa-check-circle text-success"
+                                       conMensaje="¿Está seguro de cambiar el estado del docente?"
+                                       cmdTooltip="Activar el docente"
+                                       cmdAction="#{docenteCecompController.doCambiarEstado(registro)}"/>
+                        </p:column>
+
+                        <p:column width="50" headerText="Nro" styleClass="text-center">
+                            <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="DNI" styleClass="text-center">
+                            <an:celda optValue="#{registro.dni}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="250" headerText="Nombres Completos">
+                            <an:celda optValue="#{registro.nombreCompleto}"/>
+                        </p:column>
+
+                        <p:column width="200" headerText="Email" styleClass="text-center">
+                            <an:celda optValue="#{registro.email}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="Celular" styleClass="text-center">
+                            <an:celda optValue="#{registro.celular}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="150" headerText="Especialidad" styleClass="text-center">
+                            <an:celda optValue="#{registro.especialidad}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="F. Ingreso CEcomp" styleClass="text-center">
+                            <h:outputText value="#{registro.fechaIngCecomp}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column width="120" headerText="Tipo CEcomp" styleClass="text-center">
+                            <an:celda optValue="#{registro.tipoCecompNombre}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="100" headerText="Estado" styleClass="text-center">
+                            <an:celda comType="estado" 
+                                      optValue="#{registro.estado}" 
+                                      txtActivo="#{registro.estado == 'ACTIVO' ? 'TRUE' : 'FALSE'}" 
+                                      comAlign="text-center"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"
+                                      optValue="Total docentes: #{docenteCecompController.lstDocentesViewDTO != null ? docenteCecompController.lstDocentesViewDTO.size() : 0}"/>
+                        </f:facet>
+
+                    </an:table>
+
+                </h:panelGroup>
+
+                <!-- ========== VISTA BÚSQUEDA DE PERSONA EXISTENTE ========== -->
+                <h:panelGroup id="pngBusquedaExistente" rendered="#{docenteCecompController.strValor eq 'BUSQUEDA_EXISTENTE'}">
+                    
+                    <an:seccion cabLabel="Buscar Docente Universitario" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Cancelar"
+                                   cmdIcon="fa fa-times"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdAction="#{docenteCecompController.doVolver()}"
+                                   cmdTooltip="Cancelar y volver"/>
+                    </an:seccion>
+
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Buscar por DNI o nombre</div>
+                        <div class="col-lg-4">
+                            <p:inputText value="#{docenteCecompController.strBusquedaPersona}"
+                                         style="width:100%"/>
+                        </div>
+                        <div class="col-lg-2">
+                            <an:button cmdValue="Buscar"
+                                       cmdIcon="fa fa-search"
+                                       cmdClass="bntIconsMedio"
+                                       cmdAction="#{docenteCecompController.doBuscarPersonaExistente()}"
+                                       cmdUpdate="@form"
+                                       cmdTooltip="Buscar persona"/>
+                        </div>
+                    </div>
+
+                    <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                    <an:table id="cdtPersonas"
+                              cabId="cdtPersonas"
+                              cabValue="#{docenteCecompController.lstPersonasEncontradas}"
+                              cabPaginator="true">
+
+                        <p:column width="100" headerText="Seleccionar" styleClass="text-center">
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-check-circle text-success"
+                                       cmdValue="Seleccionar"
+                                       cmdTooltip="Seleccionar esta persona"
+                                       cmdAction="#{docenteCecompController.doSeleccionarPersonaExistente(registro)}"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="DNI" styleClass="text-center">
+                            <an:celda optValue="#{registro.numeroPndid}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="250" headerText="Nombres Completos">
+                            <an:celda optValue="#{registro.nombreCompleto}"/>
+                        </p:column>
+
+                        <p:column width="150" headerText="Email" styleClass="text-center">
+                            <an:celda optValue="#{registro.emailPrin}" comAlign="text-center"/>
+                        </p:column>
+
+                    </an:table>
+
+                </h:panelGroup>
+
+                <!-- ========== VISTA FORMULARIO PERSONA (NUEVO) ========== -->
+                <h:panelGroup id="pngFormularioPersona" rendered="#{docenteCecompController.strValor eq 'FORMULARIO_PERSONA'}">
+                    
+                    <an:seccion cabLabel="Datos Personales" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdAction="#{docenteCecompController.doVolver()}"
+                                   cmdTooltip="Volver a lista"/>
+                        <an:button cmdValue="Continuar"
+                                   cmdIcon="fa fa-arrow-right"
+                                   cmdClass="bntIconsMedio"
+                                   cmdAction="#{docenteCecompController.doGuardarPersona()}"
+                                   cmdTooltip="Continuar con datos CEcomp"/>
+                    </an:seccion>
+
+                    <an:input cabValue="DNI"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-3"
+                              conValue="#{docenteCecompController.clsPersonaEdit.numeroPndid}"
+                              conTooltip="DNI del docente"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Nombres"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-5"
+                              conValue="#{docenteCecompController.clsPersonaEdit.nombre}"
+                              conTooltip="Nombres del docente"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Apellido Paterno"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{docenteCecompController.clsPersonaEdit.apPaterno}"
+                              conTooltip="Apellido Paterno"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Apellido Materno"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{docenteCecompController.clsPersonaEdit.apMaterno}"
+                              conTooltip="Apellido Materno"
+                              conRequired="true"/>
+
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Sexo</div>
+                        <div class="col-lg-2">
+                            <p:selectOneMenu value="#{docenteCecompController.clsPersonaEdit.sexo}" 
+                                             style="width:100%"
+                                             required="true"
+                                             requiredMessage="Seleccione sexo">
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Masculino" itemValue="M"/>
+                                <f:selectItem itemLabel="Femenino" itemValue="F"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Fecha Nacimiento</div>
+                        <div class="col-lg-3">
+                            <p:calendar value="#{docenteCecompController.clsPersonaEdit.fechaNac}"
+                                        pattern="dd/MM/yyyy"
+                                        showButtonPanel="true"
+                                        navigator="true"
+                                        yearRange="c-80:c+0"
+                                        style="width:100%">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </p:calendar>
+                        </div>
+                    </div>
+
+                    <an:seccion cabLabel="Datos de Contacto" cabLen="col-sm-6" cmdLen="col-sm-6"/>
+
+                    <an:input cabValue="Dirección"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-6"
+                              conValue="#{docenteCecompController.clsPersonaEdit.direccion}"
+                              conTooltip="Dirección domiciliaria"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Celular"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-2"
+                              conValue="#{docenteCecompController.clsPersonaEdit.celularPrin}"
+                              conTooltip="Número de celular"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Correo Electrónico"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{docenteCecompController.clsPersonaEdit.emailPrin}"
+                              conTooltip="Correo electrónico"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Especialidad"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{docenteCecompController.clsEscPersonalEdit.especialidad}"
+                              conTooltip="Especialidad del docente"
+                              conRequired="true"/>
+
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Fecha Ingreso Universidad</div>
+                        <div class="col-lg-3">
+                            <p:calendar value="#{docenteCecompController.clsEscPersonalEdit.fechaIng}"
+                                        pattern="dd/MM/yyyy"
+                                        showButtonPanel="true"
+                                        navigator="true"
+                                        yearRange="c-50:c+0"
+                                        style="width:100%">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </p:calendar>
+                        </div>
+                    </div>
+
+                </h:panelGroup>
+
+                <!-- ========== VISTA FORMULARIO CECOMP ========== -->
+                <h:panelGroup id="pngFormularioCecomp" rendered="#{docenteCecompController.strValor eq 'FORMULARIO_CECOMP'}">
+                    
+                    <an:seccion cabLabel="Datos CEcomp" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdAction="#{docenteCecompController.doVolverPersona()}"
+                                   cmdTooltip="Volver a datos personales"
+                                   rendered="#{docenteCecompController.idEdicion == null}"/>
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdAction="#{docenteCecompController.doVolver()}"
+                                   cmdTooltip="Volver a lista"
+                                   rendered="#{docenteCecompController.idEdicion != null}"/>
+                        <an:button cmdValue="Guardar"
+                                   cmdIcon="fa fa-save"
+                                   cmdClass="bntIconsMedio"
+                                   cmdAction="#{docenteCecompController.doGuardarDocenteCecomp()}"
+                                   cmdTooltip="Guardar docente CEcomp"/>
+                    </an:seccion>
+
+                    <!-- Resumen de persona -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Persona</div>
+                        <div class="col-lg-6">
+                            <p:outputLabel value="#{docenteCecompController.clsPersonaEdit.nombreCompleto} - DNI: #{docenteCecompController.clsPersonaEdit.numeroPndid}"
+                                           style="font-weight:bold"/>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Especialidad</div>
+                        <div class="col-lg-4">
+                            <p:outputLabel value="#{docenteCecompController.clsEscPersonalEdit.especialidad}"/>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Fecha Ingreso CEcomp</div>
+                        <div class="col-lg-3">
+                            <p:calendar value="#{docenteCecompController.clsCepPersonalEdit.fechaIng}"
+                                        pattern="dd/MM/yyyy"
+                                        showButtonPanel="true"
+                                        navigator="true"
+                                        style="width:100%">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </p:calendar>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Tipo de Personal CEcomp</div>
+                        <div class="col-lg-3">
+                            <p:selectOneMenu value="#{docenteCecompController.idTipoCecompSeleccionado}" 
+                                             style="width:100%"
+                                             required="true"
+                                             requiredMessage="Seleccione tipo de personal">
+                                <f:selectItem itemLabel="-- Seleccione --" itemValue="#{null}"/>
+                                <f:selectItems value="#{docenteCecompController.lstTiposCecomp}" 
+                                               var="tipo"
+                                               itemLabel="#{tipo.nombre}" 
+                                               itemValue="#{tipo.idTipoCecomp}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                </h:panelGroup>
+
+            </div>
+        </h:form>
+
+        <!-- Dialog de Procesando -->
+        <p:dialog id="dlgProcesando" widgetVar="dlgProcesando" modal="true" closable="false" resizable="false" draggable="false" style="width:200px;height:80px;">
+            <div style="text-align:center;">
+                <i class="fa fa-spinner fa-pulse fa-2x"></i>
+                <p:outputLabel value=" Procesando..." style="margin-left:10px;"/>
+            </div>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

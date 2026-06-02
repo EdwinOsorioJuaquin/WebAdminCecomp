@@ -23,8 +23,6 @@
             <groupId>com.uns</groupId>
             <artifactId>dependenciasUdemsi</artifactId>
             <version>1.0</version>
-            <type>jar</type>
-            <scope>provided</scope>
         </dependency>
         <!--        ejb requeridos-->
         <dependency>
@@ -35,7 +33,7 @@
             <scope>provided</scope>
         </dependency>
 
-<!--        <dependency>
+        <dependency>
             <groupId>com.uns</groupId>
             <artifactId>ejbPasaporte</artifactId>
             <version>1.0</version>
@@ -50,7 +48,39 @@
             <type>ejb</type>
             <scope>provided</scope>
         </dependency>
-        -->
+        
+        
+        <!-- //////////////////////////////////////////////// -->
+        <!-- javadocs -->
+        <dependency>
+            <groupId>com.uns</groupId>
+            <artifactId>ejbDirectorio</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <classifier>javadoc</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.uns</groupId>
+            <artifactId>ejbPasaporte</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <classifier>javadoc</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.uns</groupId>
+            <artifactId>libreriaUdemsi</artifactId>
+            <version>2.0</version>
+            <type>jar</type>
+            <classifier>javadoc</classifier>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>13.0.8</version>
+            <classifier>jakarta</classifier>  <!-- Importante: versión Jakarta -->
+        </dependency>
+        
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
@@ -80,7 +110,8 @@
             <artifactId>javase</artifactId>
             <version>3.5.3</version>
             <type>jar</type>
-        </dependency>
+        </dependency>      
+
     </dependencies>
     
     <build>
