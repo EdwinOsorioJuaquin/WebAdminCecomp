@@ -9,7 +9,7 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jakartaee>11.0.0-M1</jakartaee>
+        <jakartaee>10.0.0</jakartaee>
     </properties>
     
     <dependencies>
@@ -50,6 +50,33 @@
         </dependency>
         
         
+        <!-- For Maven/Gradle -->
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>13.0.1</version>
+            <classifier>jakarta</classifier> <!-- Important! -->
+        </dependency>
+        
+        <dependency>
+            <groupId>net.sf.barcode4j</groupId>
+            <artifactId>barcode4j</artifactId>
+            <version>2.1</version>
+        </dependency>
+
+        <!-- También necesitas XML Graphics para barcode4j -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>xmlgraphics-commons</artifactId>
+            <version>2.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.avalon.framework</groupId>
+            <artifactId>avalon-framework-api</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+        
         <!-- //////////////////////////////////////////////// -->
         <!-- javadocs -->
         <dependency>
@@ -73,14 +100,8 @@
             <type>jar</type>
             <classifier>javadoc</classifier>
         </dependency>
-        
-        <dependency>
-            <groupId>org.primefaces</groupId>
-            <artifactId>primefaces</artifactId>
-            <version>13.0.8</version>
-            <classifier>jakarta</classifier>  <!-- Importante: versión Jakarta -->
-        </dependency>
-        
+
+         
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
@@ -110,7 +131,7 @@
             <artifactId>javase</artifactId>
             <version>3.5.3</version>
             <type>jar</type>
-        </dependency>      
+        </dependency>   
 
     </dependencies>
     

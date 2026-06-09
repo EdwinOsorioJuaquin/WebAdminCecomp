@@ -1,16 +1,6 @@
-package controladores;
+ package controladores;
 
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ByteArrayInputStream;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import java.io.InputStream;
+
 import ejbCecomp.clases.ejbCcoCertificadoDTO;
 import ejbCecomp.clases.ejbCcoMatriculaDTO;
 import ejbCecomp.entidades.*;
@@ -21,9 +11,7 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.naming.*;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -178,7 +166,6 @@ public class CertificadoController implements Serializable {
                 generalController.getFramework().doMensajeF("ERROR", "No se pudo generar el certificado", 3);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             generalController.getFramework().doMensajeF("ERROR", "Error al generar certificado: " + e.getMessage(), 3);
         }
     }
@@ -222,6 +209,11 @@ public class CertificadoController implements Serializable {
 
             parametros.put("P_CURSO",
                     dto.getNombreCurso());
+            
+            
+            parametros.put("P_NOTA_FINAL",
+                    dto.getNotaFinal());
+            
 
             parametros.put("P_HORAS", "40");
 
@@ -276,7 +268,6 @@ public class CertificadoController implements Serializable {
 
         } catch (Exception e) {
 
-            e.printStackTrace();
 
             generalController.getFramework()
                     .doMensajeF(

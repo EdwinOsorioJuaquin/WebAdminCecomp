@@ -184,8 +184,8 @@ public class GeneralController extends BaseController {
         );
 
         lstSubMenu.add(new gralMenuSub(41, "Gestionar Certificados", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(42, "Registros Decanatura", null, null, null, true));
-
+        lstSubMenu.add(new gralMenuSub(42, "Generar QR", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(43, "Registros Decanatura", null, null, null, true));
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
 
         // =====================================
@@ -263,8 +263,8 @@ public class GeneralController extends BaseController {
             // 04. CERTIFICADOS
             // =====================================
             case 41 -> "certificados.gestionar";
-            case 42 -> "certificados.registros";
-
+            case 42 -> "certificados.pendientes";
+            case 43 -> "certificados.registros";
             // =====================================
             // 05. FICHAS
             // =====================================
@@ -300,46 +300,145 @@ public class GeneralController extends BaseController {
         }
     }
 
-    public String doLogueo() {
-        //1. revisando si existe el usuario
-        getSessionGral().setAttribute("blnAutorizado", "FALSE");
-        this.getUsuario().setStrUsuario(this.getUsuario().getStrUsuario().trim().toUpperCase());
-        this.clsPspUsuario = this.srvPspUsuario.buscarUsuario(this.getUsuario().getStrUsuario().toUpperCase());
-        if (this.clsPspUsuario == null) {
-            this.getFramework().doMensajeF("ERROR EN USUARIO", "El nombre de usuario es invalido, por favor verifique!", 3);
-        } else {
-            //Verificar metodo de logueo
-            int idRpta = this.srvPspUsuario.autentificarUsuario(clsPspUsuario, this.getUsuario().getStrSeguridad(), this.getFramework().doEncriptar2(this.getUsuario().getStrClave()));
-            //SETEANDO A idRpta 0
-            idRpta=0;
-            switch (idRpta) {
-                case 0: //todo correcto
-                    //2. revisar si esta asignado al modulo
-                    System.out.println("antes de daolocal");
-                    ejbPspPspGroupuser groupUser = this.srvPspGroupUser.buscarGrupoUsuario(clsPspUsuario, this.getModulo().getIntUsuarioAdm());
-                    if (groupUser == null) {
-                        groupUser = this.srvPspGroupUser.buscarGrupoUsuario(clsPspUsuario, this.getModulo().getIntUsuarioMan());
-                    }
-                    if (groupUser == null) {
-                        this.getFramework().doMensajeF("ERROR EN PERMISO", "El usuario no tiene permiso para acceder a la aplicación.", 3);
-                    } else {
-                        getSessionGral().setAttribute("blnAutorizado", "TRUE");
-                        this.getUsuario().setBlnLogueado(Boolean.TRUE);
-                        this.getUsuario().setStrNombreCompleto(this.clsPspUsuario.getDrtDirectorio().getDrtPersonanatural().getNombreCompleto());
-                        this.doCargarMenu();
-                        return "acceso.ok";
-                    }
-                    break;
-                case 1: //Error idCard
-                    this.getFramework().doMensajeF("ERROR EN TARJETA", "El número de tarjeta es incorrecto, verifique!.", 3);
-                    break;
-                case 2: //Error en clave       
-                    this.getFramework().doMensajeF("ERROR EN CONTRASEÑA", "La contraseña es incorrecta, verifique!", 3);
-                    break;
-                case 3: //Error general
-                    this.getFramework().doMensajeF("ERROR GENERAL", "Error en el procesamiento del servidor.", 3);
-                    break;
+//    public String doLogueo() {
+//        //1. revisando si existe el usuario
+//        getSessionGral().setAttribute("blnAutorizado", "FALSE");
+//        this.getUsuario().setStrUsuario(this.getUsuario().getStrUsuario().trim().toUpperCase());
+//        this.clsPspUsuario = this.srvPspUsuario.buscarUsuario(this.getUsuario().getStrUsuario().toUpperCase());
+//        if (this.clsPspUsuario == null) {
+//            this.getFramework().doMensajeF("ERROR EN USUARIO", "El nombre de usuario es invalido, por favor verifique!", 3);
+//        } else {
+//            //Verificar metodo de logueo
+//            int idRpta = this.srvPspUsuario.autentificarUsuario(clsPspUsuario, this.getUsuario().getStrSeguridad(), this.getFramework().doEncriptar2(this.getUsuario().getStrClave()));
+//            //SETEANDO A idRpta 0
+//            idRpta=0;
+//            switch (idRpta) {
+//                case 0: //todo correcto
+//                    //2. revisar si esta asignado al modulo
+//                    System.out.println("antes de daolocal");
+//                    ejbPspPspGroupuser groupUser = this.srvPspGroupUser.buscarGrupoUsuario(clsPspUsuario, this.getModulo().getIntUsuarioAdm());
+//                    if (groupUser == null) {
+//                        groupUser = this.srvPspGroupUser.buscarGrupoUsuario(clsPspUsuario, this.getModulo().getIntUsuarioMan());
+//                    }
+//                    if (groupUser == null) {
+//                        this.getFramework().doMensajeF("ERROR EN PERMISO", "El usuario no tiene permiso para acceder a la aplicación.", 3);
+//                    } else {
+//                        getSessionGral().setAttribute("blnAutorizado", "TRUE");
+//                        this.getUsuario().setBlnLogueado(Boolean.TRUE);
+//                        this.getUsuario().setStrNombreCompleto(this.clsPspUsuario.getDrtDirectorio().getDrtPersonanatural().getNombreCompleto());
+//                        this.doCargarMenu();
+//                        return "acceso.ok";
+//                    }
+//                    break;
+//                case 1: //Error idCard
+//                    this.getFramework().doMensajeF("ERROR EN TARJETA", "El número de tarjeta es incorrecto, verifique!.", 3);
+//                    break;
+//                case 2: //Error en clave       
+//                    this.getFramework().doMensajeF("ERROR EN CONTRASEÑA", "La contraseña es incorrecta, verifique!", 3);
+//                    break;
+//                case 3: //Error general
+//                    this.getFramework().doMensajeF("ERROR GENERAL", "Error en el procesamiento del servidor.", 3);
+//                    break;
+//            }
+//        }
+//        return "";
+//    }
+    
+     public String doLogueo() {
+        try {
+            //1. revisando si existe el usuario
+            getSessionGral().setAttribute("blnAutorizado", "FALSE");
+            this.getUsuario().setStrUsuario(this.getUsuario().getStrUsuario().trim().toUpperCase());
+            System.out.println("clave: " + this.getUsuario().getStrClave());
+            //----------------------------------------------------------------------------------------
+//            this.usuarioActual = this.srvFxaEstudiante.buscarCodigo(this.getUsuario().getStrUsuario().toUpperCase());
+//            if (this.usuarioActual == null) {
+//                this.getFramework().doMensajeF("ERROR EN USUARIO", "El nombre de usuario es invalido, por favor verifique!", 3);
+//            } else {
+//                int idRpta = this.srvFxaEstudiante.autentificarEstudiante(this.usuarioActual, this.getUsuario().getStrSeguridad(), this.getFramework().doEncriptar(this.getUsuario().getStrClave(), "SHA-1"));
+//                switch (idRpta) {
+//                    case 0 -> {
+////                        //todo correcto
+////                        //----Buscando periodos validos
+////                        periodoActivo = srvApcPeriodoAcademico.periodoActivo(this.usuarioActual.getApsAmbitoAcad().getIdAmbito());
+////                        periodoMatricula = srvApcPeriodoAcademico.periodoMatriculaActivo(this.usuarioActual.getApsAmbitoAcad().getIdAmbito());
+////                        if (periodoMatricula == null) {
+////                            periodoMatricula = periodoActivo;
+////                        }
+//                        //----------------------------------------
+//                        getSessionGral().setAttribute("blnAutorizado", "TRUE");
+//                        this.getUsuario().setBlnLogueado(Boolean.TRUE);
+//                        this.getUsuario().setStrNombreCompleto(this.usuarioActual.getDrtPersonanatural().getNombreCompleto());
+//                        this.doCargarMenu();
+//                        //Estableciendo manualmente el rol del usuario ya logueado
+//                        this.setSessionGral((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true));
+//                        this.getSessionGral().setAttribute("userRole", "USER");
+////                        session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+////                        session.setAttribute("userRole", "USER");
+//                        //-------------------------------------------
+//                        return "acceso.ok";
+//                    }
+//                    case 1 -> //Error idCard
+//                        this.getFramework().doMensajeF("Error en número de DNI", "El número de tarjeta es incorrecto, verifique!.", 3);
+//                    case 2 -> //Error en clave       
+//                        this.getFramework().doMensajeF("Error en contraseña", "La contraseña es incorrecta, verifique!", 3);
+//                    case 3 -> //Error general
+//                        this.getFramework().doMensajeF("Error de autentificación", "Error en el procesamiento del servidor.", 3);
+//                }
+//            }
+
+
+            // ============================
+            // LOGIN LOCAL SIN BASE DE DATOS
+            // ============================
+
+            // ⚠ Usuario mock (los mismos que cargas en doIniciarAplicacion)
+            String mockUsuario = "HNINAQUISPE";
+            String mockDNI = "042899315404";
+            String mockClave = "12345";
+
+
+            // Validar usuario
+            if (!this.getUsuario().getStrUsuario().equalsIgnoreCase(mockUsuario)) {
+                this.getFramework().doMensajeF("ERROR EN USUARIO", "El usuario no existe (modo offline).", 3);
+                return "";
             }
+
+            // Validar DNI
+            if (!this.getUsuario().getStrSeguridad().equals(mockDNI)) {
+                this.getFramework().doMensajeF("ERROR EN DNI", "El DNI es incorrecto (modo offline).", 3);
+                return "";
+            }
+
+            // Validar clave
+            if (!this.getUsuario().getStrClave().equals(mockClave)) {
+                this.getFramework().doMensajeF("ERROR EN CONTRASEÑA", "La contraseña es incorrecta (modo offline).", 3);
+                return "";
+            }
+
+            // ============================
+            // Simular usuario encontrado
+            // ============================
+            this.setUsuarioActual(null); // si no tienes la clase, lo dejamos null
+
+            // ============================
+            // Simular login correcto
+            // ============================
+            getSessionGral().setAttribute("blnAutorizado", "TRUE");
+            this.getUsuario().setBlnLogueado(Boolean.TRUE);
+            this.getUsuario().setStrNombreCompleto("EDWIN FIDENCIO OSORIO JUAQUIN");
+
+            this.doCargarMenu();
+
+            this.setSessionGral((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true));
+            this.getSessionGral().setAttribute("userRole", "USER");
+
+            return "acceso.ok";
+
+
+        } catch (Exception e) {
+            //this.getFramework().doMensajeF("Error general en el servidor", "Error en el servidor.", 3);
+            System.out.println("Exception: " + e);
         }
         return "";
     }

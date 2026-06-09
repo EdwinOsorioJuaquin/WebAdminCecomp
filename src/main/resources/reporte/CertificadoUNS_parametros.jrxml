@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ============================================================
+     CERTIFICADO UNS — Centro de Cómputo
+     Compatible con: iReport 5.6.0 / JasperReports 5.6.0
+     Orientación: Landscape (A4 horizontal)
+     Versión: CON PARÁMETROS — jalados desde Java
+     ============================================================
+     PARÁMETROS requeridos desde el controlador Java:
+       P_CODIGO          → "CECOMP-2025-00147"
+       P_NOMBRE_COMPLETO → "CARLOS ANDRÉS MENDOZA QUISPE"
+       P_CURSO           → "OFFICE 365 - NIVEL AVANZADO"
+       P_HORAS           → "40"
+       P_FECHA_INICIO    → "05 de mayo"
+       P_FECHA_FIN       → "23 de mayo de 2025"
+       P_LUGAR_FECHA     → "Chimbote, 23 de mayo de 2025"
+       P_QR_IMAGE        → java.io.InputStream  (imagen del QR generada en Java)
+                           ----- O -----
+       P_QR_URL          → java.lang.String con la URL completa del QR
+     ============================================================ -->
+<jasperReport
+    xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+        http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="CertificadoUNS_Parametros"
+    pageWidth="842"
+    pageHeight="595"
+    orientation="Landscape"
+    columnWidth="802"
+    leftMargin="20"
+    rightMargin="20"
+    topMargin="20"
+    bottomMargin="20"
+    whenNoDataType="AllSectionsNoDetail">
+
+    <!-- ======================================================
+         PARÁMETROS
+         Ejemplo de uso en Java:
+           Map<String,Object> params = new HashMap<>();
+           params.put("P_CODIGO", "CECOMP-2025-00147");
+           params.put("P_NOMBRE_COMPLETO", "CARLOS ANDRÉS MENDOZA QUISPE");
+           ...
+           // Para QR como InputStream (recomendado):
+           params.put("P_QR_IMAGE", qrInputStream);
+           JasperFillManager.fillReport(jasper, params, conn);
+    ====================================================== -->
+    <parameter name="P_CODIGO"           class="java.lang.String"/>
+    <parameter name="P_NOMBRE_COMPLETO"  class="java.lang.String"/>
+    <parameter name="P_CURSO"            class="java.lang.String"/>
+    <parameter name="P_HORAS"            class="java.lang.String"/>
+    <parameter name="P_FECHA_INICIO"     class="java.lang.String"/>
+    <parameter name="P_FECHA_FIN"        class="java.lang.String"/>
+    <parameter name="P_LUGAR_FECHA"      class="java.lang.String"/>
+
+    <!--
+        P_QR_IMAGE: InputStream de la imagen PNG del QR.
+        Generarlo en Java antes de llamar al reporte:
+
+            import net.glxn.qrgen.QRCode;
+            import net.glxn.qrgen.image.ImageType;
+            ByteArrayOutputStream qrOut = QRCode
+                .from("https://cecomp.uns.edu.pe/verify/" + codigo)
+                .to(ImageType.PNG)
+                .withSize(150, 150)
+                .stream();
+            InputStream qrIn = new ByteArrayInputStream(qrOut.toByteArray());
+            params.put("P_QR_IMAGE", qrIn);
+
+        Alternativa sin librería extra — usar URL pública (requiere internet):
+            params.put("P_QR_URL",
+                "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="
+                + URLEncoder.encode("https://cecomp.uns.edu.pe/verify/" + codigo, "UTF-8"));
+    -->
+    <parameter name="P_QR_IMAGE"  class="java.io.InputStream"/>
+    <parameter name="P_QR_URL"    class="java.lang.String"/>
+
+    <!-- ======================================================
+         BANDA TITLE
+    ====================================================== -->
+    <title>
+        <band height="595" splitType="Stretch">
+
+            <!-- ── FONDO ────────────────────────────────────────── -->
+            <rectangle>
+                <reportElement x="0" y="0" width="802" height="555" backcolor="#FFFDF7" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+
+            <!-- ── BORDE EXTERIOR GRANATE ────────────────────── -->
+            <rectangle>
+                <reportElement x="0" y="0" width="802" height="555"/>
+                <graphicElement>
+                    <pen lineWidth="2.5" lineColor="#8B0000" lineStyle="Solid"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- ── BORDE INTERIOR DORADO ─────────────────────── -->
+            <rectangle>
+                <reportElement x="8" y="8" width="786" height="539"/>
+                <graphicElement>
+                    <pen lineWidth="0.8" lineColor="#D4AF37" lineStyle="Solid"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- ── BORDE INTERIOR PUNTEADO ───────────────────── -->
+            <rectangle>
+                <reportElement x="14" y="14" width="774" height="527"/>
+                <graphicElement>
+                    <pen lineWidth="0.4" lineColor="#D4AF37" lineStyle="Dotted"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- ── FRANJA SUPERIOR ───────────────────────────── -->
+            <rectangle>
+                <reportElement x="8" y="8" width="786" height="72" backcolor="#F5EAEA" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+
+            <!-- Logo UNS -->
+            <image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+                <reportElement x="28" y="14" width="72" height="72"/>
+                <imageExpression class="java.lang.String">
+                    <![CDATA["images/logoUNS.png"]]>
+                </imageExpression>
+            </image>
+
+            <!-- Logo CECOMP -->
+            <image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+                <reportElement x="702" y="14" width="72" height="72"/>
+                <imageExpression class="java.lang.String">
+                    <![CDATA["images/logoCecomp.png"]]>
+                </imageExpression>
+            </image>
+
+            <!-- Universidad -->
+            <staticText>
+                <reportElement x="110" y="20" width="582" height="26"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="15" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[UNIVERSIDAD NACIONAL DEL SANTA]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="110" y="44" width="582" height="18"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="9"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Centro de Cómputo  —  Chimbote, Perú]]></text>
+            </staticText>
+
+            <!-- Líneas divisorias -->
+            <line>
+                <reportElement x="14" y="82" width="774" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="1.0" lineStyle="Solid"/></graphicElement>
+            </line>
+            <line>
+                <reportElement x="14" y="85" width="774" height="1" forecolor="#8B0000"/>
+                <graphicElement><pen lineWidth="0.4" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <!-- ── CÓDIGO (dinámico) ──────────────────────────── -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="28" y="94" width="240" height="16"/>
+                <textElement textAlignment="Left">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA["Código: " + $P{P_CODIGO}]]>
+                </textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="320" y="96" width="162" height="16" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="11"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[* * *]]></text>
+            </staticText>
+
+            <!-- CERTIFICADO -->
+            <staticText>
+                <reportElement x="200" y="120" width="402" height="50"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="36" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[CERTIFICADO]]></text>
+            </staticText>
+
+            <line>
+                <reportElement x="230" y="170" width="342" height="1" forecolor="#8B0000"/>
+                <graphicElement><pen lineWidth="1.2" lineStyle="Solid"/></graphicElement>
+            </line>
+            <line>
+                <reportElement x="255" y="174" width="292" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.7" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <staticText>
+                <reportElement x="80" y="185" width="642" height="24"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="11" isItalic="true"
+                          pdfFontName="Times-Italic" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[El Centro de Cómputo de la Universidad Nacional del Santa otorga el presente reconocimiento a:]]></text>
+            </staticText>
+
+            <!-- ── NOMBRE DEL PARTICIPANTE (dinámico) ─────────── -->
+            <textField isBlankWhenNull="true" isStretchWithOverflow="true">
+                <reportElement x="80" y="216" width="642" height="36"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="22" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_NOMBRE_COMPLETO}]]>
+                </textFieldExpression>
+            </textField>
+
+            <line>
+                <reportElement x="120" y="253" width="562" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="1.2" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <staticText>
+                <reportElement x="80" y="262" width="642" height="20"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="11" isItalic="true"
+                          pdfFontName="Times-Italic" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[por haber participado y aprobado satisfactoriamente el curso:]]></text>
+            </staticText>
+
+            <!-- ── NOMBRE DEL CURSO (dinámico) ───────────────── -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="80" y="285" width="642" height="28" forecolor="#8B0000"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="18" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_CURSO}]]>
+                </textFieldExpression>
+            </textField>
+
+            <!-- ── HORAS Y FECHAS (dinámico) ─────────────────── -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="80" y="318" width="642" height="18"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="10"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA["con una duración de " + $P{P_HORAS} + " horas lectivas, del "
+                    + $P{P_FECHA_INICIO} + " al " + $P{P_FECHA_FIN}]]>
+                </textFieldExpression>
+            </textField>
+
+            <!-- Línea separadora baja -->
+            <line>
+                <reportElement x="14" y="342" width="774" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.5" lineStyle="Dotted"/></graphicElement>
+            </line>
+
+            <!-- ── FIRMA 1 ─────────────────────────────────────── -->
+            <line>
+                <reportElement x="80" y="420" width="180" height="1" forecolor="#444441"/>
+                <graphicElement><pen lineWidth="0.8" lineStyle="Solid"/></graphicElement>
+            </line>
+            <staticText>
+                <reportElement x="80" y="424" width="180" height="16"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="9" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Dra. María Elena Vargas Castro]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="80" y="439" width="180" height="14"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Directora del Centro de Cómputo]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="80" y="452" width="180" height="14"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Universidad Nacional del Santa]]></text>
+            </staticText>
+
+            <!-- ══════════════════════════════════════════════════
+                 QR CODE DINÁMICO
+                 Usa P_QR_IMAGE (InputStream) o P_QR_URL (String)
+            ══════════════════════════════════════════════════ -->
+
+            <!--
+                OPCIÓN A: QR desde InputStream (recomendada).
+                Descomenta este bloque y comenta la Opción B.
+            -->
+            <image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+                <reportElement x="341" y="355" width="120" height="120"/>
+                <imageExpression class="java.io.InputStream">
+                    <![CDATA[$P{P_QR_IMAGE}]]>
+                </imageExpression>
+            </image>
+
+            <!--
+                OPCIÓN B: QR generado por URL externa.
+                Requiere que el servidor tenga acceso a internet.
+                Descomenta este bloque y comenta la Opción A.
+
+            <image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+                <reportElement x="341" y="355" width="120" height="120"/>
+                <imageExpression class="java.net.URL">
+                    <![CDATA[new java.net.URL($P{P_QR_URL})]]>
+                </imageExpression>
+            </image>
+            -->
+
+            <!-- Texto bajo QR -->
+            <staticText>
+                <reportElement x="300" y="478" width="202" height="14"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Escanea para verificar la autenticidad]]></text>
+            </staticText>
+            <!-- URL de verificación dinámica -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="280" y="491" width="242" height="12"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA["cecomp.uns.edu.pe/verify/" + $P{P_CODIGO}]]>
+                </textFieldExpression>
+            </textField>
+
+            <!-- ── FIRMA 2 ─────────────────────────────────────── -->
+            <line>
+                <reportElement x="542" y="420" width="180" height="1" forecolor="#444441"/>
+                <graphicElement><pen lineWidth="0.8" lineStyle="Solid"/></graphicElement>
+            </line>
+            <staticText>
+                <reportElement x="542" y="424" width="180" height="16"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="9" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Mg. Roberto Flores Ávila]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="542" y="439" width="180" height="14"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Coordinador del Curso]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="542" y="452" width="180" height="14"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Universidad Nacional del Santa]]></text>
+            </staticText>
+
+            <!-- ── LUGAR Y FECHA (dinámico) ───────────────────── -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="200" y="512" width="402" height="16"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="9" isItalic="true"
+                          pdfFontName="Times-Italic" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_LUGAR_FECHA}]]>
+                </textFieldExpression>
+            </textField>
+
+            <!-- Ornamentos esquinas -->
+            <staticText>
+                <reportElement x="20" y="20" width="20" height="20" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="14"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[*]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="762" y="20" width="20" height="20" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="14"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[*]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="20" y="520" width="20" height="20" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="14"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[*]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="762" y="520" width="20" height="20" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="14"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[*]]></text>
+            </staticText>
+
+        </band>
+    </title>
+
+    <detail>
+        <band height="0"/>
+    </detail>
+
+</jasperReport>

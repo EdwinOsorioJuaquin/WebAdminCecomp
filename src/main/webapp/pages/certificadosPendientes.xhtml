@@ -9,7 +9,7 @@
                 xmlns:f="jakarta.faces.core">
 
     <f:metadata>
-        <f:viewAction action="#{certificadoController.doIniciarPendientes()}"/>
+        <f:viewAction action="#{certificadoPendienteQRController.doIniciarPagina()}"/>
     </f:metadata>
 
     <ui:define name="content">
@@ -21,20 +21,20 @@
                 <!-- ===========================
                      CABECERA / ACCIONES
                 ============================ -->
-                <an:seccion cabLabel="Certificados por firmar" cabLen="col-sm-6" cmdLen="col-sm-6">
+                <an:seccion cabLabel="Certificados por generar QR" cabLen="col-sm-6" cmdLen="col-sm-6">
                     <an:button cmdValue="Actualizar"
                                cmdIcon="fa fa-fw fa-refresh"
                                cmdClass="bntIconsMedio me-1"
                                cmdTooltip="Actualizar listado"
                                cmdUpdate="@form messages"
-                               cmdAction="#{certificadoController.doIniciarPendientes()}"/>
+                               cmdAction="#{certificadoPendienteQRController.doIniciarPagina()}"/>
 
                     <an:button cmdValue="Descargar PDF"
                                cmdIcon="fa fa-fw fa-file-pdf"
                                cmdClass="bntIconsMedio"
                                cmdTooltip="Descargar lista de certificados pendientes"
                                cmdUpdate="@form messages"
-                               cmdAction="#{certificadoController.doDescargarPendientes(1)}"/>
+                               cmdAction="#{certificadoPendienteQRController.doIniciarPagina(1)}"/>
                 </an:seccion>
 
                 <!-- ===========================
@@ -44,7 +44,7 @@
                           cabLen="col-lg-2"
                           conLen="col-lg-4"
                           opClass="d-flex"
-                          conValue="#{certificadoController.strBusqueda}"
+                          conValue="#{certificadoPendienteQRController.strBusqueda}"
                           conRequired="false"
                           conTooltip="Ingrese nombre del estudiante y presione ENTER">
                     <f:facet name="extras">
@@ -53,7 +53,7 @@
                                    cmdIcon="fa fa-fw fa-search"
                                    cmdClass="bntIconsMedio ms-2"
                                    cmdUpdate="@form messages"
-                                   cmdAction="#{certificadoController.doBuscarPendientes()}"/>
+                                   cmdAction="#{certificadoPendienteQRController.doIniciarPagina()}"/>
                     </f:facet>
                 </an:input>
 
@@ -62,64 +62,52 @@
                 <!-- ===========================
                      TABLA
                 ============================ -->
-                <an:table id="tblPendientes"
-                          cabId="dtPendientes"
-                          cabValue="#{certificadoController.lstPendientes}"
-                          cabPaginator="true"
-                          cabClass="tablaGeneral">
+                <an:table
+                        id="tblPendientes"
+                        cabId="dtPendientes"
+                        cabValue="#{certificadoPendienteQRController.lstPendientes}"
+                        cabPaginator="true">
 
-                    <p:column width="120" headerText="Acciones" styleClass="text-center">
-                        <an:button cmdType="link"
-                                   cmdIcon="fa fa-fw fa-eye text-success"
-                                   cmdTooltip="Ver detalle"
-                                   cmdUpdate="@form messages"
-                                   cmdAction="#{certificadoController.doVerDetalle(registro)}"/>
+                    <p:column headerText="Acciones">
+
+                        <p:commandButton
+                                value="Generar QR"
+                                icon="pi pi-qrcode"
+                                update="@form"
+                                actionListener="#{certificadoPendienteQRController.doGenerarQr(registro)}"
+                                rendered="#{!registro.tieneQr}" />
+
+                        <h:outputText
+                                value="GENERADO"
+                                rendered="#{registro.tieneQr}" />
+
                     </p:column>
 
-                    <p:column width="60" headerText="N°" styleClass="text-center">
-                        <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                    <p:column headerText="ID CERT">
+                        #{registro.idCert}
                     </p:column>
 
-                    <p:column width="140" headerText="CÓDIGO" styleClass="text-center" sortBy="#{registro.id}">
-                        <an:celda optValue="#{registro.id}" comAlign="text-center"/>
+                    <p:column headerText="MATRICULA">
+                        #{registro.idMatricula}
                     </p:column>
 
-                    <p:column width="320" headerText="ESTUDIANTE" sortBy="#{registro.estudiante}">
-                        <an:celda optValue="#{registro.estudiante}"/>
+                    <p:column headerText="ALUMNO">
+                        #{registro.alumno}
                     </p:column>
 
-                    <p:column width="170" headerText="GRUPO" styleClass="text-center" sortBy="#{registro.grupo}">
-                        <an:celda optValue="#{registro.grupo}" comAlign="text-center"/>
+                    <p:column headerText="NOTA">
+                        #{registro.nota}
                     </p:column>
 
-                    <p:column width="260" headerText="CURSO" sortBy="#{registro.curso}">
-                        <an:celda optValue="#{registro.curso}"/>
-                    </p:column>
+                    <p:column headerText="QR">
+                        <h:outputText
+                                value="SI"
+                                rendered="#{registro.tieneQr}" />
 
-                    <p:column width="160" headerText="REG. DECANATURA" styleClass="text-center" sortBy="#{registro.regDecanatura}">
-                        <an:celda optValue="#{registro.regDecanatura}" comAlign="text-center"/>
+                        <h:outputText
+                                value="NO"
+                                rendered="#{!registro.tieneQr}" />
                     </p:column>
-
-                    <p:column width="140" headerText="MODALIDAD" styleClass="text-center" sortBy="#{registro.modalidad}">
-                        <an:celda optValue="#{registro.modalidad}" comAlign="text-center"/>
-                    </p:column>
-
-                    <p:column width="170" headerText="PROCEDENCIA" styleClass="text-center" sortBy="#{registro.procedencia}">
-                        <an:celda optValue="#{registro.procedencia}" comAlign="text-center"/>
-                    </p:column>
-
-                    <p:column width="140" headerText="FIRMA DECANO" styleClass="text-center">
-                        <an:celda optValue="#{registro.firmaDecano}" comAlign="text-center"/>
-                    </p:column>
-
-                    <p:column width="160" headerText="FIRMA DIRECTOR" styleClass="text-center">
-                        <an:celda optValue="#{registro.firmaDirector}" comAlign="text-center"/>
-                    </p:column>
-
-                    <f:facet name="footer">
-                        <an:celda txtClass="fw-bold bg-transparent"
-                                  optValue="Total pendientes: #{certificadoController.lstPendientes != null ? certificadoController.lstPendientes.size() : 0}"/>
-                    </f:facet>
 
                 </an:table>
             </div>
