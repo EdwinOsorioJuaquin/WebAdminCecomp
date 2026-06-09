@@ -8,6 +8,7 @@ import ejbCecomp.ejb.negocio.*;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -41,6 +42,7 @@ public class CertificadoController implements Serializable {
     
     private ejbCcoCepCecCertServiceLocal srvCertificado;
     private ejbCcoCepCcoMatriculaCabServiceLocal srvMatricula;
+    private ejbCcoCcoCertificadoQrServiceLocal srvQr;
 
     private static final String VISTA_LISTA = "LISTA";
     private static final String VISTA_NUEVO = "NUEVO";
@@ -54,6 +56,9 @@ public class CertificadoController implements Serializable {
             srvMatricula = (ejbCcoCepCcoMatriculaCabServiceLocal) context.lookup(
                 doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCcoMatriculaCabServiceLocal")
             );
+            srvQr = (ejbCcoCcoCertificadoQrServiceLocal) context.lookup(
+                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCcoCertificadoQrServiceLocal"));
+
         } catch (NamingException e) {
             System.out.println("Error JNDI CertificadoController: " + e.getMessage());
         }
@@ -199,6 +204,7 @@ public class CertificadoController implements Serializable {
                 return;
             }
 
+            ejbCcoCcoCertificadoQr qr = srvQr.buscarPorCertificado(dto.getIdCert());
             Map<String, Object> parametros = new HashMap<>();
 
             parametros.put("P_CODIGO",
@@ -215,6 +221,13 @@ public class CertificadoController implements Serializable {
                     dto.getNotaFinal());
             
 
+            if (qr!=null && qr.getQrImagen()!=null){
+                ByteArrayInputStream qrStream= new ByteArrayInputStream(qr.getQrImagen());
+                parametros.put("P_QR", qrStream);
+            }else{
+                parametros.put("P_QR", null);
+            }
+            
             parametros.put("P_HORAS", "40");
 
             SimpleDateFormat sdf =
