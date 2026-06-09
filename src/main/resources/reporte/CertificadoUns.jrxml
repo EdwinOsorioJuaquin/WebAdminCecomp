@@ -10,7 +10,9 @@
 	<parameter name="P_FECHA_INICIO" class="java.lang.String"/>
 	<parameter name="P_FECHA_FIN" class="java.lang.String"/>
 	<parameter name="P_LUGAR_FECHA" class="java.lang.String"/>
-	<background>
+	<parameter name="P_NOTA_FINAL" class="java.lang.String"/>
+        <parameter name="P_QR" class="java.io.InputStream" />
+        <background>
 		<band height="595">
 			<rectangle>
 				<reportElement x="15" y="15" width="812" height="565" uuid="4b1de124-c352-47d3-8424-85796e8a39c0"/>
@@ -93,6 +95,15 @@
 + $P{P_FECHA_FIN}
 + "."]]></textFieldExpression>
 			</textField>
+                        <image>
+                            <reportElement
+                                    x="650"
+                                    y="430"
+                                    width="120"
+                                    height="120"/>
+
+                            <imageExpression><![CDATA[$P{P_QR}]]></imageExpression>
+                        </image>
 			<textField>
 				<reportElement x="460" y="430" width="270" height="20" uuid="8c64125a-9808-4085-ac6e-ee867acba7fb"/>
 				<textElement textAlignment="Right">
