@@ -173,10 +173,10 @@ public class PlanCurricularController implements Serializable {
     }
 
     public void doEditarSesion(ejbCcoCepCecSesion sesion) {
-        if (sesion == null || sesion.getEjbCcoCepCecSesionPK() == null) return;
+        if (sesion == null || sesion.getCepCecSesionPK()== null) return;
         clsSesion = srvSesion.buscarPorId(
-            sesion.getEjbCcoCepCecSesionPK().getIdPland(),
-            sesion.getEjbCcoCepCecSesionPK().getIdSesio()
+            sesion.getCepCecSesionPK().getIdPland(),
+            sesion.getCepCecSesionPK().getIdSesio()
         );
         vistaSesion = VISTA_NUEVO;
     }
@@ -184,14 +184,14 @@ public class PlanCurricularController implements Serializable {
     public void doGuardarSesion() {
         if (!validarSesion()) return;
         try {
-            if (clsSesion.getEjbCcoCepCecSesionPK() == null || 
-                clsSesion.getEjbCcoCepCecSesionPK().getIdSesio() == 0) {
+            if (clsSesion.getCepCecSesionPK() == null || 
+                clsSesion.getCepCecSesionPK().getIdSesio() == 0) {
                 
                 int nuevoId = obtenerNuevoIdSesion();
                 ejbCcoCepCecSesionPK pk = new ejbCcoCepCecSesionPK();
                 pk.setIdPland(idPlanActual);
                 pk.setIdSesio(nuevoId);
-                clsSesion.setEjbCcoCepCecSesionPK(pk);
+                clsSesion.setCepCecSesionPK(pk);
                 
                 srvSesion.crear(clsSesion);
                 generalController.getFramework().doMensajeF("GUARDAR", "Sesión agregada correctamente", 1);
@@ -227,9 +227,9 @@ public class PlanCurricularController implements Serializable {
     // ==================== SUBTEMAS ====================
 
     public void doGestionarSubtemas(ejbCcoCepCecSesion sesion) {
-        if (sesion == null || sesion.getEjbCcoCepCecSesionPK() == null) return;
-        idPlanActual = sesion.getEjbCcoCepCecSesionPK().getIdPland();
-        idSesionActual = sesion.getEjbCcoCepCecSesionPK().getIdSesio();
+        if (sesion == null || sesion.getCepCecSesionPK() == null) return;
+        idPlanActual = sesion.getCepCecSesionPK().getIdPland();
+        idSesionActual = sesion.getCepCecSesionPK().getIdSesio();
         clsSesion = sesion;
         cargarSubtemas(idPlanActual, idSesionActual);
         strValor = VISTA_SUBTEMAS;
@@ -249,22 +249,22 @@ public class PlanCurricularController implements Serializable {
         idTemEditando = null;
         clsSubtema = new ejbCcoCepCecTema();
         clsSubtema.setEstadoTem(true);
-        if (clsSesion != null && clsSesion.getEjbCcoCepCecSesionPK() != null) {
+        if (clsSesion != null && clsSesion.getCepCecSesionPK() != null) {
             ejbCcoCepCecTemaPK pk = new ejbCcoCepCecTemaPK();
-            pk.setIdPland(clsSesion.getEjbCcoCepCecSesionPK().getIdPland());
-            pk.setIdSesio(clsSesion.getEjbCcoCepCecSesionPK().getIdSesio());
-            clsSubtema.setEjbCcoCepCecTemaPK(pk);
+            pk.setIdPland(clsSesion.getCepCecSesionPK().getIdPland());
+            pk.setIdSesio(clsSesion.getCepCecSesionPK().getIdSesio());
+            clsSubtema.setCepCecTemaPK(pk);
         }
         vistaSubtema = VISTA_NUEVO;
     }
 
     public void doEditarSubtema(ejbCcoCepCecTema subtema) {
         System.out.println("Llegó a doEditarSubtema");
-        if (subtema == null || subtema.getEjbCcoCepCecTemaPK() == null) return;
+        if (subtema == null || subtema.getCepCecTemaPK()== null) return;
         
-        idTemEditando = subtema.getEjbCcoCepCecTemaPK().getIdTem();
-        idPlanActual = subtema.getEjbCcoCepCecTemaPK().getIdPland();
-        idSesionActual = subtema.getEjbCcoCepCecTemaPK().getIdSesio();
+        idTemEditando = subtema.getCepCecTemaPK().getIdTem();
+        idPlanActual = subtema.getCepCecTemaPK().getIdPland();
+        idSesionActual = subtema.getCepCecTemaPK().getIdSesio();
         
         clsSubtema = srvTema.buscarPorId(
             idPlanActual,
@@ -279,18 +279,18 @@ public class PlanCurricularController implements Serializable {
         try {
             if (idTemEditando != null && idTemEditando > 0) {
                 // Editar subtema existente
-                clsSubtema.getEjbCcoCepCecTemaPK().setIdTem(idTemEditando);
+                clsSubtema.getCepCecTemaPK().setIdTem(idTemEditando);
                 srvTema.actualizar(clsSubtema);
                 generalController.getFramework().doMensajeF("ACTUALIZAR", "Subtema actualizado correctamente", 1);
                 idTemEditando = null;
             } else {
                 // Crear nuevo subtema
-                ejbCcoCepCecTemaPK pk = clsSubtema.getEjbCcoCepCecTemaPK();
+                ejbCcoCepCecTemaPK pk = clsSubtema.getCepCecTemaPK();
                 if (pk == null) {
                     pk = new ejbCcoCepCecTemaPK();
                     pk.setIdPland(idPlanActual);
                     pk.setIdSesio(idSesionActual);
-                    clsSubtema.setEjbCcoCepCecTemaPK(pk);
+                    clsSubtema.setCepCecTemaPK(pk);
                 }
                 int nuevoId = obtenerNuevoIdTema();
                 pk.setIdTem(nuevoId);
@@ -343,9 +343,9 @@ public class PlanCurricularController implements Serializable {
         int maxId = 0;
         if (lstSesiones != null) {
             for (ejbCcoCepCecSesion s : lstSesiones) {
-                if (s.getEjbCcoCepCecSesionPK() != null && 
-                    s.getEjbCcoCepCecSesionPK().getIdSesio() > maxId) {
-                    maxId = s.getEjbCcoCepCecSesionPK().getIdSesio();
+                if (s.getCepCecSesionPK()!= null && 
+                    s.getCepCecSesionPK().getIdSesio() > maxId) {
+                    maxId = s.getCepCecSesionPK().getIdSesio();
                 }
             }
         }
@@ -356,9 +356,9 @@ public class PlanCurricularController implements Serializable {
         int maxId = 0;
         if (lstSubtemas != null) {
             for (ejbCcoCepCecTema t : lstSubtemas) {
-                if (t.getEjbCcoCepCecTemaPK() != null && 
-                    t.getEjbCcoCepCecTemaPK().getIdTem() > maxId) {
-                    maxId = t.getEjbCcoCepCecTemaPK().getIdTem();
+                if (t.getCepCecTemaPK()!= null && 
+                    t.getCepCecTemaPK().getIdTem() > maxId) {
+                    maxId = t.getCepCecTemaPK().getIdTem();
                 }
             }
         }

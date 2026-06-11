@@ -7,6 +7,7 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -39,15 +40,21 @@ public class GrupoController implements Serializable {
     // IDs seleccionados
     private Integer idPersonalSeleccionado;
     private Integer idCursoSeleccionado;
-    private Integer idCicloSeleccionado;
+    private Integer idTipoDesarrolloSeleccionado;  // CAMBIADO: antes idCicloSeleccionado
     private Integer idNivelSeleccionado;
     private Integer idGrupoSeleccionado;
+    
+    // Precios
+    private Double precioUNS;
+    private Double precioExterno;
+    private String codigoPagoUNS;
+    private String codigoPagoExterno;
     
     // Catálogos
     private List<ejbCcoCepPersonal> lstDocentes;
     private List<ejbCcoCepCurso> lstCursos;
-    private List<ejbCcoCepCecCiclo> lstCiclos;
-    private List<ejbCcoCepCecNivel> lstNiveles;
+    private List<ejbCcoCepCecTipoDesarrollo> lstTiposDesarrollo;  // CAMBIADO: antes lstCiclos
+//    private List<ejbCcoCepCecNivel> lstNiveles;
     private List<ejbCcoCepCecGrupoCurso> lstGruposCurso;
 
     private static final String VISTA_LISTA = "LISTA";
@@ -58,9 +65,10 @@ public class GrupoController implements Serializable {
     private ejbCcoCepCursoDocenteServiceLocal srvGrupo;
     private ejbCcoCepPersonalServiceLocal srvPersonal;
     private ejbCcoCepCursoServiceLocal srvCurso;
-    private ejbCcoCepCecCicloServiceLocal srvCiclo;
-    private ejbCcoCepCecNivelServiceLocal srvNivel;
+    private ejbCcoCepCecTipoDesarrolloServiceLocal srvTipoDesarrollo;  // CAMBIADO
+//    private ejbCcoCepCecNivelServiceLocal srvNivel;
     private ejbCcoCepCecGrupoCursoServiceLocal srvGrupoCurso;
+    private ejbCcoCepGrupoPrecioServiceLocal srvGrupoPrecio;  // NUEVO
 
     public GrupoController() {
         try {
@@ -74,14 +82,17 @@ public class GrupoController implements Serializable {
             srvCurso = (ejbCcoCepCursoServiceLocal) context.lookup(
                 doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCursoServiceLocal")
             );
-            srvCiclo = (ejbCcoCepCecCicloServiceLocal) context.lookup(
-                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCecCicloServiceLocal")
+            srvTipoDesarrollo = (ejbCcoCepCecTipoDesarrolloServiceLocal) context.lookup(
+                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCecTipoDesarrolloServiceLocal")
             );
-            srvNivel = (ejbCcoCepCecNivelServiceLocal) context.lookup(
-                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCecNivelServiceLocal")
-            );
+//            srvNivel = (ejbCcoCepCecNivelServiceLocal) context.lookup(
+//                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCecNivelServiceLocal")
+//            );
             srvGrupoCurso = (ejbCcoCepCecGrupoCursoServiceLocal) context.lookup(
                 doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCecGrupoCursoServiceLocal")
+            );
+            srvGrupoPrecio = (ejbCcoCepGrupoPrecioServiceLocal) context.lookup(
+                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepGrupoPrecioServiceLocal")
             );
         } catch (NamingException e) {
             System.out.println("Error JNDI GrupoController: " + e.getMessage());
@@ -101,7 +112,22 @@ public class GrupoController implements Serializable {
             lstGruposDTO = new ArrayList<>();
             if (grupos != null) {
                 for (ejbCcoCepCursoDocente grupo : grupos) {
-                    lstGruposDTO.add(new ejbCcoGrupoDTO(grupo));
+                    ejbCcoGrupoDTO dto = new ejbCcoGrupoDTO(grupo);
+                    
+                    // Cargar precios del grupo
+                    if (grupo.getCepGrupoPrecioList() != null) {
+                        for (ejbCcoCepGrupoPrecio precio : grupo.getCepGrupoPrecioList()) {
+                            if (precio.getActivo() && "UNS".equals(precio.getTipoAlumno())) {
+                                dto.setPrecioUNS(precio.getMonto());
+                                dto.setCodigoPagoUNS(precio.getCodigoPago());
+                            } else if (precio.getActivo() && "EXTERNO".equals(precio.getTipoAlumno())) {
+                                dto.setPrecioExterno(precio.getMonto());
+                                dto.setCodigoPagoExterno(precio.getCodigoPago());
+                            }
+                        }
+                    }
+                    
+                    lstGruposDTO.add(dto);
                 }
             }
             lstGruposViewDTO = new ArrayList<>(lstGruposDTO);
@@ -116,15 +142,15 @@ public class GrupoController implements Serializable {
         try {
             lstDocentes = srvPersonal.listarActivos();
             lstCursos = srvCurso.listarActivos();
-            lstCiclos = srvCiclo.listarTodos();
-            lstNiveles = srvNivel.listarTodos();
+            lstTiposDesarrollo = srvTipoDesarrollo.listarTodos();
+//            lstNiveles = srvNivel.listarTodos();
             lstGruposCurso = srvGrupoCurso.listarTodos();
         } catch (Exception e) {
             System.out.println("Error cargar catálogos: " + e.getMessage());
             lstDocentes = new ArrayList<>();
             lstCursos = new ArrayList<>();
-            lstCiclos = new ArrayList<>();
-            lstNiveles = new ArrayList<>();
+            lstTiposDesarrollo = new ArrayList<>();
+//            lstNiveles = new ArrayList<>();
             lstGruposCurso = new ArrayList<>();
         }
     }
@@ -166,10 +192,23 @@ public class GrupoController implements Serializable {
         clsGrupoEdit = srvGrupo.buscarPorId(idEdicion);
         if (clsGrupoEdit != null) {
             idPersonalSeleccionado = clsGrupoEdit.getCepPersonal() != null ? clsGrupoEdit.getCepPersonal().getIdPersonal() : null;
-            idCursoSeleccionado = clsGrupoEdit.getCepCurso() != null ? clsGrupoEdit.getCepCurso().getIdCurso() : null;
-            idCicloSeleccionado = clsGrupoEdit.getCepCecCiclo() != null ? clsGrupoEdit.getCepCecCiclo().getIdCiclo() : null;
-            idNivelSeleccionado = clsGrupoEdit.getCepCecNivel() != null ? clsGrupoEdit.getCepCecNivel().getIdNivel() : null;
+            idCursoSeleccionado = clsGrupoEdit.getCcoCepCurso()!= null ? clsGrupoEdit.getCcoCepCurso().getIdCurso() : null;
+            idTipoDesarrolloSeleccionado = clsGrupoEdit.getCepCecTipoDesarrollo()!= null ? clsGrupoEdit.getCepCecTipoDesarrollo().getIdCiclo() : null;
+//            idNivelSeleccionado = clsGrupoEdit.getCepCecNivel() != null ? clsGrupoEdit.getCepCecNivel().getIdNivel() : null;
             idGrupoSeleccionado = clsGrupoEdit.getCepCecGrupoCurso() != null ? clsGrupoEdit.getCepCecGrupoCurso().getIdGrupo() : null;
+            
+            // Cargar precios
+            if (clsGrupoEdit.getCepGrupoPrecioList() != null) {
+                for (ejbCcoCepGrupoPrecio precio : clsGrupoEdit.getCepGrupoPrecioList()) {
+                    if (precio.getActivo() && "UNS".equals(precio.getTipoAlumno())) {
+                        precioUNS = precio.getMonto() != null ? precio.getMonto().doubleValue() : null;
+                        codigoPagoUNS = precio.getCodigoPago();
+                    } else if (precio.getActivo() && "EXTERNO".equals(precio.getTipoAlumno())) {
+                        precioExterno = precio.getMonto() != null ? precio.getMonto().doubleValue() : null;
+                        codigoPagoExterno = precio.getCodigoPago();
+                    }
+                }
+            }
         }
     }
 
@@ -182,13 +221,13 @@ public class GrupoController implements Serializable {
                 clsGrupoEdit.setCepPersonal(srvPersonal.buscarPorId(idPersonalSeleccionado));
             }
             if (idCursoSeleccionado != null) {
-                clsGrupoEdit.setCepCurso(srvCurso.buscarPorId(idCursoSeleccionado));
+                clsGrupoEdit.setCcoCepCurso(srvCurso.buscarPorId(idCursoSeleccionado));
             }
-            if (idCicloSeleccionado != null) {
-                clsGrupoEdit.setCepCecCiclo(srvCiclo.buscarPorId(idCicloSeleccionado));
+            if (idTipoDesarrolloSeleccionado != null) {
+                clsGrupoEdit.setCepCecTipoDesarrollo(srvTipoDesarrollo.buscarPorId(idTipoDesarrolloSeleccionado));
             }
             if (idNivelSeleccionado != null) {
-                clsGrupoEdit.setCepCecNivel(srvNivel.buscarPorId(idNivelSeleccionado));
+//                clsGrupoEdit.setCepCecNivel(srvNivel.buscarPorId(idNivelSeleccionado));
             }
             if (idGrupoSeleccionado != null) {
                 clsGrupoEdit.setCepCecGrupoCurso(srvGrupoCurso.buscarPorId(idGrupoSeleccionado));
@@ -197,10 +236,68 @@ public class GrupoController implements Serializable {
             clsGrupoEdit.setEstado(true);
             
             if (idEdicion == null) {
+                // Crear grupo
                 clsGrupoEdit = srvGrupo.crear(clsGrupoEdit);
+                
+                // Crear precios
+                if (precioUNS != null && precioUNS > 0) {
+                    ejbCcoCepGrupoPrecio precio = new ejbCcoCepGrupoPrecio();
+                    precio.setCepCursoDocente(clsGrupoEdit); // CORREGIDO
+                    precio.setTipoAlumno("UNS");
+                    precio.setMonto(BigDecimal.valueOf(precioUNS));
+                    precio.setCodigoPago(codigoPagoUNS != null ? codigoPagoUNS : "CURSO_UNS_" + clsGrupoEdit.getIdAd());
+                    precio.setActivo(true);
+                    precio.setFechaRegistro(new Date());
+                    srvGrupoPrecio.crear(precio);
+                }
+                
+                if (precioExterno != null && precioExterno > 0) {
+                    ejbCcoCepGrupoPrecio precio = new ejbCcoCepGrupoPrecio();
+                    precio.setCepCursoDocente(clsGrupoEdit); // CORREGIDO
+                    precio.setTipoAlumno("EXTERNO");
+                    precio.setMonto(BigDecimal.valueOf(precioExterno));
+                    precio.setCodigoPago(codigoPagoExterno != null ? codigoPagoExterno : "CURSO_EXT_" + clsGrupoEdit.getIdAd());
+                    precio.setActivo(true);
+                    precio.setFechaRegistro(new Date());
+                    srvGrupoPrecio.crear(precio);
+                }
+                
                 generalController.getFramework().doMensajeF("GUARDAR", "Grupo agregado correctamente", 1);
             } else {
+                // Actualizar grupo
                 clsGrupoEdit = srvGrupo.actualizar(clsGrupoEdit);
+                
+                // Desactivar precios existentes
+                if (clsGrupoEdit.getCepGrupoPrecioList() != null) {
+                    for (ejbCcoCepGrupoPrecio precioExistente : clsGrupoEdit.getCepGrupoPrecioList()) {
+                        precioExistente.setActivo(false);
+                        srvGrupoPrecio.actualizar(precioExistente);
+                    }
+                }
+                
+                // Crear nuevos precios
+                if (precioUNS != null && precioUNS > 0) {
+                    ejbCcoCepGrupoPrecio precio = new ejbCcoCepGrupoPrecio();
+                    precio.setCepCursoDocente(clsGrupoEdit); // CORREGIDO
+                    precio.setTipoAlumno("UNS");
+                    precio.setMonto(BigDecimal.valueOf(precioUNS));
+                    precio.setCodigoPago(codigoPagoUNS != null ? codigoPagoUNS : "CURSO_UNS_" + clsGrupoEdit.getIdAd());
+                    precio.setActivo(true);
+                    precio.setFechaRegistro(new Date());
+                    srvGrupoPrecio.crear(precio);
+                }
+                
+                if (precioExterno != null && precioExterno > 0) {
+                    ejbCcoCepGrupoPrecio precio = new ejbCcoCepGrupoPrecio();
+                    precio.setCepCursoDocente(clsGrupoEdit); // CORREGIDO
+                    precio.setTipoAlumno("EXTERNO");
+                    precio.setMonto(BigDecimal.valueOf(precioExterno));
+                    precio.setCodigoPago(codigoPagoExterno != null ? codigoPagoExterno : "CURSO_EXT_" + clsGrupoEdit.getIdAd());
+                    precio.setActivo(true);
+                    precio.setFechaRegistro(new Date());
+                    srvGrupoPrecio.crear(precio);
+                }
+                
                 generalController.getFramework().doMensajeF("ACTUALIZAR", "Grupo actualizado correctamente", 1);
             }
             
@@ -256,9 +353,14 @@ public class GrupoController implements Serializable {
         idEdicion = null;
         idPersonalSeleccionado = null;
         idCursoSeleccionado = null;
-        idCicloSeleccionado = null;
+        idTipoDesarrolloSeleccionado = null;
         idNivelSeleccionado = null;
         idGrupoSeleccionado = null;
+        
+        precioUNS = null;
+        precioExterno = null;
+        codigoPagoUNS = null;
+        codigoPagoExterno = null;
     }
 
     private boolean validarGrupo() {

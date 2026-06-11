@@ -155,14 +155,14 @@ public class DocenteCecompController implements Serializable {
         clsEscPersonalEdit.setCondicion(1);
         clsEscPersonalEdit.setFechaIng(new Date());
         clsEscPersonalEdit.setIdEsc(null);
-        clsEscPersonalEdit.setIdDir(clsPersonaEdit);  // 🔥 Asignar persona
+        clsEscPersonalEdit.setDrtPersonanatural(clsPersonaEdit);  // 🔥 Asignar persona
         
         // Valores por defecto para cep_personal
         clsCepPersonalEdit.setBandera(true);
         clsCepPersonalEdit.setFechaIng(new Date());
         clsCepPersonalEdit.setIdPersonal(null);
-        clsCepPersonalEdit.setIdEsc(null);
-        clsCepPersonalEdit.setIdTipoCecomp(null);
+        clsCepPersonalEdit.setEscPersonal(null);
+        clsCepPersonalEdit.setCepTipoPersonal(null);
         
         idEdicion = null;
         idTipoCecompSeleccionado = null;
@@ -183,8 +183,8 @@ public class DocenteCecompController implements Serializable {
             
             if (listaEscPersonal != null) {
                 for (ejbCcoEscPersonal escPersonal : listaEscPersonal) {
-                    if (escPersonal.getIdDir() != null) {
-                        lstPersonasEncontradas.add(escPersonal.getIdDir());
+                    if (escPersonal.getDrtPersonanatural()!= null) {
+                        lstPersonasEncontradas.add(escPersonal.getDrtPersonanatural());
                     }
                 }
             }
@@ -209,8 +209,8 @@ public class DocenteCecompController implements Serializable {
             lstPersonasEncontradas = new ArrayList<>();
             
             for (ejbCcoEscPersonal escPersonal : listaEscPersonal) {
-                if (escPersonal.getIdDir() != null) {
-                    ejbCcoDrtPersonanatural persona = escPersonal.getIdDir();
+                if (escPersonal.getDrtPersonanatural()!= null) {
+                    ejbCcoDrtPersonanatural persona = escPersonal.getDrtPersonanatural();
                     String nombre = persona.getNombreCompleto() != null ? persona.getNombreCompleto().toLowerCase() : "";
                     String dni = persona.getNumeroPndid() != null ? persona.getNumeroPndid().toLowerCase() : "";
                     
@@ -240,7 +240,7 @@ public class DocenteCecompController implements Serializable {
             clsEscPersonalEdit = escPersonalSeleccionado;
         } else {
             clsEscPersonalEdit = new ejbCcoEscPersonal();
-            clsEscPersonalEdit.setIdDir(clsPersonaEdit);  // 🔥 Asignar persona
+            clsEscPersonalEdit.setDrtPersonanatural(clsPersonaEdit);  // 🔥 Asignar persona
             clsEscPersonalEdit.setIdEsc(null);
             clsEscPersonalEdit.setCondicion(1);
             clsEscPersonalEdit.setFechaIng(new Date());
@@ -251,8 +251,8 @@ public class DocenteCecompController implements Serializable {
         clsCepPersonalEdit.setBandera(true);
         clsCepPersonalEdit.setFechaIng(new Date());
         clsCepPersonalEdit.setIdPersonal(null);
-        clsCepPersonalEdit.setIdEsc(null);
-        clsCepPersonalEdit.setIdTipoCecomp(null);
+        clsCepPersonalEdit.setEscPersonal(null);
+        clsCepPersonalEdit.setCepTipoPersonal(null);
         idTipoCecompSeleccionado = null;
         
         strValor = VISTA_FORMULARIO_CECOMP;
@@ -293,23 +293,23 @@ public class DocenteCecompController implements Serializable {
             // 1. Guardar o actualizar esc_personal
             if (clsEscPersonalEdit.getIdEsc() == null) {
                 // Asegurar que la persona esté asignada
-                clsEscPersonalEdit.setIdDir(clsPersonaEdit);
+                clsEscPersonalEdit.setDrtPersonanatural(clsPersonaEdit);
                 clsEscPersonalEdit.setCondicion(1);
                 clsEscPersonalEdit = srvEscPersonal.crear(clsEscPersonalEdit);
             } else {
                 clsEscPersonalEdit = srvEscPersonal.actualizar(clsEscPersonalEdit);
             }
             
-            // 2. Obtener el objeto CepTipoPersonal desde el ID seleccionado
+            // 2. Obtener el objeto ejbCcoCepTipoPersonal desde el ID seleccionado
             if (idTipoCecompSeleccionado != null) {
                 ejbCcoCepTipoPersonal tipoSeleccionado = srvTipoCecomp.buscarPorId(idTipoCecompSeleccionado);
-                clsCepPersonalEdit.setIdTipoCecomp(tipoSeleccionado);
+                clsCepPersonalEdit.setCepTipoPersonal(tipoSeleccionado);
             }
             
             // 3. Guardar cep_personal
             if (clsCepPersonalEdit.getIdPersonal() == null) {
                 // Asegurar que esc_personal esté asignado
-                clsCepPersonalEdit.setIdEsc(clsEscPersonalEdit);
+                clsCepPersonalEdit.setEscPersonal(clsEscPersonalEdit);
                 clsCepPersonalEdit.setBandera(true);
                 clsCepPersonalEdit = srvCepPersonal.crear(clsCepPersonalEdit);
             } else {
@@ -338,12 +338,12 @@ public class DocenteCecompController implements Serializable {
         
         clsCepPersonalEdit = srvCepPersonal.buscarPorId(idEdicion);
         if (clsCepPersonalEdit != null) {
-            clsEscPersonalEdit = clsCepPersonalEdit.getIdEsc();
-            if (clsEscPersonalEdit != null && clsEscPersonalEdit.getIdDir() != null) {
-                clsPersonaEdit = clsEscPersonalEdit.getIdDir();
+            clsEscPersonalEdit = clsCepPersonalEdit.getEscPersonal();
+            if (clsEscPersonalEdit != null && clsEscPersonalEdit.getDrtPersonanatural()!= null) {
+                clsPersonaEdit = clsEscPersonalEdit.getDrtPersonanatural();
             }
-            if (clsCepPersonalEdit.getIdTipoCecomp() != null) {
-                idTipoCecompSeleccionado = clsCepPersonalEdit.getIdTipoCecomp().getIdTipoCecomp();
+            if (clsCepPersonalEdit.getCepTipoPersonal()!= null) {
+                idTipoCecompSeleccionado = clsCepPersonalEdit.getCepTipoPersonal().getIdTipoCecomp();
             }
         }
     }

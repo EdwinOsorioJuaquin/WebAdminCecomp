@@ -2,7 +2,7 @@ package controladores;
 
 import ejbCecomp.clases.ejbCcoPagoCecompDTO;
 import ejbCecomp.ejb.negocio.ejbCcoVwCecompPagosServiceLocal;
-import ejbCecomp.entidades.ejbCcoVwCecompPagos;
+import ejbCecomp.entidades.ejbCcoVtCecompPagos;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -69,12 +69,12 @@ public class PagoCecompController implements Serializable {
     private void cargarPagos() {
         try {
             System.out.println("=== Controller cargarPagos() INICIO ===");
-            List<ejbCcoVwCecompPagos> pagos = srvPagos.listarTodos();
+            List<ejbCcoVtCecompPagos> pagos = srvPagos.listarTodos();
             System.out.println("=== Controller - Pagos recibidos: " + (pagos != null ? pagos.size() : "null") + " ===");
 
             if (pagos != null && !pagos.isEmpty()) {
                 // Imprimir el primer registro para depurar
-                ejbCcoVwCecompPagos primerPago = pagos.get(0);
+                ejbCcoVtCecompPagos primerPago = pagos.get(0);
                 System.out.println("=== PRIMER PAGO ===");
                 System.out.println("  idNumPago: " + primerPago.getIdNumPago());
                 System.out.println("  idVoucher: " + primerPago.getIdVoucher());
@@ -89,7 +89,7 @@ public class PagoCecompController implements Serializable {
 
             lstPagosDTO = new ArrayList<>();
             if (pagos != null && !pagos.isEmpty()) {
-                for (ejbCcoVwCecompPagos pago : pagos) {
+                for (ejbCcoVtCecompPagos pago : pagos) {
                     System.out.println("  Procesando pago ID: " + pago.getIdNumPago());
                     ejbCcoPagoCecompDTO dto = new ejbCcoPagoCecompDTO(pago);
                     System.out.println("    DTO creado - fechaFormateada: " + dto.getFechaFormateada());
@@ -126,13 +126,13 @@ public class PagoCecompController implements Serializable {
         System.out.println("Llegó a doBuscar");
         
         try {
-            List<ejbCcoVwCecompPagos> pagosFiltrados = srvPagos.buscarPorFiltros(
+            List<ejbCcoVtCecompPagos> pagosFiltrados = srvPagos.buscarPorFiltros(
                 strBusqueda, fechaInicio, fechaFin, montoMinimo, montoMaximo
             );
             
             lstPagosViewDTO = new ArrayList<>();
             if (pagosFiltrados != null) {
-                for (ejbCcoVwCecompPagos pago : pagosFiltrados) {
+                for (ejbCcoVtCecompPagos pago : pagosFiltrados) {
                     ejbCcoPagoCecompDTO dto = new ejbCcoPagoCecompDTO(pago);
                     lstPagosViewDTO.add(dto);
                 }
