@@ -19,8 +19,6 @@
         <h:form id="frmPrincipal" class="form-horizontal h-100">
             <div id="divPrincipal" class="card-contenido">
 
-                <p:growl id="growl" showDetail="true" life="3000"/>
-
                 <!-- ========== VISTA LISTA ========== -->
                 <h:panelGroup id="pngLista" rendered="#{grupoController.strValor eq 'LISTA'}">
                     
@@ -85,12 +83,8 @@
                             <an:celda optValue="#{registro.nombreDocente}"/>
                         </p:column>
 
-                        <p:column width="120" headerText="Nivel" styleClass="text-center">
-                            <an:celda optValue="#{registro.nombreNivel}" comAlign="text-center"/>
-                        </p:column>
-
-                        <p:column width="100" headerText="Ciclo" styleClass="text-center">
-                            <an:celda optValue="#{registro.nombreCiclo}" comAlign="text-center"/>
+                        <p:column width="120" headerText="Tipo Desarrollo" styleClass="text-center">
+                            <an:celda optValue="#{registro.nombreTipoDesarrollo}" comAlign="text-center"/>
                         </p:column>
 
                         <p:column width="100" headerText="Grupo" styleClass="text-center">
@@ -98,11 +92,15 @@
                         </p:column>
 
                         <p:column width="120" headerText="Fecha Inicio" styleClass="text-center">
-                            <an:celda optValue="#{registro.fecha}" comAlign="text-center"/>
+                            <an:celda optValue="#{registro.fechaFormateada}" comAlign="text-center"/>
                         </p:column>
 
                         <p:column width="120" headerText="Fecha Fin" styleClass="text-center">
-                            <an:celda optValue="#{registro.fechaFin}" comAlign="text-center"/>
+                            <an:celda optValue="#{registro.fechaFinFormateada}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="Precio" styleClass="text-center">
+                            <an:celda optValue="#{registro.precioFormateado}" comAlign="text-center"/>
                         </p:column>
 
                         <p:column width="100" headerText="Estado" styleClass="text-center">
@@ -175,37 +173,22 @@
                         </div>
                     </div>
 
-                    <!-- Select para Ciclo -->
+                    <!-- Select para Tipo Desarrollo -->
                     <div class="row mb-2">
-                        <div class="col-lg-2 text-end fw-bold">Ciclo</div>
-                        <div class="col-lg-2">
-                            <p:selectOneMenu value="#{grupoController.idCicloSeleccionado}" 
+                        <div class="col-lg-2 text-end fw-bold">Tipo Desarrollo</div>
+                        <div class="col-lg-3">
+                            <p:selectOneMenu value="#{grupoController.idTipoDesarrolloSeleccionado}" 
                                              style="width:100%">
-                                <f:selectItem itemLabel="-- Seleccione Ciclo --" itemValue="#{null}" noSelectionOption="true"/>
-                                <f:selectItems value="#{grupoController.lstCiclos}" 
-                                               var="ciclo"
-                                               itemLabel="#{ciclo.nomCiclo}" 
-                                               itemValue="#{ciclo.idCiclo}"/>
+                                <f:selectItem itemLabel="-- Seleccione Tipo Desarrollo --" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{grupoController.lstTiposDesarrollo}" 
+                                               var="tipo"
+                                               itemLabel="#{tipo.nombreDesarrollo}" 
+                                               itemValue="#{tipo.idCiclo}"/>
                             </p:selectOneMenu>
                         </div>
                     </div>
 
-                    <!-- Select para Nivel -->
-                    <div class="row mb-2">
-                        <div class="col-lg-2 text-end fw-bold">Nivel</div>
-                        <div class="col-lg-2">
-                            <p:selectOneMenu value="#{grupoController.idNivelSeleccionado}" 
-                                             style="width:100%">
-                                <f:selectItem itemLabel="-- Seleccione Nivel --" itemValue="#{null}" noSelectionOption="true"/>
-                                <f:selectItems value="#{grupoController.lstNiveles}" 
-                                               var="nivel"
-                                               itemLabel="#{nivel.nombreNivel}" 
-                                               itemValue="#{nivel.idNivel}"/>
-                            </p:selectOneMenu>
-                        </div>
-                    </div>
-
-                    <!-- Select para Grupo -->
+                    <!-- Select para Grupo Curso -->
                     <div class="row mb-2">
                         <div class="col-lg-2 text-end fw-bold">Grupo</div>
                         <div class="col-lg-2">
@@ -231,9 +214,7 @@
                                         yearRange="c-10:c+10"
                                         style="width:100%"
                                         required="true"
-                                        requiredMessage="La fecha de inicio es obligatoria">
-                                <f:convertDateTime pattern="dd/MM/yyyy" type="date" />
-                            </p:calendar>
+                                        requiredMessage="La fecha de inicio es obligatoria"/>
                         </div>
                     </div>
 
@@ -246,21 +227,26 @@
                                         showButtonPanel="true"
                                         navigator="true"
                                         yearRange="c-10:c+10"
-                                        style="width:100%">
-                                <f:convertDateTime pattern="dd/MM/yyyy" type="date" />
-                            </p:calendar>
+                                        style="width:100%"/>
                         </div>
                     </div>
 
-                    <!-- Estado -->
+                    <!-- Precio -->
                     <div class="row mb-2">
-                        <div class="col-lg-2 text-end fw-bold">Estado</div>
+                        <div class="col-lg-2 text-end fw-bold">Precio (S/.)</div>
                         <div class="col-lg-2">
-                            <p:selectOneMenu value="#{grupoController.clsGrupoEdit.estado}" 
-                                             style="width:100%">
-                                <f:selectItem itemLabel="ACTIVO" itemValue="true"/>
-                                <f:selectItem itemLabel="CERRADO" itemValue="false"/>
-                            </p:selectOneMenu>
+                            <p:inputText value="#{grupoController.precioMonto}" 
+                                         style="width:100%"
+                                         required="true"
+                                         requiredMessage="El precio es obligatorio"/>
+                        </div>
+                    </div>
+
+                    <!-- Código de Pago -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Código Pago</div>
+                        <div class="col-lg-3">
+                            <p:inputText value="#{grupoController.codigoPago}" style="width:100%"/>
                         </div>
                     </div>
 

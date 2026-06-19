@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/plantilla/plantilla.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:an="http://java.sun.com/jsf/composite/componentes"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{precioController.doIniciarPagina()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <div align="center" class="card-titulo mb-1">Gestionar Precios de Servicios</div>
+        <h:form id="frmPrincipal" class="form-horizontal h-100">
+            <div id="divPrincipal" class="card-contenido">
+
+                <!-- ========== VISTA LISTA ========== -->
+                <h:panelGroup id="pngLista" rendered="#{precioController.strValor eq 'LISTA'}">
+                    <an:seccion cabLabel="Lista de Precios" cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdAction="#{precioController.doVolver()}"
+                                   cmdTooltip="Volver"
+                                   rendered="#{not empty precioController.strBusqueda}"/>
+                        <an:button cmdValue="Buscar"
+                                   cmdIcon="fa fa-search"
+                                   cmdAction="#{precioController.doBuscar()}"
+                                   cmdTooltip="Buscar precios por tipo de servicio o tipo de alumno"/>
+                        <an:button cmdValue="Nuevo"
+                                   cmdIcon="fa fa-plus"
+                                   cmdAction="#{precioController.doNuevo()}"
+                                   cmdTooltip="Registrar un nuevo precio de servicio"/>
+                    </an:seccion>
+
+                    <an:input cabValue="Búsqueda por tipo de servicio o alumno"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{precioController.strBusqueda}"
+                              conTooltip="Ingrese tipo de servicio o tipo de alumno para buscar"
+                              conRequired="false"/>
+                    <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                    <an:table id="cdtPrecio"
+                              cabId="cdtPrecio"
+                              cabValue="#{precioController.lstPreciosView}"
+                              cabPaginator="true">
+
+                        <p:column width="150" headerText="Acciones" styleClass="text-center">
+                            <an:button cmdType="link"
+                                       rendered="#{registro.activo == true}"
+                                       cmdIcon="fa fa-ban text-danger"
+                                       conMensaje="¿Está seguro de cambiar el estado del precio?"
+                                       cmdTooltip="Dar de baja el precio"
+                                       cmdAction="#{precioController.doCambiarEstado(registro)}"/>
+                            <an:button cmdType="link"
+                                       rendered="#{registro.activo == false}"
+                                       cmdIcon="fa fa-check-circle text-success"
+                                       conMensaje="¿Está seguro de cambiar el estado del precio?"
+                                       cmdTooltip="Activar el precio"
+                                       cmdAction="#{precioController.doCambiarEstado(registro)}"/>
+                            <an:button cmdType="link"
+                                       cmdIcon="fa fa-edit text-info ms-2"
+                                       cmdValue="Editar"
+                                       cmdTooltip="Editar precio"
+                                       cmdAction="#{precioController.doEditar(registro)}"/>
+                        </p:column>
+
+                        <p:column width="50" headerText="Nro" styleClass="text-center">
+                            <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="200" headerText="Tipo Servicio">
+                            <an:celda optValue="#{registro.tipoServicio}"/>
+                        </p:column>
+
+                        <p:column width="150" headerText="Tipo Alumno">
+                            <an:celda optValue="#{registro.tipoAlumno}"/>
+                        </p:column>
+
+                        <p:column width="120" headerText="Monto" styleClass="text-center">
+                            <an:celda comType="moneda" optValue="#{registro.monto}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="150" headerText="Código Pago" styleClass="text-center">
+                            <an:celda optValue="#{registro.codigoPago}" comAlign="text-center"/>
+                        </p:column>
+
+                        <p:column width="100" headerText="Estado" styleClass="text-center">
+                            <an:celda comType="estado" 
+                                      optValue="#{registro.activo ? 'ACTIVO' : 'INACTIVO'}" 
+                                      txtActivo="#{registro.activo ? 'TRUE' : 'FALSE'}" 
+                                      comAlign="text-center"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <an:celda txtClass="fw-bold bg-transparent"
+                                      optValue="Total precios: #{precioController.lstPreciosView != null ? precioController.lstPreciosView.size() : 0}"/>
+                        </f:facet>
+
+                    </an:table>
+                </h:panelGroup>
+
+                <!-- ========== VISTA NUEVO / EDITAR ========== -->
+                <h:panelGroup id="pngNuevoPrecio"
+                              rendered="#{precioController.strValor eq 'NUEVO'}"
+                              layout="block">
+
+                    <an:seccion cabLabel="#{precioController.idEdicion != null ? 'Editar Precio' : 'Registro de Precio'}" 
+                                cabLen="col-sm-6" cmdLen="col-sm-6">
+                        <an:button cmdValue="Volver"
+                                   cmdIcon="fa fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{precioController.doVolver()}"/>
+                        <an:button cmdValue="Guardar"
+                                   cmdIcon="fa fa-save"
+                                   cmdClass="bntIconsMedio"
+                                   cmdUpdate="@form"
+                                   cmdAction="#{precioController.doGuardar()}"
+                                   cmdTooltip="Guardar los datos del precio"/>
+                    </an:seccion>
+
+                    <an:input cabValue="Tipo de Servicio"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{precioController.clsPrecio.tipoServicio}"
+                              conTooltip="Ejemplo: CERTIFICADO, DUPLICADO_CERTIFICADO, EXAMEN_SUFICIENCIA"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Tipo de Alumno"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-3"
+                              conValue="#{precioController.clsPrecio.tipoAlumno}"
+                              conTooltip="UNS o EXTERNO"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Monto"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-3"
+                              conValue="#{precioController.clsPrecio.monto}"
+                              conTooltip="Ejemplo: 35.00"
+                              conRequired="true"/>
+
+                    <an:input cabValue="Código de Pago"
+                              cabLen="col-lg-2"
+                              conLen="col-lg-4"
+                              conValue="#{precioController.clsPrecio.codigoPago}"
+                              conTooltip="Ejemplo: 20, CERT, EXSUF_EXT"
+                              conRequired="true"/>
+
+                    <!-- Estado Activo -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Estado</div>
+                        <div class="col-lg-2">
+                            <p:selectOneMenu value="#{precioController.clsPrecio.activo}" style="width:100%">
+                                <f:selectItem itemLabel="ACTIVO" itemValue="true"/>
+                                <f:selectItem itemLabel="INACTIVO" itemValue="false"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                </h:panelGroup>
+
+            </div>
+        </h:form>
+
+        <!-- Dialog de Procesando -->
+        <p:dialog id="dlgProcesando" widgetVar="dlgProcesando" modal="true" closable="false" resizable="false" draggable="false" style="width:200px;height:80px;">
+            <div style="text-align:center;">
+                <i class="fa fa-spinner fa-pulse fa-2x"></i>
+                <p:outputLabel value=" Procesando..." style="margin-left:10px;"/>
+            </div>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

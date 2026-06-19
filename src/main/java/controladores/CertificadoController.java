@@ -1,16 +1,6 @@
-package controladores;
+ package controladores;
 
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ByteArrayInputStream;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import java.io.InputStream;
+
 import ejbCecomp.clases.ejbCcoCertificadoDTO;
 import ejbCecomp.clases.ejbCcoMatriculaDTO;
 import ejbCecomp.entidades.*;
@@ -18,12 +8,11 @@ import ejbCecomp.ejb.negocio.*;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.naming.*;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -53,6 +42,7 @@ public class CertificadoController implements Serializable {
     
     private ejbCcoCepCecCertServiceLocal srvCertificado;
     private ejbCcoCepCcoMatriculaCabServiceLocal srvMatricula;
+    private ejbCcoCcoCertificadoQrServiceLocal srvQr;
 
     private static final String VISTA_LISTA = "LISTA";
     private static final String VISTA_NUEVO = "NUEVO";
@@ -66,6 +56,9 @@ public class CertificadoController implements Serializable {
             srvMatricula = (ejbCcoCepCcoMatriculaCabServiceLocal) context.lookup(
                 doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCcoMatriculaCabServiceLocal")
             );
+            srvQr = (ejbCcoCcoCertificadoQrServiceLocal) context.lookup(
+                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCcoCertificadoQrServiceLocal"));
+
         } catch (NamingException e) {
             System.out.println("Error JNDI CertificadoController: " + e.getMessage());
         }
@@ -135,53 +128,52 @@ public class CertificadoController implements Serializable {
         strBusqueda = "";
     }
 
-    public void doGenerarCertificado() {
-        if (idMatriculaSeleccionada == null) {
-            generalController.getFramework().doMensajeF("VALIDACIÓN", "Debe seleccionar una matrícula", 2);
-            return;
-        }
-        
-        if (resolucionSeleccionada == null || resolucionSeleccionada <= 0) {
-            generalController.getFramework().doMensajeF("VALIDACIÓN", "Debe ingresar un número de resolución válido", 2);
-            return;
-        }
-        
-        try {
-            ejbCcoCepCcoMatriculaCab matricula = srvMatricula.buscarPorId(idMatriculaSeleccionada);
-            if (matricula == null) {
-                generalController.getFramework().doMensajeF("ERROR", "No se encontró la matrícula", 3);
-                return;
-            }
-            
-            if (matricula.getNotaFinal() == null || matricula.getNotaFinal() < 14) {
-                generalController.getFramework().doMensajeF("VALIDACIÓN", 
-                    "La matrícula tiene nota " + (matricula.getNotaFinal() != null ? matricula.getNotaFinal() : "sin nota") + 
-                    ". Se requiere nota >= 14 para certificar", 2);
-                return;
-            }
-            
-            if (srvCertificado.yaTieneCertificado(idMatriculaSeleccionada)) {
-                generalController.getFramework().doMensajeF("VALIDACIÓN", "Esta matrícula ya tiene un certificado", 2);
-                return;
-            }
-            
-            ejbCcoCepCecCert certificado = srvCertificado.generarCertificado(
-                idMatriculaSeleccionada, 
-                resolucionSeleccionada, 
-                fechaCertificado != null ? fechaCertificado : new Date()
-            );
-            
-            if (certificado != null) {
-                generalController.getFramework().doMensajeF("ÉXITO", "Certificado generado correctamente", 1);
-                doVolver();
-            } else {
-                generalController.getFramework().doMensajeF("ERROR", "No se pudo generar el certificado", 3);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            generalController.getFramework().doMensajeF("ERROR", "Error al generar certificado: " + e.getMessage(), 3);
-        }
-    }
+//    public void doGenerarCertificado() {
+//        if (idMatriculaSeleccionada == null) {
+//            generalController.getFramework().doMensajeF("VALIDACIÓN", "Debe seleccionar una matrícula", 2);
+//            return;
+//        }
+//        
+//        if (resolucionSeleccionada == null || resolucionSeleccionada <= 0) {
+//            generalController.getFramework().doMensajeF("VALIDACIÓN", "Debe ingresar un número de resolución válido", 2);
+//            return;
+//        }
+//        
+//        try {
+//            ejbCcoCepCcoMatriculaCab matricula = srvMatricula.buscarPorId(idMatriculaSeleccionada);
+//            if (matricula == null) {
+//                generalController.getFramework().doMensajeF("ERROR", "No se encontró la matrícula", 3);
+//                return;
+//            }
+//            
+//            if (matricula.getNotaFinal() == null || matricula.getNotaFinal() < 14) {
+//                generalController.getFramework().doMensajeF("VALIDACIÓN", 
+//                    "La matrícula tiene nota " + (matricula.getNotaFinal() != null ? matricula.getNotaFinal() : "sin nota") + 
+//                    ". Se requiere nota >= 14 para certificar", 2);
+//                return;
+//            }
+//            
+//            if (srvCertificado.yaTieneCertificado(idMatriculaSeleccionada)) {
+//                generalController.getFramework().doMensajeF("VALIDACIÓN", "Esta matrícula ya tiene un certificado", 2);
+//                return;
+//            }
+//            
+//            ejbCcoCepCecCert certificado = srvCertificado.generarCertificado(
+//                idMatriculaSeleccionada, 
+//                resolucionSeleccionada, 
+//                fechaCertificado != null ? fechaCertificado : new Date()
+//            );
+//            
+//            if (certificado != null) {
+//                generalController.getFramework().doMensajeF("ÉXITO", "Certificado generado correctamente", 1);
+//                doVolver();
+//            } else {
+//                generalController.getFramework().doMensajeF("ERROR", "No se pudo generar el certificado", 3);
+//            }
+//        } catch (Exception e) {
+//            generalController.getFramework().doMensajeF("ERROR", "Error al generar certificado: " + e.getMessage(), 3);
+//        }
+//    }
 
     public void doVolver() {
         strValor = VISTA_LISTA;
@@ -212,6 +204,7 @@ public class CertificadoController implements Serializable {
                 return;
             }
 
+            ejbCcoCcoCertificadoQr qr = srvQr.buscarPorCertificado(dto.getIdCert());
             Map<String, Object> parametros = new HashMap<>();
 
             parametros.put("P_CODIGO",
@@ -222,7 +215,19 @@ public class CertificadoController implements Serializable {
 
             parametros.put("P_CURSO",
                     dto.getNombreCurso());
+            
+            
+            parametros.put("P_NOTA_FINAL",
+                    dto.getNotaFinal());
+            
 
+            if (qr!=null && qr.getQrImagen()!=null){
+                ByteArrayInputStream qrStream= new ByteArrayInputStream(qr.getQrImagen());
+                parametros.put("P_QR", qrStream);
+            }else{
+                parametros.put("P_QR", null);
+            }
+            
             parametros.put("P_HORAS", "40");
 
             SimpleDateFormat sdf =
@@ -276,7 +281,6 @@ public class CertificadoController implements Serializable {
 
         } catch (Exception e) {
 
-            e.printStackTrace();
 
             generalController.getFramework()
                     .doMensajeF(

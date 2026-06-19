@@ -184,8 +184,8 @@ public class GeneralController extends BaseController {
         );
 
         lstSubMenu.add(new gralMenuSub(41, "Gestionar Certificados", null, null, null, true));
-        lstSubMenu.add(new gralMenuSub(42, "Registros Decanatura", null, null, null, true));
-
+        lstSubMenu.add(new gralMenuSub(42, "Generar QR", null, null, null, true));
+        lstSubMenu.add(new gralMenuSub(43, "Registros Decanatura", null, null, null, true));
         this.getLstMenu().add(doAgregarMenu(menu, lstSubMenu));
 
         // =====================================
@@ -263,8 +263,8 @@ public class GeneralController extends BaseController {
             // 04. CERTIFICADOS
             // =====================================
             case 41 -> "certificados.gestionar";
-            case 42 -> "certificados.registros";
-
+            case 42 -> "certificados.pendientes";
+            case 43 -> "certificados.registros";
             // =====================================
             // 05. FICHAS
             // =====================================
@@ -343,6 +343,7 @@ public class GeneralController extends BaseController {
         }
         return "";
     }
+    
     
     public void doOcultarSecciones() {
         this.blnMostrarSeccion01 = Boolean.FALSE;
