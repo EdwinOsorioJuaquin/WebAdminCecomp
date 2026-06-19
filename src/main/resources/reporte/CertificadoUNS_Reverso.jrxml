@@ -1,0 +1,920 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ============================================================
+     CERTIFICADO UNS — Parte POSTERIOR (Hoja 2)
+     Temario por módulos + Calificaciones + Nota final
+     Compatible con: iReport 5.6.0 / JasperReports 5.6.0
+     Orientación: Landscape (A4 horizontal)
+     ============================================================
+     PARÁMETROS requeridos desde Java:
+       -- Datos generales (mismos que hoja 1) --
+       P_CODIGO           → "CECOMP-2025-00147"
+       P_NOMBRE_COMPLETO  → "CARLOS ANDRÉS MENDOZA QUISPE"
+       P_CURSO            → "OFFICE 365 - NIVEL AVANZADO"
+       P_HORAS            → "40"
+       P_LUGAR_FECHA      → "Chimbote, 23 de mayo de 2025"
+
+       -- Notas por módulo (vigesimal 0-20) --
+       P_NOTA_MOD1        → "17"
+       P_NOTA_MOD2        → "18"
+       P_NOTA_MOD3        → "16"
+       P_NOTA_MOD4        → "19"
+       P_NOTA_PROYECTO    → "18"
+       P_ASISTENCIA       → "95%"
+
+       -- Nota final calculada --
+       P_NOTA_FINAL       → "18"        (promedio, calculado en Java)
+       P_CONDICION        → "APROBADO CON EXCELENCIA"
+                            (calculado en Java según escala)
+
+       -- Módulos / temario (texto multilinea separado por |) --
+       P_MOD1_TITULO      → "Módulo I — Herramientas de Productividad"
+       P_MOD1_TEMAS       → "Word 365: edición avanzada|Excel 365: fórmulas dinámicas|PowerPoint 365: diseño profesional"
+       P_MOD2_TITULO      → "Módulo II — Colaboración en la Nube"
+       P_MOD2_TEMAS       → "OneDrive: almacenamiento|SharePoint: sitios de equipo|Teams: reuniones y canales"
+       P_MOD3_TITULO      → "Módulo III — Automatización y Flujos"
+       P_MOD3_TEMAS       → "Power Automate: flujos de aprobación|Forms: formularios y encuestas|Planner: gestión de tareas"
+       P_MOD4_TITULO      → "Módulo IV — Seguridad y Administración"
+       P_MOD4_TEMAS       → "Gestión de permisos y accesos|Políticas de seguridad|Proyecto integrador final"
+     ============================================================ -->
+<jasperReport
+    xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+        http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="CertificadoUNS_Reverso"
+    pageWidth="842"
+    pageHeight="595"
+    orientation="Landscape"
+    columnWidth="802"
+    leftMargin="20"
+    rightMargin="20"
+    topMargin="20"
+    bottomMargin="20"
+    whenNoDataType="AllSectionsNoDetail">
+
+    <!-- ======================================================
+         PARÁMETROS
+    ====================================================== -->
+    <parameter name="P_CODIGO"           class="java.lang.String"/>
+    <parameter name="P_NOMBRE_COMPLETO"  class="java.lang.String"/>
+    <parameter name="P_CURSO"            class="java.lang.String"/>
+    <parameter name="P_HORAS"            class="java.lang.String"/>
+    <parameter name="P_LUGAR_FECHA"      class="java.lang.String"/>
+
+    <!-- Notas -->
+    <parameter name="P_NOTA_MOD1"        class="java.lang.String"/>
+    <parameter name="P_NOTA_MOD2"        class="java.lang.String"/>
+    <parameter name="P_NOTA_MOD3"        class="java.lang.String"/>
+    <parameter name="P_NOTA_MOD4"        class="java.lang.String"/>
+    <parameter name="P_NOTA_PROYECTO"    class="java.lang.String"/>
+    <parameter name="P_ASISTENCIA"       class="java.lang.String"/>
+    <parameter name="P_NOTA_FINAL"       class="java.lang.String"/>
+    <parameter name="P_CONDICION"        class="java.lang.String"/>
+
+    <!-- Módulos -->
+    <parameter name="P_MOD1_TITULO"      class="java.lang.String"/>
+    <parameter name="P_MOD1_TEMAS"       class="java.lang.String"/>
+    <parameter name="P_MOD2_TITULO"      class="java.lang.String"/>
+    <parameter name="P_MOD2_TEMAS"       class="java.lang.String"/>
+    <parameter name="P_MOD3_TITULO"      class="java.lang.String"/>
+    <parameter name="P_MOD3_TEMAS"       class="java.lang.String"/>
+    <parameter name="P_MOD4_TITULO"      class="java.lang.String"/>
+    <parameter name="P_MOD4_TEMAS"       class="java.lang.String"/>
+
+    <!-- ======================================================
+         BANDA TITLE — toda la hoja 2
+    ====================================================== -->
+    <title>
+        <band height="595" splitType="Stretch">
+
+            <!-- ── FONDO MARFIL ─────────────────────────────────── -->
+            <rectangle>
+                <reportElement x="0" y="0" width="802" height="555" backcolor="#FFFDF7" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+
+            <!-- ── BORDE EXTERIOR GRANATE ────────────────────── -->
+            <rectangle>
+                <reportElement x="0" y="0" width="802" height="555"/>
+                <graphicElement>
+                    <pen lineWidth="2.5" lineColor="#8B0000" lineStyle="Solid"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- ── BORDE INTERIOR DORADO ─────────────────────── -->
+            <rectangle>
+                <reportElement x="8" y="8" width="786" height="539"/>
+                <graphicElement>
+                    <pen lineWidth="0.8" lineColor="#D4AF37" lineStyle="Solid"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- ── BORDE PUNTEADO ────────────────────────────── -->
+            <rectangle>
+                <reportElement x="14" y="14" width="774" height="527"/>
+                <graphicElement>
+                    <pen lineWidth="0.4" lineColor="#D4AF37" lineStyle="Dotted"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- ── FRANJA SUPERIOR ───────────────────────────── -->
+            <rectangle>
+                <reportElement x="8" y="8" width="786" height="52" backcolor="#F5EAEA" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+
+            <!-- ── TÍTULO REVERSO ────────────────────────────── -->
+            <staticText>
+                <reportElement x="80" y="14" width="642" height="20"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="13" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[CONTENIDO TEMÁTICO Y CALIFICACIONES]]></text>
+            </staticText>
+
+            <!-- Subtítulo dinámico: curso + horas -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="80" y="32" width="642" height="16"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="9" isItalic="false"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_CURSO} + "  ·  " + $P{P_HORAS} + " horas lectivas"]]>
+                </textFieldExpression>
+            </textField>
+
+            <!-- Líneas divisorias superiores -->
+            <line>
+                <reportElement x="14" y="62" width="774" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="1.0" lineStyle="Solid"/></graphicElement>
+            </line>
+            <line>
+                <reportElement x="14" y="65" width="774" height="1" forecolor="#8B0000"/>
+                <graphicElement><pen lineWidth="0.4" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <!-- Ornamentos esquinas -->
+            <staticText>
+                <reportElement x="16" y="16" width="18" height="18" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="13"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[*]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="768" y="16" width="18" height="18" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="13"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[*]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="16" y="524" width="18" height="18" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="13"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[*]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="768" y="524" width="18" height="18" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="13"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[*]]></text>
+            </staticText>
+
+            <!-- ==================================================
+                 COLUMNA IZQUIERDA — TEMARIO (x: 20 a 395)
+            ================================================== -->
+
+            <!-- MÓDULO 1 — barra título -->
+            <rectangle>
+                <reportElement x="22" y="74" width="366" height="16" backcolor="#8B0000" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="74" width="358" height="16" forecolor="#FFFDF7"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="9" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_MOD1_TITULO}]]>
+                </textFieldExpression>
+            </textField>
+
+            <!-- Temas módulo 1 (separados por | en el parámetro) -->
+            <!--
+                NOTA TÉCNICA:
+                JasperReports 5.6 no tiene un componente nativo de lista/foreach.
+                La solución más limpia para subtemas variables es usar un subReporte
+                o textField con salto de línea.
+                Aquí usamos 3 textField uno debajo del otro con expresiones de split.
+                En Java pasa los temas separados por el caracter | (pipe).
+                Ej: "Word 365: edición avanzada|Excel 365: fórmulas dinámicas|PowerPoint 365"
+
+                La expresión extrae tema[n] del string separado por |.
+                Si hay menos temas, isBlankWhenNull oculta el campo vacío.
+            -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="93" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD1_TEMAS} != null && $P{P_MOD1_TEMAS}.split("\\|").length > 0)
+                        ? "\u25b8  " + $P{P_MOD1_TEMAS}.split("\\|")[0] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="107" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD1_TEMAS} != null && $P{P_MOD1_TEMAS}.split("\\|").length > 1)
+                        ? "\u25b8  " + $P{P_MOD1_TEMAS}.split("\\|")[1] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="121" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD1_TEMAS} != null && $P{P_MOD1_TEMAS}.split("\\|").length > 2)
+                        ? "\u25b8  " + $P{P_MOD1_TEMAS}.split("\\|")[2] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <!-- Nota horas -->
+            <staticText>
+                <reportElement x="26" y="135" width="358" height="12" forecolor="#888780"/>
+                <textElement>
+                    <font fontName="Arial" size="7" isItalic="true"
+                          pdfFontName="Helvetica-Oblique" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[10 horas lectivas]]></text>
+            </staticText>
+
+            <!-- MÓDULO 2 -->
+            <rectangle>
+                <reportElement x="22" y="152" width="366" height="16" backcolor="#8B0000" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="152" width="358" height="16" forecolor="#FFFDF7"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="9" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_MOD2_TITULO}]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="171" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD2_TEMAS} != null && $P{P_MOD2_TEMAS}.split("\\|").length > 0)
+                        ? "\u25b8  " + $P{P_MOD2_TEMAS}.split("\\|")[0] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="185" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD2_TEMAS} != null && $P{P_MOD2_TEMAS}.split("\\|").length > 1)
+                        ? "\u25b8  " + $P{P_MOD2_TEMAS}.split("\\|")[1] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="199" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD2_TEMAS} != null && $P{P_MOD2_TEMAS}.split("\\|").length > 2)
+                        ? "\u25b8  " + $P{P_MOD2_TEMAS}.split("\\|")[2] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="26" y="213" width="358" height="12" forecolor="#888780"/>
+                <textElement>
+                    <font fontName="Arial" size="7" isItalic="true"
+                          pdfFontName="Helvetica-Oblique" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[10 horas lectivas]]></text>
+            </staticText>
+
+            <!-- MÓDULO 3 -->
+            <rectangle>
+                <reportElement x="22" y="230" width="366" height="16" backcolor="#8B0000" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="230" width="358" height="16" forecolor="#FFFDF7"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="9" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_MOD3_TITULO}]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="249" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD3_TEMAS} != null && $P{P_MOD3_TEMAS}.split("\\|").length > 0)
+                        ? "\u25b8  " + $P{P_MOD3_TEMAS}.split("\\|")[0] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="263" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD3_TEMAS} != null && $P{P_MOD3_TEMAS}.split("\\|").length > 1)
+                        ? "\u25b8  " + $P{P_MOD3_TEMAS}.split("\\|")[1] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="277" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD3_TEMAS} != null && $P{P_MOD3_TEMAS}.split("\\|").length > 2)
+                        ? "\u25b8  " + $P{P_MOD3_TEMAS}.split("\\|")[2] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="26" y="291" width="358" height="12" forecolor="#888780"/>
+                <textElement>
+                    <font fontName="Arial" size="7" isItalic="true"
+                          pdfFontName="Helvetica-Oblique" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[10 horas lectivas]]></text>
+            </staticText>
+
+            <!-- MÓDULO 4 -->
+            <rectangle>
+                <reportElement x="22" y="308" width="366" height="16" backcolor="#8B0000" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="308" width="358" height="16" forecolor="#FFFDF7"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="9" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_MOD4_TITULO}]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="327" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD4_TEMAS} != null && $P{P_MOD4_TEMAS}.split("\\|").length > 0)
+                        ? "\u25b8  " + $P{P_MOD4_TEMAS}.split("\\|")[0] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="341" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD4_TEMAS} != null && $P{P_MOD4_TEMAS}.split("\\|").length > 1)
+                        ? "\u25b8  " + $P{P_MOD4_TEMAS}.split("\\|")[1] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="355" width="358" height="14"/>
+                <textElement>
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[($P{P_MOD4_TEMAS} != null && $P{P_MOD4_TEMAS}.split("\\|").length > 2)
+                        ? "\u25b8  " + $P{P_MOD4_TEMAS}.split("\\|")[2] : ""]]>
+                </textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="26" y="369" width="358" height="12" forecolor="#888780"/>
+                <textElement>
+                    <font fontName="Arial" size="7" isItalic="true"
+                          pdfFontName="Helvetica-Oblique" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[10 horas lectivas]]></text>
+            </staticText>
+
+            <!-- Línea vertical central separadora -->
+            <line>
+                <reportElement x="401" y="72" width="1" height="390" forecolor="#D4AF37"/>
+                <graphicElement>
+                    <pen lineWidth="0.6" lineStyle="Dashed"/>
+                </graphicElement>
+            </line>
+
+            <!-- ==================================================
+                 COLUMNA DERECHA — CALIFICACIONES (x: 408 a 788)
+            ================================================== -->
+
+            <!-- Título sección -->
+            <rectangle>
+                <reportElement x="408" y="74" width="374" height="16" backcolor="#D4AF37" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="408" y="74" width="374" height="16" forecolor="#2C2C2A"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="9" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[REGISTRO DE EVALUACIÓN]]></text>
+            </staticText>
+
+            <!-- Cabecera de la tabla -->
+            <rectangle>
+                <reportElement x="408" y="94" width="374" height="14" backcolor="#F5EAEA" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="414" y="94" width="200" height="14" forecolor="#5F5E5A"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Arial" size="7" isBold="true"
+                          pdfFontName="Helvetica-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[COMPONENTE DE EVALUACIÓN]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="620" y="94" width="50" height="14" forecolor="#5F5E5A"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7" isBold="true"
+                          pdfFontName="Helvetica-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[NOTA]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="672" y="94" width="106" height="14" forecolor="#5F5E5A"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7" isBold="true"
+                          pdfFontName="Helvetica-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[ESTADO]]></text>
+            </staticText>
+            <line>
+                <reportElement x="408" y="108" width="374" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.7" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <!-- FILA: Módulo 1 -->
+            <staticText>
+                <reportElement x="414" y="111" width="200" height="14"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Módulo I — Herramientas de Productividad]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="620" y="111" width="50" height="14"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="10" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_NOTA_MOD1}]]>
+                </textFieldExpression>
+            </textField>
+            <!-- Badge "Aprobado" -->
+            <rectangle>
+                <reportElement x="677" y="112" width="98" height="12" backcolor="#EAF3DE" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.4" lineColor="#639922"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="677" y="112" width="98" height="12" forecolor="#27500A"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Aprobado]]></text>
+            </staticText>
+            <line>
+                <reportElement x="408" y="125" width="374" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.3" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <!-- FILA: Módulo 2 -->
+            <staticText>
+                <reportElement x="414" y="128" width="200" height="14"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Módulo II — Colaboración en la Nube]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="620" y="128" width="50" height="14"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="10" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_NOTA_MOD2}]]>
+                </textFieldExpression>
+            </textField>
+            <rectangle>
+                <reportElement x="677" y="129" width="98" height="12" backcolor="#EAF3DE" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.4" lineColor="#639922"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="677" y="129" width="98" height="12" forecolor="#27500A"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Aprobado]]></text>
+            </staticText>
+            <line>
+                <reportElement x="408" y="142" width="374" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.3" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <!-- FILA: Módulo 3 -->
+            <staticText>
+                <reportElement x="414" y="145" width="200" height="14"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Módulo III — Automatización y Flujos]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="620" y="145" width="50" height="14"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="10" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_NOTA_MOD3}]]>
+                </textFieldExpression>
+            </textField>
+            <rectangle>
+                <reportElement x="677" y="146" width="98" height="12" backcolor="#EAF3DE" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.4" lineColor="#639922"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="677" y="146" width="98" height="12" forecolor="#27500A"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Aprobado]]></text>
+            </staticText>
+            <line>
+                <reportElement x="408" y="159" width="374" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.3" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <!-- FILA: Módulo 4 -->
+            <staticText>
+                <reportElement x="414" y="162" width="200" height="14"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Módulo IV — Seguridad y Administración]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="620" y="162" width="50" height="14"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="10" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_NOTA_MOD4}]]>
+                </textFieldExpression>
+            </textField>
+            <rectangle>
+                <reportElement x="677" y="163" width="98" height="12" backcolor="#EAF3DE" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.4" lineColor="#639922"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="677" y="163" width="98" height="12" forecolor="#27500A"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Aprobado]]></text>
+            </staticText>
+            <line>
+                <reportElement x="408" y="176" width="374" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.3" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <!-- FILA: Proyecto Integrador -->
+            <staticText>
+                <reportElement x="414" y="179" width="200" height="14"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Proyecto Integrador Final]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="620" y="179" width="50" height="14"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="10" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_NOTA_PROYECTO}]]>
+                </textFieldExpression>
+            </textField>
+            <rectangle>
+                <reportElement x="677" y="180" width="98" height="12" backcolor="#EAF3DE" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.4" lineColor="#639922"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="677" y="180" width="98" height="12" forecolor="#27500A"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Aprobado]]></text>
+            </staticText>
+            <line>
+                <reportElement x="408" y="193" width="374" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.3" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <!-- FILA: Asistencia -->
+            <staticText>
+                <reportElement x="414" y="196" width="200" height="14"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Arial" size="8"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Asistencia al curso]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="620" y="196" width="50" height="14"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="10" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_ASISTENCIA}]]>
+                </textFieldExpression>
+            </textField>
+            <rectangle>
+                <reportElement x="677" y="197" width="98" height="12" backcolor="#EAF3DE" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.4" lineColor="#639922"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="677" y="197" width="98" height="12" forecolor="#27500A"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Regular]]></text>
+            </staticText>
+
+            <!-- Línea separadora antes de nota final -->
+            <line>
+                <reportElement x="408" y="211" width="374" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.8" lineStyle="Solid"/></graphicElement>
+            </line>
+
+            <!-- ==================================================
+                 BLOQUE NOTA FINAL DESTACADA
+            ================================================== -->
+            <rectangle>
+                <reportElement x="408" y="216" width="374" height="54" backcolor="#8B0000" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="412" y="220" width="260" height="16" forecolor="#FFFDF7"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Arial" size="8" isBold="true" isItalic="false"
+                          pdfFontName="Helvetica-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[PROMEDIO FINAL DEL CURSO]]></text>
+            </staticText>
+            <!-- Nota grande -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="575" y="216" width="60" height="48" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="30" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_NOTA_FINAL}]]>
+                </textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="632" y="228" width="40" height="20" forecolor="#F5EAEA"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="14"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[/ 20]]></text>
+            </staticText>
+            <!-- Condición -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="412" y="238" width="280" height="28" forecolor="#D4AF37"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="12" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_CONDICION}]]>
+                </textFieldExpression>
+            </textField>
+
+            <!-- Fondo escala -->
+            <rectangle>
+                <reportElement x="408" y="274" width="374" height="26" backcolor="#F5EAEA" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="412" y="276" width="370" height="12" forecolor="#5F5E5A"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[ESCALA VIGESIMAL  ·  Nota mínima aprobatoria: 13 / 20]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="412" y="286" width="370" height="12" forecolor="#8B0000"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[18 – 20: Excelente   |   15 – 17: Bueno   |   13 – 14: Regular   |   00 – 12: Desaprobado]]></text>
+            </staticText>
+
+            <!-- ==================================================
+                 NOTA DE VALIDEZ
+            ================================================== -->
+            <line>
+                <reportElement x="408" y="302" width="374" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.4" lineStyle="Dashed"/></graphicElement>
+            </line>
+            <staticText>
+                <reportElement x="412" y="307" width="370" height="14" forecolor="#888780"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7" isItalic="true"
+                          pdfFontName="Helvetica-Oblique" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[El presente registro es parte integrante del certificado emitido por el Centro de Cómputo - UNS.]]></text>
+            </staticText>
+            <!-- Código dinámico en registro -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="412" y="320" width="370" height="14" forecolor="#888780"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Arial" size="7" isItalic="true"
+                          pdfFontName="Helvetica-Oblique" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA["Certificado N.° " + $P{P_CODIGO} + "  —  Alumno: " + $P{P_NOMBRE_COMPLETO}]]>
+                </textFieldExpression>
+            </textField>
+
+            <!-- ==================================================
+                 PIE DE PÁGINA — Sello + datos
+            ================================================== -->
+            <line>
+                <reportElement x="14" y="392" width="774" height="1" forecolor="#D4AF37"/>
+                <graphicElement><pen lineWidth="0.5" lineStyle="Dashed"/></graphicElement>
+            </line>
+
+            <!-- Sello circular decorativo (simulado con rectángulo redondeado) -->
+            <ellipse>
+                <reportElement x="358" y="402" width="86" height="86" forecolor="#D4AF37"/>
+                <graphicElement>
+                    <pen lineWidth="1.0" lineStyle="Solid"/>
+                </graphicElement>
+            </ellipse>
+            <ellipse>
+                <reportElement x="366" y="410" width="70" height="70" forecolor="#8B0000"/>
+                <graphicElement>
+                    <pen lineWidth="0.6" lineStyle="Solid"/>
+                </graphicElement>
+            </ellipse>
+            <staticText>
+                <reportElement x="358" y="428" width="86" height="12" forecolor="#8B0000"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="6" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[UNIVERSIDAD]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="358" y="439" width="86" height="12" forecolor="#8B0000"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="6" isBold="true"
+                          pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[NACIONAL DEL SANTA]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="358" y="450" width="86" height="11" forecolor="#D4AF37"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="6"
+                          pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[CECOMP]]></text>
+            </staticText>
+
+            <!-- Texto pie izquierda -->
+            <staticText>
+                <reportElement x="26" y="408" width="200" height="14" forecolor="#5F5E5A"/>
+                <textElement>
+                    <font fontName="Arial" size="7" isItalic="true"
+                          pdfFontName="Helvetica-Oblique" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Documento oficial — No requiere sello húmedo]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="26" y="422" width="200" height="14" forecolor="#888780"/>
+                <textElement>
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[Verificar autenticidad con código QR del anverso]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="26" y="436" width="200" height="14" forecolor="#888780"/>
+                <textElement>
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[cecomp.uns.edu.pe]]></text>
+            </staticText>
+
+            <!-- Texto pie derecha -->
+            <textField isBlankWhenNull="true">
+                <reportElement x="576" y="408" width="200" height="14" forecolor="#5F5E5A"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Arial" size="7" isItalic="true"
+                          pdfFontName="Helvetica-Oblique" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA[$P{P_LUGAR_FECHA}]]>
+                </textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="576" y="422" width="200" height="14" forecolor="#888780"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Arial" size="7"
+                          pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String">
+                    <![CDATA["Código: " + $P{P_CODIGO}]]>
+                </textFieldExpression>
+            </textField>
+
+            <!-- Línea de cierre base -->
+            <line>
+                <reportElement x="14" y="500" width="774" height="1" forecolor="#8B0000"/>
+                <graphicElement><pen lineWidth="0.5" lineStyle="Solid"/></graphicElement>
+            </line>
+
+        </band>
+    </title>
+
+    <detail>
+        <band height="0"/>
+    </detail>
+
+</jasperReport>

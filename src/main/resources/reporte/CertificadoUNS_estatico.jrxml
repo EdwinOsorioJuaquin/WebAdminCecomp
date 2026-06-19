@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CertificadoUNS_Estatico" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="105c168c-f868-4b9b-a31d-1554bbc8a53c">
+	<style name="StyleSerifBold" fontName="Times New Roman" fontSize="12" isBold="true" pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+	<style name="StyleSerifNormal" fontName="Times New Roman" fontSize="11" isBold="false" pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+	<style name="StyleSansSmall" fontName="Arial" fontSize="9" pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+	<title>
+		<band height="595" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="555" backcolor="#FFFDF7" uuid="3ef14cd9-5ed2-4b0d-9ba7-359e0e72397c"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="0" width="802" height="555" uuid="1a79a0db-5dc3-4d83-917e-43f016c75bda"/>
+				<graphicElement>
+					<pen lineWidth="2.5" lineStyle="Solid" lineColor="#8B0000"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="8" y="8" width="786" height="539" uuid="a16a2714-c032-4c93-a4f5-02ea89d13373"/>
+				<graphicElement>
+					<pen lineWidth="0.8" lineStyle="Solid" lineColor="#D4AF37"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="14" y="14" width="774" height="527" uuid="f3a45830-c07b-4c9e-b5c3-da8272a6d772"/>
+				<graphicElement>
+					<pen lineWidth="0.4" lineStyle="Dotted" lineColor="#D4AF37"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Opaque" x="8" y="8" width="786" height="72" backcolor="#F5EAEA" uuid="b70c2154-ca9c-4f44-bac1-c6a020df625d"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement x="28" y="14" width="72" height="72" uuid="df5b71ae-b83b-4296-b0e8-d182f70d7c57"/>
+				<imageExpression><![CDATA["images/logoUNS.png"]]></imageExpression>
+			</image>
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement x="702" y="14" width="72" height="72" uuid="6563ee7e-ea75-41dc-a3f7-cf5de6d361fe"/>
+				<imageExpression><![CDATA["images/logo_cecomp.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="110" y="20" width="582" height="26" uuid="e9864c3b-8f60-43b2-8a23-ef073ee78522"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="true" pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[UNIVERSIDAD NACIONAL DEL SANTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="44" width="582" height="18" uuid="a107f9e1-8f39-43a3-a6eb-dc71ed18a2da"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="9" isBold="false" pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Centro de Cómputo  —  Chimbote, Perú]]></text>
+			</staticText>
+			<line>
+				<reportElement x="14" y="82" width="774" height="1" forecolor="#D4AF37" uuid="38c56f1e-99c2-4246-841c-da31e41b8d1f"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="14" y="85" width="774" height="1" forecolor="#8B0000" uuid="18d44c5b-f784-4bdc-8fde-5a80618565ee"/>
+				<graphicElement>
+					<pen lineWidth="0.4" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="28" y="94" width="220" height="16" uuid="1e5350d4-276c-4f13-be18-b394cdb19dd8"/>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="8" isBold="false" pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Código: CECOMP-2025-00147]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="320" y="96" width="162" height="16" forecolor="#D4AF37" uuid="48aa0de0-8084-4c3c-b1c6-585f9c9b94e1"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="11" pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[* * *]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="120" width="402" height="50" uuid="f63d25ae-e8aa-44b8-a470-e4b31262fa3d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="36" isBold="true" pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICADO]]></text>
+			</staticText>
+			<line>
+				<reportElement x="230" y="170" width="342" height="1" forecolor="#8B0000" uuid="c7f7893a-559b-4702-99f9-42be8cf40e74"/>
+				<graphicElement>
+					<pen lineWidth="1.2" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="255" y="174" width="292" height="1" forecolor="#D4AF37" uuid="dcd62dac-4395-4400-a766-583404d279a5"/>
+				<graphicElement>
+					<pen lineWidth="0.7" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="80" y="185" width="642" height="24" uuid="26e5bd5b-0900-4a25-9b95-9d89c5f43882"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11" isItalic="true" pdfFontName="Times-Italic" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[El Centro de Cómputo de la Universidad Nacional del Santa otorga el presente reconocimiento a:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="216" width="642" height="36" uuid="afaa5f22-9d58-4b4e-935b-d94d3d0dca78"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="22" isBold="true" pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[EDWIN FIDENCIO OSORIO JUAQUIN]]></text>
+			</staticText>
+			<line>
+				<reportElement x="120" y="253" width="562" height="1" forecolor="#D4AF37" uuid="1d5849da-7dd5-49d7-9650-733df31f1759"/>
+				<graphicElement>
+					<pen lineWidth="1.2" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="80" y="262" width="642" height="20" uuid="1044e209-07c2-4433-9dd2-c2a29f12cbbe"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11" isItalic="true" pdfFontName="Times-Italic" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[por haber participado y aprobado satisfactoriamente el curso:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="285" width="642" height="28" forecolor="#8B0000" uuid="df574c02-fd31-4f39-99e7-80e5b4554a50"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="18" isBold="true" pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[OFFICE 365 — NIVEL AVANZADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="318" width="642" height="18" uuid="7d66c11e-2977-4af1-a72c-d3461960884c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10" pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[con una duración de 40 horas lectivas, del 05 de mayo al 23 de mayo de 2025]]></text>
+			</staticText>
+			<line>
+				<reportElement x="14" y="342" width="774" height="1" forecolor="#D4AF37" uuid="5c6c27ed-4fbe-492a-a44e-38201552a583"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="80" y="420" width="180" height="1" forecolor="#444441" uuid="12a136fc-ffa1-4e97-a4b3-68734e84841b"/>
+				<graphicElement>
+					<pen lineWidth="0.8" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="80" y="424" width="180" height="16" uuid="41094e90-065e-47b1-af9d-a3308ded9208"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="9" isBold="true" pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Ing. Mendoza Corpus Carlos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="439" width="180" height="14" uuid="c653636f-d1d1-48a5-8383-eae7d2d19b2d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8" pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Director del Centro de Cómputo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="452" width="180" height="14" uuid="11db4895-8227-47cc-8d41-f0a5fc09f3a1"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8" pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Universidad Nacional del Santa]]></text>
+			</staticText>
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement x="341" y="360" width="120" height="120" uuid="7ed7a437-dc15-4c5a-993f-a4c93ad40781"/>
+				<imageExpression><![CDATA["images/qr_placeholder.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="300" y="483" width="202" height="14" uuid="2479dcb6-f51f-43d6-9b09-5eb98e4c436e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="7" pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Escanea para verificar la autenticidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="497" width="302" height="12" uuid="8e94929f-2606-4dcd-b677-c9b66f51ba65"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="7" pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[http://localhost:8080/WebVerificadorCertificadoCecomp/faces/login.xhtml?clave=00147]]></text>
+			</staticText>
+			<line>
+				<reportElement x="542" y="420" width="180" height="1" forecolor="#444441" uuid="414d484f-0c5c-465d-880d-182ed7f37187"/>
+				<graphicElement>
+					<pen lineWidth="0.8" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="542" y="424" width="180" height="16" uuid="6724a3d5-5533-4646-90dc-e04ca489d887"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="9" isBold="true" pdfFontName="Times-Bold" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Ing. Serapio Quillos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="542" y="439" width="180" height="14" uuid="d283f5e6-c86b-4e9d-91a3-52e5b1be0ed6"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8" pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Decano de Facultad de Ingeniería]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="542" y="452" width="180" height="14" uuid="13dea3c3-f9d1-4b39-8301-fd4aad0f7257"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8" pdfFontName="Helvetica" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Universidad Nacional del Santa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="512" width="402" height="16" uuid="f22c132c-3c31-4d77-a9b1-54fa8eddb082"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="9" isItalic="true" pdfFontName="Times-Italic" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Chimbote, 23 de mayo de 2026]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="20" width="20" height="20" forecolor="#D4AF37" uuid="bcd9efbe-91cc-4017-adcc-7bbb910d4291"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="762" y="20" width="20" height="20" forecolor="#D4AF37" uuid="94a7659f-8bc1-4d6c-8823-4dc8271729f4"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="520" width="20" height="20" forecolor="#D4AF37" uuid="13a22048-e57e-4f13-8923-5f4673040a80"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="762" y="520" width="20" height="20" forecolor="#D4AF37" uuid="22e093cb-3cac-4e20-94cc-d5b919140cd1"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="14" pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[*]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band/>
+	</detail>
+</jasperReport>
