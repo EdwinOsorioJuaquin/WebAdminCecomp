@@ -100,7 +100,7 @@ public class GrupoController implements Serializable {
 
     private void cargarGrupos() {
         try {
-            List<ejbCcoCepCursoDocente> grupos = srvGrupo.listarTodos();
+            List<ejbCcoCepCursoDocente> grupos = srvGrupo.listarConPrecios();
             lstGruposDTO = new ArrayList<>();
             if (grupos != null) {
                 for (ejbCcoCepCursoDocente grupo : grupos) {

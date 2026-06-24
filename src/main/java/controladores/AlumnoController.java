@@ -25,11 +25,10 @@ public class AlumnoController implements Serializable {
     @Inject
     private GeneralController generalController;
 
-    private boolean pasoPersona;
-    private boolean pasoAlumno;
-
     private ejbCcoDrtPersonanatural personaEdit;
     private ejbCcoCcoAlumnoExterno alumnoEdit;
+    private String codigoGenerado;
+    private String mensajeExito;
 
     private ejbCcoCcoAlumnoExternoServiceLocal srvAlumno;
 
@@ -46,8 +45,8 @@ public class AlumnoController implements Serializable {
 
     public void doIniciarPagina() {
         limpiarFormulario();
-        pasoPersona = true;
-        pasoAlumno = false;
+        codigoGenerado = null;
+        mensajeExito = null;
     }
 
     private void limpiarFormulario() {
@@ -66,10 +65,11 @@ public class AlumnoController implements Serializable {
         alumnoEdit.setAnulado((short) 0);
     }
 
-    public void doGuardarPersona() {
+    public void doGuardarAlumno() {
         try {
             if (!validarPersona()) return;
 
+            // 1. Preparar nombre completo
             String nombreCompleto = (
                 (personaEdit.getApPaterno() != null ? personaEdit.getApPaterno() : "") + " " +
                 (personaEdit.getApMaterno() != null ? personaEdit.getApMaterno() : "") + " " +
@@ -77,55 +77,49 @@ public class AlumnoController implements Serializable {
             ).trim();
             personaEdit.setNombreCompleto(nombreCompleto);
 
-            // Ya no calculas el ID, el DAO lo hace
+            // 2. Guardar persona
             personaEdit = srvAlumno.guardarPersona(personaEdit);
 
-            if (personaEdit != null && personaEdit.getIdDir() != null) {
-                pasoPersona = false;
-                pasoAlumno = true;
-                generalController.getFramework().doMensajeF("ÉXITO", "Persona guardada correctamente", 1);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            generalController.getFramework().doMensajeF("ERROR", "Error al guardar persona: " + e.getMessage(), 3);
-        }
-    }
-
-    public void doGuardarAlumno() {
-        try {
-            if (!validarAlumno()) return;
-
             if (personaEdit == null || personaEdit.getIdDir() == null) {
-                generalController.getFramework().doMensajeF("ERROR", "Primero debe guardar los datos de la persona", 3);
-                doVolverPersona();
+                generalController.getFramework().doMensajeF("ERROR", "Error al guardar los datos personales", 3);
                 return;
             }
 
+            // 3. Preparar alumno
             int nuevoIdAlumno = srvAlumno.obtenerUltimoIdAlumno();
             alumnoEdit.setIdCcoUsuEx(nuevoIdAlumno);
-            
             alumnoEdit.setDrtPersonanatural(personaEdit);
             alumnoEdit.setActivo((short) 1);
             alumnoEdit.setAnulado((short) 0);
+            alumnoEdit.setPassword(personaEdit.getNumeroPndid()); // Contraseña = DNI
+            alumnoEdit.setCorreoLogin(personaEdit.getEmailPrin()); // Por si acaso
 
+            // 4. Guardar alumno (el trigger generará el codigo_alu)
             srvAlumno.guardarAlumnoExterno(alumnoEdit);
 
-            generalController.getFramework().doMensajeF("ÉXITO", "Alumno externo registrado correctamente", 1);
+            // 5. Obtener el código generado por el trigger
+            ejbCcoCcoAlumnoExterno alumnoGuardado = srvAlumno.buscarPorIdDir(personaEdit.getIdDir());
+            if (alumnoGuardado != null) {
+                codigoGenerado = alumnoGuardado.getCodigoAlu();
+            } else {
+                codigoGenerado = "(pendiente de generación)";
+            }
 
+            // 6. Mensaje de éxito con código y contraseña
+            mensajeExito = "Alumno registrado correctamente.\n" +
+                           "Código de usuario: " + codigoGenerado + "\n" +
+                           "Contraseña: " + personaEdit.getNumeroPndid();
+
+            generalController.getFramework().doMensajeF("ÉXITO", mensajeExito, 1);
+
+            // 7. Limpiar formulario para un nuevo registro
             limpiarFormulario();
-            pasoPersona = true;
-            pasoAlumno = false;
+            codigoGenerado = null;
 
         } catch (Exception e) {
             e.printStackTrace();
-            generalController.getFramework().doMensajeF("ERROR", "Error al guardar alumno: " + e.getMessage(), 3);
+            generalController.getFramework().doMensajeF("ERROR", "Error al registrar alumno: " + e.getMessage(), 3);
         }
-    }
-
-    public void doVolverPersona() {
-        pasoPersona = true;
-        pasoAlumno = false;
     }
 
     private boolean validarPersona() {
@@ -168,25 +162,8 @@ public class AlumnoController implements Serializable {
         return true;
     }
 
-    private boolean validarAlumno() {
-        if (alumnoEdit.getCorreoLogin() == null || alumnoEdit.getCorreoLogin().trim().isEmpty()) {
-            generalController.getFramework().doMensajeF("VALIDACIÓN", "Correo Login requerido", 2);
-            return false;
-        }
-        if (alumnoEdit.getPassword() == null || alumnoEdit.getPassword().trim().isEmpty()) {
-            generalController.getFramework().doMensajeF("VALIDACIÓN", "Contraseña requerida", 2);
-            return false;
-        }
-        
-        try {
-            ejbCcoCcoAlumnoExterno existente = srvAlumno.buscarPorCorreo(alumnoEdit.getCorreoLogin());
-            if (existente != null) {
-                generalController.getFramework().doMensajeF("VALIDACIÓN", "El correo ya está registrado", 2);
-                return false;
-            }
-        } catch (Exception e) {
-            System.out.println("Error validando correo: " + e.getMessage());
-        }
-        return true;
+    public String getMensajeInfo() {
+        return "El código de alumno se generará automáticamente (Inicial Apellido Paterno + Inicial Apellido Materno + DNI).\n" +
+               "La contraseña será el DNI registrado.";
     }
 }
