@@ -19,21 +19,28 @@
         <h:form id="frmPrincipal" class="form-horizontal h-100">
             <div id="divPrincipal" class="card-contenido">
 
-                <!-- ========== VISTA LISTA ========== -->
-                <h:panelGroup id="pngLista" rendered="#{grupoController.strValor eq 'LISTA'}">
-                    
+                <!-- ========================================= -->
+                <!-- VISTA LISTA                               -->
+                <!-- ========================================= -->
+                <h:panelGroup id="pngLista" rendered="#{grupoController.mostrarLista}">
+
                     <an:seccion cabLabel="Lista de Grupos" cabLen="col-sm-6" cmdLen="col-sm-6">
                         <an:button cmdValue="Volver"
                                    cmdIcon="fa fa-arrow-left"
+                                   cmdClass="bntIconsMedio me-1"
                                    cmdAction="#{grupoController.doVolver()}"
                                    cmdTooltip="Volver"
                                    rendered="#{not empty grupoController.strBusqueda}"/>
                         <an:button cmdValue="Buscar"
                                    cmdIcon="fa fa-search"
+                                   cmdClass="bntIconsMedio me-1"
+                                   cmdUpdate="@form messages"
                                    cmdAction="#{grupoController.doBuscar()}"
                                    cmdTooltip="Buscar grupos por curso o docente"/>
                         <an:button cmdValue="Nuevo"
                                    cmdIcon="fa fa-plus"
+                                   cmdClass="bntIconsMedio"
+                                   cmdUpdate="@form"
                                    cmdAction="#{grupoController.doNuevo()}"
                                    cmdTooltip="Registrar un nuevo grupo"/>
                     </an:seccion>
@@ -46,40 +53,43 @@
                               conRequired="false"/>
                     <an:extra comType="separadorSimple" comClass="my-2"/>
 
-                    <an:table id="cdtGrupo"
-                              cabId="cdtGrupo"
+                    <an:table cabId="tblGrupos"
                               cabValue="#{grupoController.lstGruposViewDTO}"
-                              cabPaginator="true">
+                              cabPaginator="true"
+                              cabClass="tablaGeneral">
 
-                        <p:column width="150" headerText="Acciones" styleClass="text-center">
+                        <p:column width="180" headerText="Acciones" styleClass="text-center">
                             <an:button cmdType="link"
                                        cmdIcon="fa fa-edit text-info"
                                        cmdValue="Editar"
                                        cmdTooltip="Editar grupo"
+                                       cmdUpdate="@form"
                                        cmdAction="#{grupoController.doEditar(registro)}"/>
                             <an:button cmdType="link"
                                        rendered="#{registro.estado}"
                                        cmdIcon="fa fa-ban text-danger"
                                        conMensaje="¿Está seguro de cerrar el grupo?"
                                        cmdTooltip="Cerrar grupo"
+                                       cmdUpdate="@form messages"
                                        cmdAction="#{grupoController.doCambiarEstado(registro)}"/>
                             <an:button cmdType="link"
                                        rendered="#{!registro.estado}"
                                        cmdIcon="fa fa-check-circle text-success"
                                        conMensaje="¿Está seguro de abrir el grupo?"
                                        cmdTooltip="Abrir grupo"
+                                       cmdUpdate="@form messages"
                                        cmdAction="#{grupoController.doCambiarEstado(registro)}"/>
                         </p:column>
 
-                        <p:column width="50" headerText="Nro" styleClass="text-center">
+                        <p:column width="50" headerText="N°" styleClass="text-center">
                             <an:celda comType="indice" optValue="#{row + 1}" comAlign="text-center"/>
                         </p:column>
 
-                        <p:column width="250" headerText="Curso">
+                        <p:column width="220" headerText="Curso">
                             <an:celda optValue="#{registro.nombreCurso}"/>
                         </p:column>
 
-                        <p:column width="200" headerText="Docente">
+                        <p:column width="180" headerText="Docente">
                             <an:celda optValue="#{registro.nombreDocente}"/>
                         </p:column>
 
@@ -87,16 +97,21 @@
                             <an:celda optValue="#{registro.nombreTipoDesarrollo}" comAlign="text-center"/>
                         </p:column>
 
-                        <p:column width="100" headerText="Grupo" styleClass="text-center">
+                        <p:column width="80" headerText="Grupo" styleClass="text-center">
                             <an:celda optValue="#{registro.nombreGrupo}" comAlign="text-center"/>
                         </p:column>
 
-                        <p:column width="120" headerText="Fecha Inicio" styleClass="text-center">
+                        <p:column width="110" headerText="Fecha Inicio" styleClass="text-center">
                             <an:celda optValue="#{registro.fechaFormateada}" comAlign="text-center"/>
                         </p:column>
 
-                        <p:column width="120" headerText="Fecha Fin" styleClass="text-center">
+                        <p:column width="110" headerText="Fecha Fin" styleClass="text-center">
                             <an:celda optValue="#{registro.fechaFinFormateada}" comAlign="text-center"/>
+                        </p:column>
+
+                        <!-- ========== NUEVA COLUMNA HORARIO ========== -->
+                        <p:column width="150" headerText="Horario">
+                            <an:celda optValue="#{registro.horariosFormateados}"/>
                         </p:column>
 
                         <p:column width="120" headerText="Precio" styleClass="text-center">
@@ -119,27 +134,35 @@
 
                 </h:panelGroup>
 
-                <!-- ========== VISTA NUEVO / EDITAR ========== -->
+                <!-- ========================================= -->
+                <!-- VISTA NUEVO / EDITAR                      -->
+                <!-- ========================================= -->
                 <h:panelGroup id="pngNuevoGrupo"
-                              rendered="#{grupoController.strValor eq 'NUEVO' or grupoController.strValor eq 'EDITAR'}"
+                              rendered="#{grupoController.mostrarFormulario}"
                               layout="block">
 
-                    <an:seccion cabLabel="Registro de Grupo" cabLen="col-sm-6" cmdLen="col-sm-6">
+                    <an:seccion cabLabel="#{grupoController.tituloFormulario}" cabLen="col-sm-6" cmdLen="col-sm-6">
                         <an:button cmdValue="Volver"
                                    cmdIcon="fa fa-arrow-left"
                                    cmdClass="bntIconsMedio me-1"
                                    cmdUpdate="@form"
                                    cmdAction="#{grupoController.doVolver()}"/>
 
-                        <an:button cmdValue="Guardar"
+                        <an:button cmdValue="#{grupoController.labelBotonGuardar}"
                                    cmdIcon="fa fa-save"
                                    cmdClass="bntIconsMedio"
-                                   cmdUpdate="@form"
+                                   cmdUpdate="@form messages"
                                    cmdAction="#{grupoController.doGuardar()}"
                                    cmdTooltip="Guardar los datos del grupo"/>
                     </an:seccion>
 
-                    <!-- Select para Curso -->
+                    <an:extra comType="separadorSimple" comClass="my-2"/>
+
+                    <!-- ================================ -->
+                    <!-- DATOS BÁSICOS                    -->
+                    <!-- ================================ -->
+
+                    <!-- Curso -->
                     <div class="row mb-2">
                         <div class="col-lg-2 text-end fw-bold">Curso</div>
                         <div class="col-lg-4">
@@ -156,7 +179,7 @@
                         </div>
                     </div>
 
-                    <!-- Select para Docente -->
+                    <!-- Docente -->
                     <div class="row mb-2">
                         <div class="col-lg-2 text-end fw-bold">Docente</div>
                         <div class="col-lg-4">
@@ -167,13 +190,13 @@
                                 <f:selectItem itemLabel="-- Seleccione Docente --" itemValue="#{null}" noSelectionOption="true"/>
                                 <f:selectItems value="#{grupoController.lstDocentes}" 
                                                var="docente"
-                                               itemLabel="#{docente.idEsc.idDir.nombreCompleto}" 
+                                               itemLabel="#{docente.escPersonal.drtPersonanatural.nombreCompleto}" 
                                                itemValue="#{docente.idPersonal}"/>
                             </p:selectOneMenu>
                         </div>
                     </div>
 
-                    <!-- Select para Tipo Desarrollo -->
+                    <!-- Tipo Desarrollo -->
                     <div class="row mb-2">
                         <div class="col-lg-2 text-end fw-bold">Tipo Desarrollo</div>
                         <div class="col-lg-3">
@@ -188,7 +211,7 @@
                         </div>
                     </div>
 
-                    <!-- Select para Grupo Curso -->
+                    <!-- Grupo Curso -->
                     <div class="row mb-2">
                         <div class="col-lg-2 text-end fw-bold">Grupo</div>
                         <div class="col-lg-2">
@@ -203,7 +226,7 @@
                         </div>
                     </div>
 
-                    <!-- Fecha Inicio -->
+                    <!-- Fechas -->
                     <div class="row mb-2">
                         <div class="col-lg-2 text-end fw-bold">Fecha Inicio</div>
                         <div class="col-lg-3">
@@ -218,7 +241,6 @@
                         </div>
                     </div>
 
-                    <!-- Fecha Fin -->
                     <div class="row mb-2">
                         <div class="col-lg-2 text-end fw-bold">Fecha Fin</div>
                         <div class="col-lg-3">
@@ -231,24 +253,117 @@
                         </div>
                     </div>
 
-                    <!-- Precio -->
+                    <!-- ================================ -->
+                    <!-- PRECIO                          -->
+                    <!-- ================================ -->
+
+                    <div class="card-cabecera row px-0 mt-3">
+                        <div class="col-sm-12 px-1 divTituloCabecera">
+                            <i class="bi bi-currency-dollar iconoCabecera"></i>
+                            <label class="ui-outputlabel ui-widget">Información de Pago</label>
+                        </div>
+                    </div>
+
                     <div class="row mb-2">
                         <div class="col-lg-2 text-end fw-bold">Precio (S/.)</div>
                         <div class="col-lg-2">
                             <p:inputText value="#{grupoController.precioMonto}" 
                                          style="width:100%"
                                          required="true"
-                                         requiredMessage="El precio es obligatorio"/>
+                                         requiredMessage="El precio es obligatorio">
+                                <f:convertNumber pattern="#0.00" />
+                            </p:inputText>
                         </div>
                     </div>
 
-                    <!-- Código de Pago -->
                     <div class="row mb-2">
                         <div class="col-lg-2 text-end fw-bold">Código Pago</div>
                         <div class="col-lg-3">
-                            <p:inputText value="#{grupoController.codigoPago}" style="width:100%"/>
+                            <p:inputText value="#{grupoController.codigoPago}" 
+                                         style="width:100%"
+                                         placeholder="Ej: CURSO001"/>
                         </div>
                     </div>
+
+                    <!-- ================================ -->
+                    <!-- HORARIOS                        -->
+                    <!-- ================================ -->
+
+                    <div class="card-cabecera row px-0 mt-3">
+                        <div class="col-sm-12 px-1 divTituloCabecera">
+                            <i class="bi bi-clock iconoCabecera"></i>
+                            <label class="ui-outputlabel ui-widget">Configuración de Horarios</label>
+                        </div>
+                    </div>
+
+                    <!-- Días de la semana -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold pt-2">Días</div>
+                        <div class="col-lg-8">
+                            <p:selectManyCheckbox value="#{grupoController.lstDiasSeleccionados}"
+                                                  layout="responsive"
+                                                  columns="7">
+                                <f:selectItem itemLabel="Lunes" itemValue="1"/>
+                                <f:selectItem itemLabel="Martes" itemValue="2"/>
+                                <f:selectItem itemLabel="Miércoles" itemValue="3"/>
+                                <f:selectItem itemLabel="Jueves" itemValue="4"/>
+                                <f:selectItem itemLabel="Viernes" itemValue="5"/>
+                                <f:selectItem itemLabel="Sábado" itemValue="6"/>
+                                <f:selectItem itemLabel="Domingo" itemValue="7"/>
+                            </p:selectManyCheckbox>
+                        </div>
+                    </div>
+
+                    <!-- Hora -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Hora</div>
+                        <div class="col-lg-3">
+                            <p:selectOneMenu value="#{grupoController.idHoraSeleccionada}" 
+                                             style="width:100%"
+                                             required="true"
+                                             requiredMessage="Seleccione una hora">
+                                <f:selectItem itemLabel="-- Seleccione Hora --" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{grupoController.lstHoras}" 
+                                               var="hora"
+                                               itemLabel="#{hora.nomHora}" 
+                                               itemValue="#{hora.idHora}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <!-- Aula -->
+                    <div class="row mb-2">
+                        <div class="col-lg-2 text-end fw-bold">Aula</div>
+                        <div class="col-lg-3">
+                            <p:selectOneMenu value="#{grupoController.idAulaSeleccionada}" 
+                                             style="width:100%">
+                                <f:selectItem itemLabel="-- Seleccione Aula --" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{grupoController.lstAulas}" 
+                                               var="aula"
+                                               itemLabel="#{aula.nomAula}" 
+                                               itemValue="#{aula.idAulClass}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <!-- Instrucciones -->
+                    <div class="card-cabecera row px-0 mt-3">
+                        <div class="col-sm-12 px-1 divTituloCabecera">
+                            <i class="bi bi-info-circle iconoCabecera"></i>
+                            <label class="ui-outputlabel ui-widget">Instrucciones</label>
+                        </div>
+                    </div>
+                    <ol class="ps-3 mb-0">
+                        <li class="textoJustificadoRojo">
+                            <label class="ui-outputlabel ui-widget">Complete todos los campos obligatorios (*).</label>
+                        </li>
+                        <li class="textoJustificadoRojo">
+                            <label class="ui-outputlabel ui-widget">Seleccione al menos un día para el horario del grupo.</label>
+                        </li>
+                        <li class="textoJustificadoRojo">
+                            <label class="ui-outputlabel ui-widget">El código de pago se genera automáticamente si no lo especifica.</label>
+                        </li>
+                    </ol>
 
                 </h:panelGroup>
 
@@ -256,7 +371,8 @@
         </h:form>
 
         <!-- Dialog de Procesando -->
-        <p:dialog id="dlgProcesando" widgetVar="dlgProcesando" modal="true" closable="false" resizable="false" draggable="false" style="width:200px;height:80px;">
+        <p:dialog id="dlgProcesando" widgetVar="dlgProcesando" modal="true" closable="false" 
+                  resizable="false" draggable="false" style="width:200px;height:80px;">
             <div style="text-align:center;">
                 <i class="fa fa-spinner fa-pulse fa-2x"></i>
                 <p:outputLabel value=" Procesando..." style="margin-left:10px;"/>

@@ -27,44 +27,74 @@ public class GrupoController implements Serializable {
     @Inject
     private GeneralController generalController;
 
-    // Listados
+    // ============================
+    // LISTAS Y FILTROS
+    // ============================
     private List<ejbCcoGrupoDTO> lstGruposDTO;
     private List<ejbCcoGrupoDTO> lstGruposViewDTO;
     private String strBusqueda;
     private String strValor;
     private Integer idEdicion;
 
-    // Entidades para el formulario
+    // ============================
+    // ENTIDAD PRINCIPAL
+    // ============================
     private ejbCcoCepCursoDocente clsGrupoEdit;
-    
-    // IDs seleccionados
+
+    // ============================
+    // IDs SELECCIONADOS
+    // ============================
     private Integer idPersonalSeleccionado;
     private Integer idCursoSeleccionado;
     private Integer idTipoDesarrolloSeleccionado;
     private Integer idGrupoSeleccionado;
-    
-    // Precio
+    private Integer idHoraSeleccionada;
+    private Integer idAulaSeleccionada;
+
+    // ============================
+    // PRECIO
+    // ============================
     private Double precioMonto;
     private String codigoPago;
-    
-    // Catálogos
+
+    // ============================
+    // HORARIOS (Días seleccionados)
+    // ============================
+    private List<Integer> lstDiasSeleccionados;
+
+    // ============================
+    // CATÁLOGOS
+    // ============================
     private List<ejbCcoCepPersonal> lstDocentes;
     private List<ejbCcoCepCurso> lstCursos;
     private List<ejbCcoCepCecTipoDesarrollo> lstTiposDesarrollo;
     private List<ejbCcoCepCecGrupoCurso> lstGruposCurso;
+    private List<ejbCcoCepHorarioHora> lstHoras;
+    private List<ejbCcoCepCecAulaClass> lstAulas;
 
+    // ============================
+    // CONSTANTES DE VISTA
+    // ============================
     private static final String VISTA_LISTA = "LISTA";
     private static final String VISTA_NUEVO = "NUEVO";
     private static final String VISTA_EDITAR = "EDITAR";
 
-    // Servicios
+    // ============================
+    // SERVICIOS EJB
+    // ============================
     private ejbCcoCepCursoDocenteServiceLocal srvGrupo;
     private ejbCcoCepPersonalServiceLocal srvPersonal;
     private ejbCcoCepCursoServiceLocal srvCurso;
     private ejbCcoCepCecTipoDesarrolloServiceLocal srvTipoDesarrollo;
     private ejbCcoCepCecGrupoCursoServiceLocal srvGrupoCurso;
     private ejbCcoCepGrupoPrecioServiceLocal srvGrupoPrecio;
+    private ejbCcoCepHorarioDiaServiceLocal srvHorarioDia;
+    private ejbCcoCepHorarioHoraServiceLocal srvHorarioHora;
+    private ejbCcoCepCecAulaClassServiceLocal srvAula;
 
+    // ============================
+    // CONSTRUCTOR
+    // ============================
     public GrupoController() {
         try {
             Context context = new InitialContext();
@@ -86,11 +116,24 @@ public class GrupoController implements Serializable {
             srvGrupoPrecio = (ejbCcoCepGrupoPrecioServiceLocal) context.lookup(
                 doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepGrupoPrecioServiceLocal")
             );
+            srvHorarioDia = (ejbCcoCepHorarioDiaServiceLocal) context.lookup(
+                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepHorarioDiaServiceLocal")
+            );
+            srvHorarioHora = (ejbCcoCepHorarioHoraServiceLocal) context.lookup(
+                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepHorarioHoraServiceLocal")
+            );
+            srvAula = (ejbCcoCepCecAulaClassServiceLocal) context.lookup(
+                doGenerarJNDI("ejbCecomp", "1.0", "ejbCcoCepCecAulaClassServiceLocal")
+            );
         } catch (NamingException e) {
             System.out.println("Error JNDI GrupoController: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    // ============================
+    // INICIALIZACIÓN
+    // ============================
     public void doIniciarPagina() {
         strValor = VISTA_LISTA;
         strBusqueda = "";
@@ -98,6 +141,9 @@ public class GrupoController implements Serializable {
         cargarCatalogos();
     }
 
+    // ============================
+    // CARGA DE DATOS
+    // ============================
     private void cargarGrupos() {
         try {
             List<ejbCcoCepCursoDocente> grupos = srvGrupo.listarConPrecios();
@@ -110,6 +156,7 @@ public class GrupoController implements Serializable {
             lstGruposViewDTO = new ArrayList<>(lstGruposDTO);
         } catch (Exception e) {
             System.out.println("Error cargar grupos: " + e.getMessage());
+            e.printStackTrace();
             lstGruposDTO = new ArrayList<>();
             lstGruposViewDTO = new ArrayList<>();
         }
@@ -121,18 +168,26 @@ public class GrupoController implements Serializable {
             lstCursos = srvCurso.listarActivos();
             lstTiposDesarrollo = srvTipoDesarrollo.listarTodos();
             lstGruposCurso = srvGrupoCurso.listarTodos();
+            lstHoras = srvHorarioHora.listarActivos();
+            lstAulas = srvAula.listarTodos();
         } catch (Exception e) {
             System.out.println("Error cargar catálogos: " + e.getMessage());
+            e.printStackTrace();
             lstDocentes = new ArrayList<>();
             lstCursos = new ArrayList<>();
             lstTiposDesarrollo = new ArrayList<>();
             lstGruposCurso = new ArrayList<>();
+            lstHoras = new ArrayList<>();
+            lstAulas = new ArrayList<>();
         }
     }
 
+    // ============================
+    // BÚSQUEDA
+    // ============================
     public void doBuscar() {
         String q = (strBusqueda == null) ? "" : strBusqueda.trim().toLowerCase();
-        
+
         if (q.isBlank()) {
             lstGruposViewDTO = new ArrayList<>(lstGruposDTO);
         } else {
@@ -140,7 +195,6 @@ public class GrupoController implements Serializable {
             for (ejbCcoGrupoDTO dto : lstGruposDTO) {
                 String docente = dto.getNombreDocente() != null ? dto.getNombreDocente().toLowerCase() : "";
                 String curso = dto.getNombreCurso() != null ? dto.getNombreCurso().toLowerCase() : "";
-                
                 if (docente.contains(q) || curso.contains(q)) {
                     filtrado.add(dto);
                 }
@@ -150,41 +204,67 @@ public class GrupoController implements Serializable {
         generalController.getFramework().doMensajeF("BÚSQUEDA", "Filtro aplicado correctamente", 1);
     }
 
+    // ============================
+    // NUEVO
+    // ============================
     public void doNuevo() {
         strValor = VISTA_NUEVO;
         limpiarFormulario();
         cargarCatalogos();
     }
 
+    // ============================
+    // EDITAR
+    // ============================
     public void doEditar(ejbCcoGrupoDTO dto) {
         if (dto == null || dto.getIdAd() == null) {
             generalController.getFramework().doMensajeF("ERROR", "Grupo no válido", 3);
             return;
         }
-        
+
         strValor = VISTA_EDITAR;
         idEdicion = dto.getIdAd();
-        
+
         clsGrupoEdit = srvGrupo.buscarPorId(idEdicion);
         if (clsGrupoEdit != null) {
+            // Datos básicos
             idPersonalSeleccionado = clsGrupoEdit.getCepPersonal() != null ? clsGrupoEdit.getCepPersonal().getIdPersonal() : null;
             idCursoSeleccionado = clsGrupoEdit.getCepCurso() != null ? clsGrupoEdit.getCepCurso().getIdCurso() : null;
             idTipoDesarrolloSeleccionado = clsGrupoEdit.getCepCecTipoDesarrollo() != null ? clsGrupoEdit.getCepCecTipoDesarrollo().getIdCiclo() : null;
             idGrupoSeleccionado = clsGrupoEdit.getCepCecGrupoCurso() != null ? clsGrupoEdit.getCepCecGrupoCurso().getIdGrupo() : null;
-            
-            // Cargar el precio (tomar el primero de la lista)
+
+            // Precio
             if (clsGrupoEdit.getCepGrupoPrecioList() != null && !clsGrupoEdit.getCepGrupoPrecioList().isEmpty()) {
                 ejbCcoCepGrupoPrecio precio = clsGrupoEdit.getCepGrupoPrecioList().get(0);
                 precioMonto = precio.getMonto() != null ? precio.getMonto().doubleValue() : null;
                 codigoPago = precio.getCodigoPago();
             }
+
+            // Horarios
+            lstDiasSeleccionados = new ArrayList<>();
+            if (clsGrupoEdit.getCepHorarioDiaList() != null && !clsGrupoEdit.getCepHorarioDiaList().isEmpty()) {
+                for (ejbCcoCepHorarioDia horario : clsGrupoEdit.getCepHorarioDiaList()) {
+                    if (horario.getDia() != null) {
+                        lstDiasSeleccionados.add(horario.getDia().intValue());
+                    }
+                    if (horario.getCepHorarioHora() != null) {
+                        idHoraSeleccionada = horario.getCepHorarioHora().getIdHora();
+                    }
+                    if (horario.getCepCecAulaClass() != null) {
+                        idAulaSeleccionada = horario.getCepCecAulaClass().getIdAulClass();
+                    }
+                }
+            }
         }
         cargarCatalogos();
     }
 
+    // ============================
+    // GUARDAR (CREAR/ACTUALIZAR)
+    // ============================
     public void doGuardar() {
         if (!validarGrupo()) return;
-        
+
         try {
             // Asignar relaciones
             if (idPersonalSeleccionado != null) {
@@ -199,76 +279,156 @@ public class GrupoController implements Serializable {
             if (idGrupoSeleccionado != null) {
                 clsGrupoEdit.setCepCecGrupoCurso(srvGrupoCurso.buscarPorId(idGrupoSeleccionado));
             }
-            
+
             clsGrupoEdit.setEstado(true);
-            
+
             if (idEdicion == null) {
-                // Crear grupo
+                // =========================================
+                // CREAR NUEVO GRUPO
+                // =========================================
                 clsGrupoEdit = srvGrupo.crear(clsGrupoEdit);
-                
-                // Crear precio del grupo
+
+                // 1. Crear Precio
                 if (precioMonto != null && precioMonto > 0) {
                     ejbCcoCepGrupoPrecio precio = new ejbCcoCepGrupoPrecio();
                     precio.setCepCursoDocente(clsGrupoEdit);
                     precio.setMonto(BigDecimal.valueOf(precioMonto));
-                    precio.setCodigoPago(codigoPago != null ? codigoPago : "GRUPO_" + clsGrupoEdit.getIdAd());
+                    precio.setCodigoPago(codigoPago != null && !codigoPago.trim().isEmpty() 
+                        ? codigoPago : "GRUPO_" + clsGrupoEdit.getIdAd());
                     srvGrupoPrecio.crear(precio);
                 }
-                
+
+                // 2. Crear Horarios
+                if (lstDiasSeleccionados != null && !lstDiasSeleccionados.isEmpty() && idHoraSeleccionada != null) {
+                    ejbCcoCepHorarioHora hora = srvHorarioHora.buscarPorId(idHoraSeleccionada);
+                    ejbCcoCepCecAulaClass aula = idAulaSeleccionada != null ? srvAula.buscarPorId(idAulaSeleccionada) : null;
+                    
+                    for (Integer dia : lstDiasSeleccionados) {
+                        ejbCcoCepHorarioDia horario = new ejbCcoCepHorarioDia();
+                        horario.setCepCursoDocente(clsGrupoEdit);
+                        horario.setDia(dia.shortValue());
+                        horario.setCepHorarioHora(hora);
+                        if (aula != null) {
+                            horario.setCepCecAulaClass(aula);
+                        }
+                        srvHorarioDia.crear(horario);
+                    }
+                }
+
                 generalController.getFramework().doMensajeF("GUARDAR", "Grupo agregado correctamente", 1);
+
             } else {
-                // Actualizar grupo
+                // =========================================
+                // ACTUALIZAR GRUPO EXISTENTE
+                // =========================================
                 clsGrupoEdit = srvGrupo.actualizar(clsGrupoEdit);
-                
-                // Actualizar precio existente
+
+                // 1. Actualizar Precio
                 if (clsGrupoEdit.getCepGrupoPrecioList() != null && !clsGrupoEdit.getCepGrupoPrecioList().isEmpty()) {
                     ejbCcoCepGrupoPrecio precioExistente = clsGrupoEdit.getCepGrupoPrecioList().get(0);
                     if (precioMonto != null && precioMonto > 0) {
                         precioExistente.setMonto(BigDecimal.valueOf(precioMonto));
-                        precioExistente.setCodigoPago(codigoPago != null ? codigoPago : "GRUPO_" + clsGrupoEdit.getIdAd());
+                        precioExistente.setCodigoPago(codigoPago != null && !codigoPago.trim().isEmpty() 
+                            ? codigoPago : "GRUPO_" + clsGrupoEdit.getIdAd());
                         srvGrupoPrecio.actualizar(precioExistente);
                     }
                 } else if (precioMonto != null && precioMonto > 0) {
-                    // Si no tiene precio, crear uno nuevo
                     ejbCcoCepGrupoPrecio precio = new ejbCcoCepGrupoPrecio();
                     precio.setCepCursoDocente(clsGrupoEdit);
                     precio.setMonto(BigDecimal.valueOf(precioMonto));
-                    precio.setCodigoPago(codigoPago != null ? codigoPago : "GRUPO_" + clsGrupoEdit.getIdAd());
+                    precio.setCodigoPago(codigoPago != null && !codigoPago.trim().isEmpty() 
+                        ? codigoPago : "GRUPO_" + clsGrupoEdit.getIdAd());
                     srvGrupoPrecio.crear(precio);
                 }
-                
+
+                // ACTUALIZAR HORARIOS (SIN ELIMINAR)
+                if (lstDiasSeleccionados != null && !lstDiasSeleccionados.isEmpty() && idHoraSeleccionada != null) {
+                    ejbCcoCepHorarioHora hora = srvHorarioHora.buscarPorId(idHoraSeleccionada);
+                    ejbCcoCepCecAulaClass aula = idAulaSeleccionada != null ? srvAula.buscarPorId(idAulaSeleccionada) : null;
+
+                    // Obtener horarios existentes
+                    List<ejbCcoCepHorarioDia> horariosExistentes = clsGrupoEdit.getCepHorarioDiaList();
+
+                    if (horariosExistentes != null && !horariosExistentes.isEmpty()) {
+                        // ACTUALIZAR horarios existentes
+                        int index = 0;
+                        for (ejbCcoCepHorarioDia horarioExistente : horariosExistentes) {
+                            if (index < lstDiasSeleccionados.size()) {
+                                Integer dia = lstDiasSeleccionados.get(index);
+                                horarioExistente.setDia(dia.shortValue());
+                                horarioExistente.setCepHorarioHora(hora);
+                                if (aula != null) {
+                                    horarioExistente.setCepCecAulaClass(aula);
+                                }
+                                srvHorarioDia.actualizar(horarioExistente);
+                            }
+                            index++;
+                        }
+
+                        // Si hay más días seleccionados que horarios existentes, crear los faltantes
+                        if (index < lstDiasSeleccionados.size()) {
+                            for (int i = index; i < lstDiasSeleccionados.size(); i++) {
+                                Integer dia = lstDiasSeleccionados.get(i);
+                                ejbCcoCepHorarioDia horario = new ejbCcoCepHorarioDia();
+                                horario.setCepCursoDocente(clsGrupoEdit);
+                                horario.setDia(dia.shortValue());
+                                horario.setCepHorarioHora(hora);
+                                if (aula != null) {
+                                    horario.setCepCecAulaClass(aula);
+                                }
+                                srvHorarioDia.crear(horario);
+                            }
+                        }
+                    } else {
+                        // CREAR nuevos horarios
+                        for (Integer dia : lstDiasSeleccionados) {
+                            ejbCcoCepHorarioDia horario = new ejbCcoCepHorarioDia();
+                            horario.setCepCursoDocente(clsGrupoEdit);
+                            horario.setDia(dia.shortValue());
+                            horario.setCepHorarioHora(hora);
+                            if (aula != null) {
+                                horario.setCepCecAulaClass(aula);
+                            }
+                            srvHorarioDia.crear(horario);
+                        }
+                    }
+                }
+
                 generalController.getFramework().doMensajeF("ACTUALIZAR", "Grupo actualizado correctamente", 1);
             }
-            
+
             cargarGrupos();
             strValor = VISTA_LISTA;
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             generalController.getFramework().doMensajeF("ERROR", "Error al guardar grupo: " + e.getMessage(), 3);
         }
     }
 
+    // ============================
+    // CAMBIAR ESTADO (ACTIVAR/CERRAR)
+    // ============================
     public void doCambiarEstado(ejbCcoGrupoDTO dto) {
         if (dto == null || dto.getIdAd() == null) {
             generalController.getFramework().doMensajeF("ERROR", "Grupo no válido", 3);
             return;
         }
-        
+
         try {
             ejbCcoCepCursoDocente grupo = srvGrupo.buscarPorId(dto.getIdAd());
             if (grupo == null) {
                 generalController.getFramework().doMensajeF("ERROR", "No se encontró el grupo", 3);
                 return;
             }
-            
+
             boolean nuevoEstado = !grupo.getEstado();
             grupo.setEstado(nuevoEstado);
             srvGrupo.actualizar(grupo);
-            
-            String mensaje = nuevoEstado ? "Grupo activado correctamente" : "Grupo desactivado correctamente";
+
+            String mensaje = nuevoEstado ? "Grupo activado correctamente" : "Grupo cerrado correctamente";
             generalController.getFramework().doMensajeF("ESTADO", mensaje, 1);
-            
+
             cargarGrupos();
             doBuscar();
         } catch (Exception e) {
@@ -277,26 +437,34 @@ public class GrupoController implements Serializable {
         }
     }
 
+    // ============================
+    // VOLVER
+    // ============================
     public void doVolver() {
         strValor = VISTA_LISTA;
         strBusqueda = "";
         cargarGrupos();
     }
 
+    // ============================
+    // MÉTODOS PRIVADOS
+    // ============================
     private void limpiarFormulario() {
         clsGrupoEdit = new ejbCcoCepCursoDocente();
         clsGrupoEdit.setEstado(true);
         clsGrupoEdit.setCerraAper(false);
         clsGrupoEdit.setFecha(new Date());
-        
+
         idEdicion = null;
         idPersonalSeleccionado = null;
         idCursoSeleccionado = null;
         idTipoDesarrolloSeleccionado = null;
         idGrupoSeleccionado = null;
-        
+        idHoraSeleccionada = null;
+        idAulaSeleccionada = null;
         precioMonto = null;
         codigoPago = null;
+        lstDiasSeleccionados = new ArrayList<>();
     }
 
     private boolean validarGrupo() {
@@ -316,6 +484,35 @@ public class GrupoController implements Serializable {
             generalController.getFramework().doMensajeF("VALIDACIÓN", "Debe ingresar un monto válido", 2);
             return false;
         }
+        if (lstDiasSeleccionados == null || lstDiasSeleccionados.isEmpty()) {
+            generalController.getFramework().doMensajeF("VALIDACIÓN", "Debe seleccionar al menos un día", 2);
+            return false;
+        }
+        if (idHoraSeleccionada == null) {
+            generalController.getFramework().doMensajeF("VALIDACIÓN", "Debe seleccionar una hora", 2);
+            return false;
+        }
         return true;
+    }
+
+    // ============================
+    // MÉTODOS PARA LA VISTA
+    // ============================
+    public boolean isMostrarLista() {
+        return VISTA_LISTA.equals(strValor);
+    }
+
+    public boolean isMostrarFormulario() {
+        return VISTA_NUEVO.equals(strValor) || VISTA_EDITAR.equals(strValor);
+    }
+
+    public String getTituloFormulario() {
+        if (VISTA_NUEVO.equals(strValor)) return "NUEVO GRUPO";
+        if (VISTA_EDITAR.equals(strValor)) return "EDITAR GRUPO";
+        return "REGISTRO DE GRUPO";
+    }
+
+    public String getLabelBotonGuardar() {
+        return VISTA_NUEVO.equals(strValor) ? "Registrar" : "Actualizar";
     }
 }
